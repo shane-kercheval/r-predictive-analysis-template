@@ -36,7 +36,7 @@ refresh_models <- FALSE
 ```
 
 ```{r dataset_definition, echo = FALSE}
-concrete = fread('./data/concrete.csv')
+concrete = fread('./regression_data/concrete.csv')
 regression_dataset <- concrete %>%
 	dplyr::rename(target = strength) %>%
 	dplyr::select(target, everything())
@@ -402,9 +402,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_no_pre_processing <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control)
-	saveRDS(lm_no_pre_processing, file = './data/lm_no_pre_processing.RDS')
+	saveRDS(lm_no_pre_processing, file = './regression_data/lm_no_pre_processing.RDS')
 } else{
-	lm_no_pre_processing <- readRDS('./data/lm_no_pre_processing.RDS')
+	lm_no_pre_processing <- readRDS('./regression_data/lm_no_pre_processing.RDS')
 }
 summary(lm_no_pre_processing)
 plot(lm_no_pre_processing$finalModel)
@@ -417,9 +417,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_basic_pre_processing <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'knnImpute'))
-	saveRDS(lm_basic_pre_processing, file = './data/lm_basic_pre_processing.RDS')
+	saveRDS(lm_basic_pre_processing, file = './regression_data/lm_basic_pre_processing.RDS')
 } else{
-	lm_basic_pre_processing <- readRDS('./data/lm_basic_pre_processing.RDS')
+	lm_basic_pre_processing <- readRDS('./regression_data/lm_basic_pre_processing.RDS')
 }
 summary(lm_basic_pre_processing)
 plot(lm_basic_pre_processing$finalModel)
@@ -432,9 +432,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_median_impute <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'medianImpute'))
-	saveRDS(lm_median_impute, file = './data/lm_median_impute.RDS')
+	saveRDS(lm_median_impute, file = './regression_data/lm_median_impute.RDS')
 } else{
-	lm_median_impute <- readRDS('./data/lm_median_impute.RDS')
+	lm_median_impute <- readRDS('./regression_data/lm_median_impute.RDS')
 }
 summary(lm_median_impute)
 plot(lm_median_impute$finalModel)
@@ -447,9 +447,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_near_zero_variance <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
-	saveRDS(lm_near_zero_variance, file = './data/lm_near_zero_variance.RDS')
+	saveRDS(lm_near_zero_variance, file = './regression_data/lm_near_zero_variance.RDS')
 } else{
-	lm_near_zero_variance <- readRDS('./data/lm_near_zero_variance.RDS')
+	lm_near_zero_variance <- readRDS('./regression_data/lm_near_zero_variance.RDS')
 }
 summary(lm_near_zero_variance)
 plot(lm_near_zero_variance$finalModel)
@@ -462,9 +462,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_skewness_y <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
-	saveRDS(lm_skewness_y, file = './data/lm_skewness_y.RDS')
+	saveRDS(lm_skewness_y, file = './regression_data/lm_skewness_y.RDS')
 } else{
-	lm_skewness_y <- readRDS('./data/lm_skewness_y.RDS')
+	lm_skewness_y <- readRDS('./regression_data/lm_skewness_y.RDS')
 }
 summary(lm_skewness_y)
 plot(lm_skewness_y$finalModel)
@@ -477,9 +477,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_skewness_bc <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('BoxCox', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
-	saveRDS(lm_skewness_bc, file = './data/lm_skewness_bc.RDS')
+	saveRDS(lm_skewness_bc, file = './regression_data/lm_skewness_bc.RDS')
 } else{
-	lm_skewness_bc <- readRDS('./data/lm_skewness_bc.RDS')
+	lm_skewness_bc <- readRDS('./regression_data/lm_skewness_bc.RDS')
 }
 summary(lm_skewness_bc)
 plot(lm_skewness_bc$finalModel)
@@ -492,9 +492,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_remove_collinearity_caret <- train(target ~ ., data = regression_train[, recommended_columns_caret], method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
-	saveRDS(lm_remove_collinearity_caret, file = './data/lm_remove_collinearity_caret.RDS')
+	saveRDS(lm_remove_collinearity_caret, file = './regression_data/lm_remove_collinearity_caret.RDS')
 } else{
-	lm_remove_collinearity_caret <- readRDS('./data/lm_remove_collinearity_caret.RDS')
+	lm_remove_collinearity_caret <- readRDS('./regression_data/lm_remove_collinearity_caret.RDS')
 }
 summary(lm_remove_collinearity_caret)
 plot(lm_remove_collinearity_caret$finalModel)
@@ -507,9 +507,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_remove_collinearity_custom <- train(target ~ ., data = regression_train[, recommended_columns_custom], method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
-	saveRDS(lm_remove_collinearity_custom, file = './data/lm_remove_collinearity_custom.RDS')
+	saveRDS(lm_remove_collinearity_custom, file = './regression_data/lm_remove_collinearity_custom.RDS')
 } else{
-	lm_remove_collinearity_custom <- readRDS('./data/lm_remove_collinearity_custom.RDS')
+	lm_remove_collinearity_custom <- readRDS('./regression_data/lm_remove_collinearity_custom.RDS')
 }
 summary(lm_remove_collinearity_custom)
 plot(lm_remove_collinearity_custom$finalModel)
@@ -522,9 +522,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_robust <- train(target ~ ., data = regression_train, method = 'rlm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # by default uses the 'Huber' approach. (APM pg 130.) 'The Huber function uses the squared residuals when they are 'small' and the simple difference between the observed and predicted values values when the residuals are above a threshold.' (APM pg 109f)
-	saveRDS(lm_robust, file = './data/lm_robust.RDS')
+	saveRDS(lm_robust, file = './regression_data/lm_robust.RDS')
 } else{
-	lm_robust <- readRDS('./data/lm_robust.RDS')
+	lm_robust <- readRDS('./regression_data/lm_robust.RDS')
 }
 summary(lm_robust)
 plot(lm_robust$finalModel)
@@ -537,9 +537,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_spatial_sign <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'knnImpute', 'spatialSign'))
-	saveRDS(lm_spatial_sign, file = './data/lm_spatial_sign.RDS')
+	saveRDS(lm_spatial_sign, file = './regression_data/lm_spatial_sign.RDS')
 } else{
-	lm_spatial_sign <- readRDS('./data/lm_spatial_sign.RDS')
+	lm_spatial_sign <- readRDS('./regression_data/lm_spatial_sign.RDS')
 }
 summary(lm_spatial_sign)
 plot(lm_spatial_sign$finalModel)
@@ -552,9 +552,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_pca <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # (APM pg 37 'to help PCA avoid summarizing distributional differences and predictor scale informatino, it is best to first transform skewed predictors and then center and scale the predictors prior to performing PCA. Centering and scaling enables PCA to find the underlying relationships in the data without being influenced by the original measurement scales.')
-	saveRDS(lm_pca, file = './data/lm_pca.RDS')
+	saveRDS(lm_pca, file = './regression_data/lm_pca.RDS')
 } else{
-	lm_pca <- readRDS('./data/lm_pca.RDS')
+	lm_pca <- readRDS('./regression_data/lm_pca.RDS')
 }
 summary(lm_pca)
 plot(lm_pca$finalModel)
@@ -567,9 +567,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_pcr <- train(target ~ ., data = regression_train, method = 'pcr', trControl = train_control, tuneLength = 20, preProc = c('center', 'scale', 'knnImpute'))
-	saveRDS(lm_pcr, file = './data/lm_pcr.RDS')
+	saveRDS(lm_pcr, file = './regression_data/lm_pcr.RDS')
 } else{
-	lm_pcr <- readRDS('./data/lm_pcr.RDS')
+	lm_pcr <- readRDS('./regression_data/lm_pcr.RDS')
 }
 summary(lm_pcr)
 plot(lm_pcr)
@@ -582,9 +582,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_pls <- train(target ~ ., data = regression_train, method = 'pls', trControl = train_control, preProc = c('center', 'scale', 'knnImpute'), tuneLength = 14)
-	saveRDS(lm_pls, file = './data/lm_pls.RDS')
+	saveRDS(lm_pls, file = './regression_data/lm_pls.RDS')
 } else{
-	lm_pls <- readRDS('./data/lm_pls.RDS')
+	lm_pls <- readRDS('./regression_data/lm_pls.RDS')
 }
 summary(lm_pls)
 # loadings(lm_pls$finalModel)
@@ -602,9 +602,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_ridge <- train(target ~ ., data = regression_train, method = 'ridge', tuneGrid = expand.grid(lambda = tuning_ridge_lambda) , trControl = train_control, preProc = c('center', 'scale', 'knnImpute'))
-	saveRDS(lm_ridge, file = './data/lm_ridge.RDS')
+	saveRDS(lm_ridge, file = './regression_data/lm_ridge.RDS')
 } else{
-	lm_ridge <- readRDS('./data/lm_ridge.RDS')
+	lm_ridge <- readRDS('./regression_data/lm_ridge.RDS')
 }
 summary(lm_ridge)
 plot(lm_ridge)
@@ -617,9 +617,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	lm_enet <- train(target ~ ., data = regression_train, method = 'enet', tuneGrid = expand.grid(lambda = tuning_enet_lambda, fraction = tuning_enet_fraction), trControl = train_control, preProc = c('center', 'scale', 'knnImpute'))
-	saveRDS(lm_enet, file = './data/lm_enet.RDS')
+	saveRDS(lm_enet, file = './regression_data/lm_enet.RDS')
 } else{
-	lm_enet <- readRDS('./data/lm_enet.RDS')
+	lm_enet <- readRDS('./regression_data/lm_enet.RDS')
 }
 #lm_enet$finalModel
 summary(lm_enet)
@@ -640,9 +640,9 @@ if(refresh_models)
 							trace = parameter_neural_network_trace,
 							MaxNWts = parameter_neural_network_max_num_weights,
 							maxit = parameter_neural_network_max_iterations)
-	saveRDS(nlm_neur_net_basic, file = './data/nlm_neur_net_basic.RDS')
+	saveRDS(nlm_neur_net_basic, file = './regression_data/nlm_neur_net_basic.RDS')
 } else{
-	nlm_neur_net_basic <- readRDS('./data/nlm_neur_net_basic.RDS')
+	nlm_neur_net_basic <- readRDS('./regression_data/nlm_neur_net_basic.RDS')
 }
 summary(nlm_neur_net_basic$finalModel)
 plot(nlm_neur_net_basic)
@@ -662,9 +662,9 @@ if(refresh_models)
 							trace = parameter_neural_network_trace,
 							MaxNWts = parameter_neural_network_max_num_weights,
 							maxit = parameter_neural_network_max_iterations)
-	saveRDS(nlm_neur_net_basic_remove_corr, file = './data/nlm_neur_net_basic_remove_corr.RDS')
+	saveRDS(nlm_neur_net_basic_remove_corr, file = './regression_data/nlm_neur_net_basic_remove_corr.RDS')
 } else{
-	nlm_neur_net_basic_remove_corr <- readRDS('./data/nlm_neur_net_basic_remove_corr.RDS')
+	nlm_neur_net_basic_remove_corr <- readRDS('./regression_data/nlm_neur_net_basic_remove_corr.RDS')
 }
 summary(nlm_neur_net_basic_remove_corr$finalModel)
 plot(nlm_neur_net_basic_remove_corr)
@@ -684,9 +684,9 @@ if(refresh_models)
 							trace = parameter_neural_network_trace,
 							MaxNWts = parameter_neural_network_max_num_weights,
 							maxit = parameter_neural_network_max_iterations)
-	saveRDS(nlm_neur_net_averaging_remove_corr, file = './data/nlm_neur_net_averaging_remove_corr.RDS')
+	saveRDS(nlm_neur_net_averaging_remove_corr, file = './regression_data/nlm_neur_net_averaging_remove_corr.RDS')
 } else{
-	nlm_neur_net_averaging_remove_corr <- readRDS('./data/nlm_neur_net_averaging_remove_corr.RDS')
+	nlm_neur_net_averaging_remove_corr <- readRDS('./regression_data/nlm_neur_net_averaging_remove_corr.RDS')
 }
 nlm_neur_net_averaging_remove_corr$finalModel
 summary(nlm_neur_net_averaging_remove_corr$finalModel)
@@ -707,9 +707,9 @@ if(refresh_models)
 							trace = parameter_neural_network_trace,
 							MaxNWts = parameter_neural_network_max_num_weights,
 							maxit = parameter_neural_network_max_iterations)
-	saveRDS(nlm_neur_net_averaging_pca, file = './data/nlm_neur_net_averaging_pca.RDS')
+	saveRDS(nlm_neur_net_averaging_pca, file = './regression_data/nlm_neur_net_averaging_pca.RDS')
 } else{
-	nlm_neur_net_averaging_pca <- readRDS('./data/nlm_neur_net_averaging_pca.RDS')
+	nlm_neur_net_averaging_pca <- readRDS('./regression_data/nlm_neur_net_averaging_pca.RDS')
 }
 summary(nlm_neur_net_averaging_pca$finalModel)
 plot(nlm_neur_net_averaging_pca)
@@ -722,9 +722,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	nlm_mars <- train(target ~ ., data = regression_train, method = 'earth', tuneGrid = expand.grid(degree = tuning_mars_degree, nprune = tuning_mars_nprune), trControl = train_control)
-	saveRDS(nlm_mars, file = './data/nlm_mars.RDS')
+	saveRDS(nlm_mars, file = './regression_data/nlm_mars.RDS')
 } else{
-	nlm_mars <- readRDS('./data/nlm_mars.RDS')
+	nlm_mars <- readRDS('./regression_data/nlm_mars.RDS')
 }
 #nlm_mars$finalModel
 summary(nlm_mars$finalModel)
@@ -742,9 +742,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	nlm_svm_radial <- train(target ~ ., data = regression_train, method = 'svmRadial', preProc = c('center', 'scale', 'knnImpute'), tuneLength = 14, trControl = train_control) # tuneLength tunes C (sigma is chosen automatically)
-	saveRDS(nlm_svm_radial, file = './data/nlm_svm_radial.RDS')
+	saveRDS(nlm_svm_radial, file = './regression_data/nlm_svm_radial.RDS')
 } else{
-	nlm_svm_radial <- readRDS('./data/nlm_svm_radial.RDS')
+	nlm_svm_radial <- readRDS('./regression_data/nlm_svm_radial.RDS')
 }
 nlm_svm_radial$finalModel
 plot(nlm_svm_radial, scales = list(x = list(log = 2)))
@@ -757,9 +757,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	nlm_svm_linear <- train(target ~ ., data = regression_train, method = 'svmLinear', preProc = c('center', 'scale', 'knnImpute'), tuneGrid = data.frame(C=tuning_svm_cost), trControl = train_control)
-	saveRDS(nlm_svm_linear, file = './data/nlm_svm_linear.RDS')
+	saveRDS(nlm_svm_linear, file = './regression_data/nlm_svm_linear.RDS')
 } else{
-	nlm_svm_linear <- readRDS('./data/nlm_svm_linear.RDS')
+	nlm_svm_linear <- readRDS('./regression_data/nlm_svm_linear.RDS')
 }
 nlm_svm_linear$finalModel
 plot(nlm_svm_linear, scales = list(x = list(log = 2)))
@@ -772,9 +772,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	nlm_svm_poly <- train(target ~ ., data = regression_train, method = 'svmPoly', preProc = c('center', 'scale', 'knnImpute'), tuneGrid = expand.grid(degree = tuning_svm_poly_degree, scale = tuning_svm_poly_scale, C = tuning_svm_cost), trControl = train_control)
-	saveRDS(nlm_svm_poly, file = './data/nlm_svm_poly.RDS')
+	saveRDS(nlm_svm_poly, file = './regression_data/nlm_svm_poly.RDS')
 } else{
-	nlm_svm_poly <- readRDS('./data/nlm_svm_poly.RDS')
+	nlm_svm_poly <- readRDS('./regression_data/nlm_svm_poly.RDS')
 }
 nlm_svm_poly$finalModel
 plot(nlm_svm_poly, scales = list(x = list(log = 2),  between = list(x = .5, y = 1)))
@@ -787,9 +787,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	tree_cart <- train(target ~ ., data = regression_train, method = 'rpart', tuneLength = 25, trControl = train_control) # tuneLength tunes `cp` (Complexity Parameter)
-	saveRDS(tree_cart, file = './data/tree_cart.RDS')
+	saveRDS(tree_cart, file = './regression_data/tree_cart.RDS')
 } else{
-	tree_cart <- readRDS('./data/tree_cart.RDS')
+	tree_cart <- readRDS('./regression_data/tree_cart.RDS')
 }
 tree_cart$finalModel
 plot(tree_cart) # Plot the tuning results
@@ -804,9 +804,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	tree_cart2 <- train(target ~ ., data = regression_train, method = 'rpart2', tuneLength = 25, trControl = train_control) # tuneLength tunes `maxdepth` (Max Tree Depth)
-	saveRDS(tree_cart2, file = './data/tree_cart2.RDS')
+	saveRDS(tree_cart2, file = './regression_data/tree_cart2.RDS')
 } else{
-	tree_cart2 <- readRDS('./data/tree_cart2.RDS')
+	tree_cart2 <- readRDS('./regression_data/tree_cart2.RDS')
 }
 tree_cart2$finalModel
 plot(tree_cart2)
@@ -821,9 +821,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	tree_cond_inference <- train(target ~ ., data = regression_train, method = 'ctree', tuneGrid = data.frame(mincriterion = tuning_ctree_mincriterion), trControl = train_control)
-	saveRDS(tree_cond_inference, file = './data/tree_cond_inference.RDS')
+	saveRDS(tree_cond_inference, file = './regression_data/tree_cond_inference.RDS')
 } else{
-	tree_cond_inference <- readRDS('./data/tree_cond_inference.RDS')
+	tree_cond_inference <- readRDS('./regression_data/tree_cond_inference.RDS')
 }
 tree_cond_inference$finalModel
 plot(tree_cond_inference)
@@ -837,9 +837,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	tree_cond_inference2 <- train(target ~ ., data = regression_train, method = 'ctree2', tuneLength = 25, trControl = train_control) # tuneLength tunes `maxdepth` (Max Tree Depth)
-	saveRDS(tree_cond_inference2, file = './data/tree_cond_inference2.RDS')
+	saveRDS(tree_cond_inference2, file = './regression_data/tree_cond_inference2.RDS')
 } else{
-	tree_cond_inference2 <- readRDS('./data/tree_cond_inference2.RDS')
+	tree_cond_inference2 <- readRDS('./regression_data/tree_cond_inference2.RDS')
 }
 tree_cond_inference2$finalModel
 plot(tree_cond_inference2) # Plot the tuning results
@@ -855,9 +855,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	tree_m5 <- train(target ~ ., data = regression_train, method = 'M5', tuneLength = 25, trControl = train_control, trace = FALSE) # tuneLength tunes `maxdepth` (Max Tree Depth)
-	saveRDS(tree_m5, file = './data/tree_m5.RDS')
+	saveRDS(tree_m5, file = './regression_data/tree_m5.RDS')
 } else{
-	tree_m5 <- readRDS('./data/tree_m5.RDS')
+	tree_m5 <- readRDS('./regression_data/tree_m5.RDS')
 }
 tree_m5$finalModel
 plot(tree_m5) # Plot the tuning results
@@ -873,9 +873,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	tree_m5rules <- train(target ~ ., data = regression_train, method = 'M5Rules', tuneLength = 25, trControl = train_control, trace = FALSE) # tuneLength tunes `maxdepth` (Max Tree Depth)
-	saveRDS(tree_m5rules, file = './data/tree_m5rules.RDS')
+	saveRDS(tree_m5rules, file = './regression_data/tree_m5rules.RDS')
 } else{
-	tree_m5rules <- readRDS('./data/tree_m5rules.RDS')
+	tree_m5rules <- readRDS('./regression_data/tree_m5rules.RDS')
 }
 tree_m5rules$finalModel
 plot(tree_m5rules) # Plot the tuning results
@@ -889,9 +889,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	ensemble_bagged_tree <- train(target ~ ., data = regression_train, method = 'treebag', nbagg = tuning_treebag_nbagg, trControl = train_control)
-	saveRDS(ensemble_bagged_tree, file = './data/ensemble_bagged_tree.RDS')
+	saveRDS(ensemble_bagged_tree, file = './regression_data/ensemble_bagged_tree.RDS')
 } else{
-	ensemble_bagged_tree <- readRDS('./data/ensemble_bagged_tree.RDS')
+	ensemble_bagged_tree <- readRDS('./regression_data/ensemble_bagged_tree.RDS')
 }
 ensemble_bagged_tree
 summary(ensemble_bagged_tree)
@@ -904,9 +904,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	ensemble_random_forest <- train(target ~ ., data = regression_train, method = 'rf', tuneGrid = data.frame(mtry = tuning_random_forest_mtry), ntree = parameter_random_forest_ntree, trControl = train_control, preProc=c('knnImpute'))
-	saveRDS(ensemble_random_forest, file = './data/ensemble_random_forest.RDS')
+	saveRDS(ensemble_random_forest, file = './regression_data/ensemble_random_forest.RDS')
 } else{
-	ensemble_random_forest <- readRDS('./data/ensemble_random_forest.RDS')
+	ensemble_random_forest <- readRDS('./regression_data/ensemble_random_forest.RDS')
 }
 ensemble_random_forest
 #ensemble_random_forest$finalModel
@@ -921,9 +921,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	ensemble_random_forest_cond_inf <- train(target ~ ., data = regression_train, method = 'cforest', tuneGrid = data.frame(mtry = tuning_random_forest_mtry), controls = cforest_unbiased(ntree = parameter_random_forest_ntree), trControl = train_control)
-	saveRDS(ensemble_random_forest_cond_inf, file = './data/ensemble_random_forest_cond_inf.RDS')
+	saveRDS(ensemble_random_forest_cond_inf, file = './regression_data/ensemble_random_forest_cond_inf.RDS')
 } else{
-	ensemble_random_forest_cond_inf <- readRDS('./data/ensemble_random_forest_cond_inf.RDS')
+	ensemble_random_forest_cond_inf <- readRDS('./regression_data/ensemble_random_forest_cond_inf.RDS')
 }
 ensemble_random_forest_cond_inf
 #ensemble_random_forest_cond_inf$finalModel
@@ -939,9 +939,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	ensemble_boosting <- train(target ~ ., data = regression_train, method = 'gbm', tuneGrid = expand.grid(interaction.depth = tuning_boosting_interaction_depth, n.trees = tuning_boosting_n_trees, shrinkage = tuning_boosting_shrinkage, n.minobsinnode = tuning_boosting_min_obs_in_node), trControl = train_control, verbose = FALSE)
-	saveRDS(ensemble_boosting, file = './data/ensemble_boosting.RDS')
+	saveRDS(ensemble_boosting, file = './regression_data/ensemble_boosting.RDS')
 } else{
-	ensemble_boosting <- readRDS('./data/ensemble_boosting.RDS')
+	ensemble_boosting <- readRDS('./regression_data/ensemble_boosting.RDS')
 }
 # ensemble_boosting
 # ensemble_boosting$finalModel
@@ -957,9 +957,9 @@ if(refresh_models)
 {
 	set.seed(seed)
 	ensemble_cubist <- train(target ~ ., data = regression_train, 'cubist', tuneGrid = expand.grid(committees = tuning_cubist_committees, neighbors = tuning_cubist_neighbors), trControl = train_control)
-	saveRDS(ensemble_cubist, file = './data/ensemble_cubist.RDS')
+	saveRDS(ensemble_cubist, file = './regression_data/ensemble_cubist.RDS')
 } else{
-	ensemble_cubist <- readRDS('./data/ensemble_cubist.RDS')
+	ensemble_cubist <- readRDS('./regression_data/ensemble_cubist.RDS')
 }
 # ensemble_cubist
 # ensemble_cubist$finalModel

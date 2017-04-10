@@ -177,7 +177,7 @@ Outliers
 Correlation & Collinearity
 --------------------------
 
-<img src="predictive_analysis_files/figure-markdown_github/correlation-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/correlation-1.png" width="750px" />
 
 ### Collinearity Removal
 
@@ -207,60 +207,60 @@ This method is described in APM pg 47 as the following steps
 Graphs
 ------
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-2.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-2.png" width="750px" />
 
 ### cement
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-4.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-5.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-6.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-7.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-4.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-5.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-6.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-7.png" width="750px" />
 
 ### slag
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-8.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-9.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-10.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-11.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-8.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-9.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-10.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-11.png" width="750px" />
 
 Error with boxplot.
 
 ### ash
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-12.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-13.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-14.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-15.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-12.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-13.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-14.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-15.png" width="750px" />
 
 Error with boxplot.
 
 ### water
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-16.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-17.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-18.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-19.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-20.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-16.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-17.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-18.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-19.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-20.png" width="750px" />
 
 ### superplastic
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-21.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-22.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-23.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-24.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-21.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-22.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-23.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-24.png" width="750px" />
 
 Error with boxplot.
 
 ### coarseagg
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-25.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-26.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-27.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-28.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-29.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-25.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-26.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-27.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-28.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-29.png" width="750px" />
 
 ### fineagg
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-30.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-31.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-32.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-33.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-34.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-30.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-31.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-32.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-33.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-34.png" width="750px" />
 
 ### age
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-35.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-36.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-37.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-38.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-35.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-36.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-37.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-38.png" width="750px" />
 
 Error with boxplot.
 
 ### random1
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-39.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-40.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-39.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-40.png" width="750px" />
 
 ### random2
 
-<img src="predictive_analysis_files/figure-markdown_github/graphs-41.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/graphs-42.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/graphs-41.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/graphs-42.png" width="750px" />
 
 Spot-Check
 ==========
 
-<img src="predictive_analysis_files/figure-markdown_github/spot_check_prepare_numeric-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/spot_check_prepare_numeric-1.png" width="750px" />
 
 -   Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
 
@@ -273,9 +273,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_no_pre_processing <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control)
-    saveRDS(lm_no_pre_processing, file = './data/lm_no_pre_processing.RDS')
+    saveRDS(lm_no_pre_processing, file = './regression_data/lm_no_pre_processing.RDS')
 } else{
-    lm_no_pre_processing <- readRDS('./data/lm_no_pre_processing.RDS')
+    lm_no_pre_processing <- readRDS('./regression_data/lm_no_pre_processing.RDS')
 }
 summary(lm_no_pre_processing)
 ```
@@ -312,7 +312,7 @@ summary(lm_no_pre_processing)
 plot(lm_no_pre_processing$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_no_pre_processing-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_no_pre_processing-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_no_pre_processing-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_no_pre_processing-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_no_pre_processing-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_no_pre_processing-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_no_pre_processing-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_no_pre_processing-4.png" width="750px" />
 
 ### Linear Regression - basic pre processing
 
@@ -321,9 +321,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_basic_pre_processing <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'knnImpute'))
-    saveRDS(lm_basic_pre_processing, file = './data/lm_basic_pre_processing.RDS')
+    saveRDS(lm_basic_pre_processing, file = './regression_data/lm_basic_pre_processing.RDS')
 } else{
-    lm_basic_pre_processing <- readRDS('./data/lm_basic_pre_processing.RDS')
+    lm_basic_pre_processing <- readRDS('./regression_data/lm_basic_pre_processing.RDS')
 }
 summary(lm_basic_pre_processing)
 ```
@@ -360,7 +360,7 @@ summary(lm_basic_pre_processing)
 plot(lm_basic_pre_processing$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_basic_pre_processing-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_basic_pre_processing-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_basic_pre_processing-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_basic_pre_processing-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_basic_pre_processing-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_basic_pre_processing-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_basic_pre_processing-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_basic_pre_processing-4.png" width="750px" />
 
 ### Linear Regression - basic pre processing with medianImpute
 
@@ -369,9 +369,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_median_impute <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'medianImpute'))
-    saveRDS(lm_median_impute, file = './data/lm_median_impute.RDS')
+    saveRDS(lm_median_impute, file = './regression_data/lm_median_impute.RDS')
 } else{
-    lm_median_impute <- readRDS('./data/lm_median_impute.RDS')
+    lm_median_impute <- readRDS('./regression_data/lm_median_impute.RDS')
 }
 summary(lm_median_impute)
 ```
@@ -408,7 +408,7 @@ summary(lm_median_impute)
 plot(lm_median_impute$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_impute-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_impute-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_impute-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_impute-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_impute-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_impute-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_impute-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_impute-4.png" width="750px" />
 
 ### Linear Regression - basic pre processing
 
@@ -417,9 +417,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_near_zero_variance <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
-    saveRDS(lm_near_zero_variance, file = './data/lm_near_zero_variance.RDS')
+    saveRDS(lm_near_zero_variance, file = './regression_data/lm_near_zero_variance.RDS')
 } else{
-    lm_near_zero_variance <- readRDS('./data/lm_near_zero_variance.RDS')
+    lm_near_zero_variance <- readRDS('./regression_data/lm_near_zero_variance.RDS')
 }
 summary(lm_near_zero_variance)
 ```
@@ -456,7 +456,7 @@ summary(lm_near_zero_variance)
 plot(lm_near_zero_variance$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_basic-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_basic-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_basic-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_basic-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_basic-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_basic-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_basic-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_basic-4.png" width="750px" />
 
 ### Linear Regression - skewness - YeoJohnson
 
@@ -465,9 +465,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_skewness_y <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
-    saveRDS(lm_skewness_y, file = './data/lm_skewness_y.RDS')
+    saveRDS(lm_skewness_y, file = './regression_data/lm_skewness_y.RDS')
 } else{
-    lm_skewness_y <- readRDS('./data/lm_skewness_y.RDS')
+    lm_skewness_y <- readRDS('./regression_data/lm_skewness_y.RDS')
 }
 summary(lm_skewness_y)
 ```
@@ -504,7 +504,7 @@ summary(lm_skewness_y)
 plot(lm_skewness_y$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_YeoJohnson-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_YeoJohnson-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_YeoJohnson-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_YeoJohnson-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_YeoJohnson-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_YeoJohnson-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_YeoJohnson-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_YeoJohnson-4.png" width="750px" />
 
 ### Linear Regression - skewness - BoxCox
 
@@ -513,9 +513,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_skewness_bc <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('BoxCox', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
-    saveRDS(lm_skewness_bc, file = './data/lm_skewness_bc.RDS')
+    saveRDS(lm_skewness_bc, file = './regression_data/lm_skewness_bc.RDS')
 } else{
-    lm_skewness_bc <- readRDS('./data/lm_skewness_bc.RDS')
+    lm_skewness_bc <- readRDS('./regression_data/lm_skewness_bc.RDS')
 }
 summary(lm_skewness_bc)
 ```
@@ -552,7 +552,7 @@ summary(lm_skewness_bc)
 plot(lm_skewness_bc$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_BoxCox-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_BoxCox-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_BoxCox-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_BoxCox-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_BoxCox-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_BoxCox-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_BoxCox-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_BoxCox-4.png" width="750px" />
 
 ### Linear Regression - remove collinear data - based on caret's recommendation
 
@@ -561,9 +561,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_remove_collinearity_caret <- train(target ~ ., data = regression_train[, recommended_columns_caret], method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
-    saveRDS(lm_remove_collinearity_caret, file = './data/lm_remove_collinearity_caret.RDS')
+    saveRDS(lm_remove_collinearity_caret, file = './regression_data/lm_remove_collinearity_caret.RDS')
 } else{
-    lm_remove_collinearity_caret <- readRDS('./data/lm_remove_collinearity_caret.RDS')
+    lm_remove_collinearity_caret <- readRDS('./regression_data/lm_remove_collinearity_caret.RDS')
 }
 summary(lm_remove_collinearity_caret)
 ```
@@ -600,7 +600,7 @@ summary(lm_remove_collinearity_caret)
 plot(lm_remove_collinearity_caret$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_collinear_caret-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_collinear_caret-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_collinear_caret-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_collinear_caret-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_collinear_caret-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_collinear_caret-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_collinear_caret-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_collinear_caret-4.png" width="750px" />
 
 ### Linear Regression - remove collinear data - based on calculation
 
@@ -609,9 +609,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_remove_collinearity_custom <- train(target ~ ., data = regression_train[, recommended_columns_custom], method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
-    saveRDS(lm_remove_collinearity_custom, file = './data/lm_remove_collinearity_custom.RDS')
+    saveRDS(lm_remove_collinearity_custom, file = './regression_data/lm_remove_collinearity_custom.RDS')
 } else{
-    lm_remove_collinearity_custom <- readRDS('./data/lm_remove_collinearity_custom.RDS')
+    lm_remove_collinearity_custom <- readRDS('./regression_data/lm_remove_collinearity_custom.RDS')
 }
 summary(lm_remove_collinearity_custom)
 ```
@@ -646,7 +646,7 @@ summary(lm_remove_collinearity_custom)
 plot(lm_remove_collinearity_custom$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_collinear_calc-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_collinear_calc-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_collinear_calc-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_collinear_calc-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_collinear_calc-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_collinear_calc-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_collinear_calc-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_collinear_calc-4.png" width="750px" />
 
 ### Robust Linear Regression
 
@@ -655,9 +655,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_robust <- train(target ~ ., data = regression_train, method = 'rlm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # by default uses the 'Huber' approach. (APM pg 130.) 'The Huber function uses the squared residuals when they are 'small' and the simple difference between the observed and predicted values values when the residuals are above a threshold.' (APM pg 109f)
-    saveRDS(lm_robust, file = './data/lm_robust.RDS')
+    saveRDS(lm_robust, file = './regression_data/lm_robust.RDS')
 } else{
-    lm_robust <- readRDS('./data/lm_robust.RDS')
+    lm_robust <- readRDS('./regression_data/lm_robust.RDS')
 }
 summary(lm_robust)
 ```
@@ -686,7 +686,7 @@ summary(lm_robust)
 plot(lm_robust$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/robust_linear-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/robust_linear-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/robust_linear-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/robust_linear-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/robust_linear-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/robust_linear-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/robust_linear-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/robust_linear-4.png" width="750px" />
 
 ### Linear Regression - spatial sign
 
@@ -695,9 +695,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_spatial_sign <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'knnImpute', 'spatialSign'))
-    saveRDS(lm_spatial_sign, file = './data/lm_spatial_sign.RDS')
+    saveRDS(lm_spatial_sign, file = './regression_data/lm_spatial_sign.RDS')
 } else{
-    lm_spatial_sign <- readRDS('./data/lm_spatial_sign.RDS')
+    lm_spatial_sign <- readRDS('./regression_data/lm_spatial_sign.RDS')
 }
 summary(lm_spatial_sign)
 ```
@@ -734,7 +734,7 @@ summary(lm_spatial_sign)
 plot(lm_spatial_sign$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_spatial_sign-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_spatial_sign-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_spatial_sign-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_spatial_sign-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_spatial_sign-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_spatial_sign-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_spatial_sign-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_spatial_sign-4.png" width="750px" />
 
 ### Linear Regression - principal components analysis
 
@@ -743,9 +743,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_pca <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # (APM pg 37 'to help PCA avoid summarizing distributional differences and predictor scale informatino, it is best to first transform skewed predictors and then center and scale the predictors prior to performing PCA. Centering and scaling enables PCA to find the underlying relationships in the data without being influenced by the original measurement scales.')
-    saveRDS(lm_pca, file = './data/lm_pca.RDS')
+    saveRDS(lm_pca, file = './regression_data/lm_pca.RDS')
 } else{
-    lm_pca <- readRDS('./data/lm_pca.RDS')
+    lm_pca <- readRDS('./regression_data/lm_pca.RDS')
 }
 summary(lm_pca)
 ```
@@ -780,7 +780,7 @@ summary(lm_pca)
 plot(lm_pca$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/linear_regression_PCA-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_PCA-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_PCA-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/linear_regression_PCA-4.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_PCA-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_PCA-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_PCA-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/linear_regression_PCA-4.png" width="750px" />
 
 ### Principal Component Regression
 
@@ -789,9 +789,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_pcr <- train(target ~ ., data = regression_train, method = 'pcr', trControl = train_control, tuneLength = 20, preProc = c('center', 'scale', 'knnImpute'))
-    saveRDS(lm_pcr, file = './data/lm_pcr.RDS')
+    saveRDS(lm_pcr, file = './regression_data/lm_pcr.RDS')
 } else{
-    lm_pcr <- readRDS('./data/lm_pcr.RDS')
+    lm_pcr <- readRDS('./regression_data/lm_pcr.RDS')
 }
 summary(lm_pcr)
 ```
@@ -823,7 +823,7 @@ summary(lm_pcr)
 plot(lm_pcr)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/principal_component_PCR-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/principal_component_PCR-1.png" width="750px" />
 
 ### Partial Least Squares
 
@@ -832,9 +832,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_pls <- train(target ~ ., data = regression_train, method = 'pls', trControl = train_control, preProc = c('center', 'scale', 'knnImpute'), tuneLength = 14)
-    saveRDS(lm_pls, file = './data/lm_pls.RDS')
+    saveRDS(lm_pls, file = './regression_data/lm_pls.RDS')
 } else{
-    lm_pls <- readRDS('./data/lm_pls.RDS')
+    lm_pls <- readRDS('./regression_data/lm_pls.RDS')
 }
 summary(lm_pls)
 ```
@@ -871,14 +871,14 @@ summary(lm_pls)
 plot(lm_pls)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/partial_least_squares-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/partial_least_squares-1.png" width="750px" />
 
 ``` r
 # Compare # of components of PCR vs. PLS
 xyplot(RMSE ~ ncomp, data = rbind(lm_pls$results %>% mutate(Model = 'PLS'), lm_pcr$results %>% mutate(Model = 'PCR')), xlab = '# Components', ylab = 'RMSE (Cross-Validation)', auto.key = list(columns = 2), groups = Model, type = c('o', 'g'))
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/partial_least_squares-2.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/partial_least_squares-2.png" width="750px" />
 
 ### Ridge Regression
 
@@ -887,9 +887,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_ridge <- train(target ~ ., data = regression_train, method = 'ridge', tuneGrid = expand.grid(lambda = tuning_ridge_lambda) , trControl = train_control, preProc = c('center', 'scale', 'knnImpute'))
-    saveRDS(lm_ridge, file = './data/lm_ridge.RDS')
+    saveRDS(lm_ridge, file = './regression_data/lm_ridge.RDS')
 } else{
-    lm_ridge <- readRDS('./data/lm_ridge.RDS')
+    lm_ridge <- readRDS('./regression_data/lm_ridge.RDS')
 }
 summary(lm_ridge)
 ```
@@ -918,7 +918,7 @@ summary(lm_ridge)
 plot(lm_ridge)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/ridge_regression-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/ridge_regression-1.png" width="750px" />
 
 ### ridge & lasso combo
 
@@ -927,9 +927,9 @@ if(refresh_models)
 {
     set.seed(seed)
     lm_enet <- train(target ~ ., data = regression_train, method = 'enet', tuneGrid = expand.grid(lambda = tuning_enet_lambda, fraction = tuning_enet_fraction), trControl = train_control, preProc = c('center', 'scale', 'knnImpute'))
-    saveRDS(lm_enet, file = './data/lm_enet.RDS')
+    saveRDS(lm_enet, file = './regression_data/lm_enet.RDS')
 } else{
-    lm_enet <- readRDS('./data/lm_enet.RDS')
+    lm_enet <- readRDS('./regression_data/lm_enet.RDS')
 }
 #lm_enet$finalModel
 summary(lm_enet)
@@ -959,7 +959,7 @@ summary(lm_enet)
 plot(lm_enet)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/ridge_lasso-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/ridge_lasso-1.png" width="750px" />
 
 ### neural network - basic
 
@@ -981,9 +981,9 @@ if(refresh_models)
                             trace = parameter_neural_network_trace,
                             MaxNWts = parameter_neural_network_max_num_weights,
                             maxit = parameter_neural_network_max_iterations)
-    saveRDS(nlm_neur_net_averaging_pca, file = './data/nlm_neur_net_averaging_pca.RDS')
+    saveRDS(nlm_neur_net_averaging_pca, file = './regression_data/nlm_neur_net_averaging_pca.RDS')
 } else{
-    nlm_neur_net_averaging_pca <- readRDS('./data/nlm_neur_net_averaging_pca.RDS')
+    nlm_neur_net_averaging_pca <- readRDS('./regression_data/nlm_neur_net_averaging_pca.RDS')
 }
 summary(nlm_neur_net_averaging_pca$finalModel)
 ```
@@ -1006,7 +1006,7 @@ summary(nlm_neur_net_averaging_pca$finalModel)
 plot(nlm_neur_net_averaging_pca)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/neural_network_averaging_PCA-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/neural_network_averaging_PCA-1.png" width="750px" />
 
 ### MARS (Multivariate Adaptive Regression Splines)
 
@@ -1015,9 +1015,9 @@ if(refresh_models)
 {
     set.seed(seed)
     nlm_mars <- train(target ~ ., data = regression_train, method = 'earth', tuneGrid = expand.grid(degree = tuning_mars_degree, nprune = tuning_mars_nprune), trControl = train_control)
-    saveRDS(nlm_mars, file = './data/nlm_mars.RDS')
+    saveRDS(nlm_mars, file = './regression_data/nlm_mars.RDS')
 } else{
-    nlm_mars <- readRDS('./data/nlm_mars.RDS')
+    nlm_mars <- readRDS('./regression_data/nlm_mars.RDS')
 }
 #nlm_mars$finalModel
 summary(nlm_mars$finalModel)
@@ -1064,7 +1064,7 @@ summary(nlm_mars$finalModel)
 plot(nlm_mars)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/mars-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/mars-1.png" width="750px" />
 
 ``` r
 require(earth)
@@ -1107,7 +1107,7 @@ plotmo(nlm_mars$finalModel)
     ##  plotmo grid:    cement slag ash water superplastic coarseagg fineagg age random1TRUE random2TRUE
     ##                   275.1   20   0 185.7          6.1       968   780.1  28           1           0
 
-<img src="predictive_analysis_files/figure-markdown_github/mars-2.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/mars-2.png" width="750px" />
 
 ``` r
 #marsImp <- varImp(nlm_mars, scale = FALSE)
@@ -1121,9 +1121,9 @@ if(refresh_models)
 {
     set.seed(seed)
     nlm_svm_radial <- train(target ~ ., data = regression_train, method = 'svmRadial', preProc = c('center', 'scale', 'knnImpute'), tuneLength = 14, trControl = train_control) # tuneLength tunes C (sigma is chosen automatically)
-    saveRDS(nlm_svm_radial, file = './data/nlm_svm_radial.RDS')
+    saveRDS(nlm_svm_radial, file = './regression_data/nlm_svm_radial.RDS')
 } else{
-    nlm_svm_radial <- readRDS('./data/nlm_svm_radial.RDS')
+    nlm_svm_radial <- readRDS('./regression_data/nlm_svm_radial.RDS')
 }
 nlm_svm_radial$finalModel
 ```
@@ -1145,7 +1145,7 @@ nlm_svm_radial$finalModel
 plot(nlm_svm_radial, scales = list(x = list(log = 2)))
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/svm_radial-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/svm_radial-1.png" width="750px" />
 
 ### SVM - Support Vector Machine - Linear
 
@@ -1154,9 +1154,9 @@ if(refresh_models)
 {
     set.seed(seed)
     nlm_svm_linear <- train(target ~ ., data = regression_train, method = 'svmLinear', preProc = c('center', 'scale', 'knnImpute'), tuneGrid = data.frame(C=tuning_svm_cost), trControl = train_control)
-    saveRDS(nlm_svm_linear, file = './data/nlm_svm_linear.RDS')
+    saveRDS(nlm_svm_linear, file = './regression_data/nlm_svm_linear.RDS')
 } else{
-    nlm_svm_linear <- readRDS('./data/nlm_svm_linear.RDS')
+    nlm_svm_linear <- readRDS('./regression_data/nlm_svm_linear.RDS')
 }
 nlm_svm_linear$finalModel
 ```
@@ -1177,7 +1177,7 @@ nlm_svm_linear$finalModel
 plot(nlm_svm_linear, scales = list(x = list(log = 2)))
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/svm_linear-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/svm_linear-1.png" width="750px" />
 
 ### SVM - Support Vector Machine - Polynomial
 
@@ -1186,9 +1186,9 @@ if(refresh_models)
 {
     set.seed(seed)
     nlm_svm_poly <- train(target ~ ., data = regression_train, method = 'svmPoly', preProc = c('center', 'scale', 'knnImpute'), tuneGrid = expand.grid(degree = tuning_svm_poly_degree, scale = tuning_svm_poly_scale, C = tuning_svm_cost), trControl = train_control)
-    saveRDS(nlm_svm_poly, file = './data/nlm_svm_poly.RDS')
+    saveRDS(nlm_svm_poly, file = './regression_data/nlm_svm_poly.RDS')
 } else{
-    nlm_svm_poly <- readRDS('./data/nlm_svm_poly.RDS')
+    nlm_svm_poly <- readRDS('./regression_data/nlm_svm_poly.RDS')
 }
 nlm_svm_poly$finalModel
 ```
@@ -1210,7 +1210,7 @@ nlm_svm_poly$finalModel
 plot(nlm_svm_poly, scales = list(x = list(log = 2),  between = list(x = .5, y = 1)))
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/svm_poly-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/svm_poly-1.png" width="750px" />
 
 ### CART - Classification and Regression Tree - Tuning over maximum depth
 
@@ -1219,9 +1219,9 @@ if(refresh_models)
 {
     set.seed(seed)
     tree_cart <- train(target ~ ., data = regression_train, method = 'rpart', tuneLength = 25, trControl = train_control) # tuneLength tunes `cp` (Complexity Parameter)
-    saveRDS(tree_cart, file = './data/tree_cart.RDS')
+    saveRDS(tree_cart, file = './regression_data/tree_cart.RDS')
 } else{
-    tree_cart <- readRDS('./data/tree_cart.RDS')
+    tree_cart <- readRDS('./regression_data/tree_cart.RDS')
 }
 tree_cart$finalModel
 ```
@@ -1287,14 +1287,14 @@ tree_cart$finalModel
 plot(tree_cart) # Plot the tuning results
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/cart-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/cart-1.png" width="750px" />
 
 ``` r
 party_tree <- as.party(tree_cart$finalModel)
 plot(party_tree)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/cart-2.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/cart-2.png" width="750px" />
 
 ### CART - Classification and Regression Tree - Tuning over maximum depth
 
@@ -1303,9 +1303,9 @@ if(refresh_models)
 {
     set.seed(seed)
     tree_cart2 <- train(target ~ ., data = regression_train, method = 'rpart2', tuneLength = 25, trControl = train_control) # tuneLength tunes `maxdepth` (Max Tree Depth)
-    saveRDS(tree_cart2, file = './data/tree_cart2.RDS')
+    saveRDS(tree_cart2, file = './regression_data/tree_cart2.RDS')
 } else{
-    tree_cart2 <- readRDS('./data/tree_cart2.RDS')
+    tree_cart2 <- readRDS('./regression_data/tree_cart2.RDS')
 }
 tree_cart2$finalModel
 ```
@@ -1345,14 +1345,14 @@ tree_cart2$finalModel
 plot(tree_cart2)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/cart2-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/cart2-1.png" width="750px" />
 
 ``` r
 party_tree <- as.party(tree_cart2$finalModel)
 plot(party_tree)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/cart2-2.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/cart2-2.png" width="750px" />
 
 ### Conditional Inference Tree
 
@@ -1361,9 +1361,9 @@ if(refresh_models)
 {
     set.seed(seed)
     tree_cond_inference <- train(target ~ ., data = regression_train, method = 'ctree', tuneGrid = data.frame(mincriterion = tuning_ctree_mincriterion), trControl = train_control)
-    saveRDS(tree_cond_inference, file = './data/tree_cond_inference.RDS')
+    saveRDS(tree_cond_inference, file = './regression_data/tree_cond_inference.RDS')
 } else{
-    tree_cond_inference <- readRDS('./data/tree_cond_inference.RDS')
+    tree_cond_inference <- readRDS('./regression_data/tree_cond_inference.RDS')
 }
 tree_cond_inference$finalModel
 ```
@@ -1531,13 +1531,13 @@ tree_cond_inference$finalModel
 plot(tree_cond_inference)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/conditional_inference-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/conditional_inference-1.png" width="750px" />
 
 ``` r
 plot(tree_cond_inference$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/conditional_inference-2.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/conditional_inference-2.png" width="750px" />
 
 ### Conditional Inference Tree - Tuning over maximum depth
 
@@ -1546,9 +1546,9 @@ if(refresh_models)
 {
     set.seed(seed)
     tree_cond_inference2 <- train(target ~ ., data = regression_train, method = 'ctree2', tuneLength = 25, trControl = train_control) # tuneLength tunes `maxdepth` (Max Tree Depth)
-    saveRDS(tree_cond_inference2, file = './data/tree_cond_inference2.RDS')
+    saveRDS(tree_cond_inference2, file = './regression_data/tree_cond_inference2.RDS')
 } else{
-    tree_cond_inference2 <- readRDS('./data/tree_cond_inference2.RDS')
+    tree_cond_inference2 <- readRDS('./regression_data/tree_cond_inference2.RDS')
 }
 tree_cond_inference2$finalModel
 ```
@@ -1761,13 +1761,13 @@ tree_cond_inference2$finalModel
 plot(tree_cond_inference2) # Plot the tuning results
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/conditional_inference2-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/conditional_inference2-1.png" width="750px" />
 
 ``` r
 plot(tree_cond_inference2$finalModel)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/conditional_inference2-2.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/conditional_inference2-2.png" width="750px" />
 
 ### Model Trees - M5
 
@@ -1784,9 +1784,9 @@ if(refresh_models)
 {
     set.seed(seed)
     ensemble_bagged_tree <- train(target ~ ., data = regression_train, method = 'treebag', nbagg = tuning_treebag_nbagg, trControl = train_control)
-    saveRDS(ensemble_bagged_tree, file = './data/ensemble_bagged_tree.RDS')
+    saveRDS(ensemble_bagged_tree, file = './regression_data/ensemble_bagged_tree.RDS')
 } else{
-    ensemble_bagged_tree <- readRDS('./data/ensemble_bagged_tree.RDS')
+    ensemble_bagged_tree <- readRDS('./regression_data/ensemble_bagged_tree.RDS')
 }
 ensemble_bagged_tree
 ```
@@ -1828,9 +1828,9 @@ if(refresh_models)
 {
     set.seed(seed)
     ensemble_random_forest <- train(target ~ ., data = regression_train, method = 'rf', tuneGrid = data.frame(mtry = tuning_random_forest_mtry), ntree = parameter_random_forest_ntree, trControl = train_control, preProc=c('knnImpute'))
-    saveRDS(ensemble_random_forest, file = './data/ensemble_random_forest.RDS')
+    saveRDS(ensemble_random_forest, file = './regression_data/ensemble_random_forest.RDS')
 } else{
-    ensemble_random_forest <- readRDS('./data/ensemble_random_forest.RDS')
+    ensemble_random_forest <- readRDS('./regression_data/ensemble_random_forest.RDS')
 }
 ensemble_random_forest
 ```
@@ -1886,7 +1886,7 @@ summary(ensemble_random_forest$finalModel)
 plot(ensemble_random_forest)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/random_forest-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/random_forest-1.png" width="750px" />
 
 ### Random Forest - Conditional Inference
 
@@ -1897,9 +1897,9 @@ if(refresh_models)
 {
     set.seed(seed)
     ensemble_boosting <- train(target ~ ., data = regression_train, method = 'gbm', tuneGrid = expand.grid(interaction.depth = tuning_boosting_interaction_depth, n.trees = tuning_boosting_n_trees, shrinkage = tuning_boosting_shrinkage, n.minobsinnode = tuning_boosting_min_obs_in_node), trControl = train_control, verbose = FALSE)
-    saveRDS(ensemble_boosting, file = './data/ensemble_boosting.RDS')
+    saveRDS(ensemble_boosting, file = './regression_data/ensemble_boosting.RDS')
 } else{
-    ensemble_boosting <- readRDS('./data/ensemble_boosting.RDS')
+    ensemble_boosting <- readRDS('./regression_data/ensemble_boosting.RDS')
 }
 # ensemble_boosting
 # ensemble_boosting$finalModel
@@ -1972,7 +1972,7 @@ summary(ensemble_boosting$finalModel)
 plot(ensemble_boosting)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/boosting-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/boosting-1.png" width="750px" />
 
 ### Cubist
 
@@ -1981,9 +1981,9 @@ if(refresh_models)
 {
     set.seed(seed)
     ensemble_cubist <- train(target ~ ., data = regression_train, 'cubist', tuneGrid = expand.grid(committees = tuning_cubist_committees, neighbors = tuning_cubist_neighbors), trControl = train_control)
-    saveRDS(ensemble_cubist, file = './data/ensemble_cubist.RDS')
+    saveRDS(ensemble_cubist, file = './regression_data/ensemble_cubist.RDS')
 } else{
-    ensemble_cubist <- readRDS('./data/ensemble_cubist.RDS')
+    ensemble_cubist <- readRDS('./regression_data/ensemble_cubist.RDS')
 }
 # ensemble_cubist
 # ensemble_cubist$finalModel
@@ -2036,13 +2036,13 @@ summary(ensemble_cubist$finalModel)
 plot(ensemble_cubist)
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/cubist-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/cubist-1.png" width="750px" />
 
 ``` r
 plot(ensemble_cubist, auto.key = list(columns = 4, lines = TRUE))
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/cubist-2.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/cubist-2.png" width="750px" />
 
 Resamples & Top Models
 ----------------------
@@ -2118,7 +2118,7 @@ Resamples & Top Models
     ## ensemble_boosting             0.8977  0.9333 0.9438 0.9419  0.9505 0.9642    0
     ## ensemble_cubist               0.8809  0.9108 0.9257 0.9235  0.9364 0.9482    0
 
-<img src="predictive_analysis_files/figure-markdown_github/resamples_regression-1.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/resamples_regression-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/resamples_regression-3.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/resamples_regression-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/resamples_regression-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/resamples_regression-3.png" width="750px" />
 
 ### Top Models
 
@@ -2131,7 +2131,7 @@ Train Top Models on Entire Dataset & Predict on Test Set
 top_x_models <- 5
 ```
 
-<img src="predictive_analysis_files/figure-markdown_github/unnamed-chunk-2-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/unnamed-chunk-2-1.png" width="750px" />
 
 -   Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
 
@@ -2174,7 +2174,7 @@ top_x_models <- 5
 
 Iter TrainDeviance ValidDeviance StepSize Improve 1 241.1421 nan 0.1000 33.6977 2 212.6304 nan 0.1000 29.4750 3 189.7272 nan 0.1000 22.7933 4 169.9480 nan 0.1000 19.6884 5 152.0770 nan 0.1000 15.9338 6 136.4286 nan 0.1000 14.7907 7 123.6048 nan 0.1000 13.5533 8 111.0273 nan 0.1000 11.5059 9 101.1243 nan 0.1000 8.7104 10 92.1489 nan 0.1000 8.1265 20 46.7188 nan 0.1000 2.3071 40 23.4752 nan 0.1000 0.3468 60 16.6125 nan 0.1000 0.0633 80 13.6876 nan 0.1000 -0.0364 100 11.9089 nan 0.1000 -0.0587 120 10.5621 nan 0.1000 -0.0562 140 9.4999 nan 0.1000 -0.0859 160 8.4922 nan 0.1000 -0.0154 180 7.6193 nan 0.1000 -0.0150 200 7.0723 nan 0.1000 -0.0325 220 6.5095 nan 0.1000 -0.0709 240 5.9969 nan 0.1000 -0.0518 260 5.6018 nan 0.1000 -0.0636 280 5.3132 nan 0.1000 -0.0276 300 4.9921 nan 0.1000 -0.0631 320 4.6774 nan 0.1000 -0.0384 340 4.4204 nan 0.1000 -0.0447 360 4.2436 nan 0.1000 -0.0365 380 4.0563 nan 0.1000 -0.0629 400 3.8732 nan 0.1000 -0.0490 420 3.7135 nan 0.1000 -0.0184 440 3.5799 nan 0.1000 -0.0369 460 3.4581 nan 0.1000 -0.0451 480 3.3046 nan 0.1000 -0.0283 500 3.1875 nan 0.1000 -0.0341 520 3.0685 nan 0.1000 -0.0355 540 2.9537 nan 0.1000 -0.0228 560 2.8320 nan 0.1000 -0.0499 580 2.7524 nan 0.1000 -0.0241 600 2.6658 nan 0.1000 -0.0314 620 2.6026 nan 0.1000 -0.0386 640 2.5372 nan 0.1000 -0.0294 660 2.4678 nan 0.1000 -0.0182 680 2.4059 nan 0.1000 -0.0146 700 2.3257 nan 0.1000 -0.0218 720 2.2759 nan 0.1000 -0.0401 740 2.2305 nan 0.1000 -0.0188 760 2.1830 nan 0.1000 -0.0204 780 2.1353 nan 0.1000 -0.0127 800 2.0886 nan 0.1000 -0.0261 820 2.0316 nan 0.1000 -0.0254 840 1.9846 nan 0.1000 -0.0199 860 1.9441 nan 0.1000 -0.0330 880 1.9180 nan 0.1000 -0.0167 900 1.8648 nan 0.1000 -0.0186 920 1.8235 nan 0.1000 -0.0173 940 1.8028 nan 0.1000 -0.0143 950 1.7788 nan 0.1000 -0.0137
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-1.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-1.png" width="750px" />
 
 > Model RMSE: `4.2679`
 
@@ -2197,13 +2197,13 @@ Predictios:
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
       6.416  25.090  34.590  36.950  47.250  81.600 
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-2.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-3.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-4.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-5.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-6.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-4.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-5.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-6.png" width="750px" />
 
 ### ensemble\_cubist
 
     Loading required package: Cubist
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-7.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-7.png" width="750px" />
 
 > Model RMSE: `4.8704`
 
@@ -2226,7 +2226,7 @@ Predictios:
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
       7.181  26.360  35.160  37.140  45.900  78.440 
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-8.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-9.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-10.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-11.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-12.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-8.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-9.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-10.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-11.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-12.png" width="750px" />
 
 ### ensemble\_random\_forest
 
@@ -2259,7 +2259,7 @@ Pre-Processing:
 
         margin
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-13.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-13.png" width="750px" />
 
 > Model RMSE: `5.1219`
 
@@ -2282,7 +2282,7 @@ Predictios:
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
       9.266  27.110  35.130  37.090  46.970  77.190 
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-14.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-15.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-16.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-17.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-18.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-14.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-15.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-16.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-17.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-18.png" width="750px" />
 
 ### nlm\_neur\_net\_averaging\_pca
 
@@ -2292,18 +2292,18 @@ Pre-Processing:
 
     Loading required package: nnet
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-19.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-19.png" width="750px" />
 
-> Model RMSE: `5.8833`
+> Model RMSE: `6.0027`
 
-> Model MAE: `4.4084`
+> Model MAE: `4.3966`
 
-> Model Correaltion Between Actual & Predicted: `0.9385`
+> Model Correaltion Between Actual & Predicted: `0.9358`
 
 Metrics from Test Data:
 
          RMSE  Rsquared 
-    5.8832863 0.8807443 
+    6.0026652 0.8757497 
 
 Actual Observations:
 
@@ -2313,9 +2313,9 @@ Actual Observations:
 Predictios:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      6.251  24.690  34.060  36.850  47.810  75.510 
+      7.548  25.820  34.050  36.860  47.020  76.930 
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-20.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-21.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-22.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-23.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-24.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-25.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-20.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-21.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-22.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-23.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-24.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-25.png" width="750px" />
 
 ### nlm\_mars
 
@@ -2340,8 +2340,4 @@ Predictios:
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
       4.044  27.230  36.490  37.970  46.900  76.120 
 
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-26.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-27.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-28.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-29.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-30.png" width="750px" /><img src="predictive_analysis_files/figure-markdown_github/determine_best_models-31.png" width="750px" />
-
-    Warning in min(final_models_metrics$rmse): no non-missing arguments to min; returning Inf
-
-<img src="predictive_analysis_files/figure-markdown_github/determine_best_models-32.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-26.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-27.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-28.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-29.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-30.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-31.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-32.png" width="750px" />

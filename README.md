@@ -13,12 +13,12 @@ The two main outputs for the regression analysis are:
 - **shotgun approach**: plot showing cross-validated `RMSE` and `R-Squared` for a variety of models (with reasonable defaults) training on a training set.
 	- For example:
 
-![spot_check](./predictive_analysis_files/figure-markdown_github/resamples_regression-1.png)
+![spot_check](./predictive_analysis_regression_files/figure-markdown_github/resamples_regression-1.png)
 
 - **final models**: plot showing `RMSE`, `MAE`, and `correlation` on the top x (e.g. 5) models that have been retrained on the entire training set (as oppossed to cross-validated), and the tested on the test set (data-points that the model has not seen).
 	- For example:
 
-![final_models](./predictive_analysis_files/figure-markdown_github/determine_best_models-32.png)
+![final_models](./predictive_analysis_regression_files/figure-markdown_github/determine_best_models-32.png)
 
 ## predictive_analysis_classification.Rmd
 
