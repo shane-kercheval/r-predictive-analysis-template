@@ -943,7 +943,7 @@ if(refresh_models)
 } else{
 	ensemble_boosting <- readRDS('./data/ensemble_boosting.RDS')
 }
-ensemble_boosting
+# ensemble_boosting
 # ensemble_boosting$finalModel
 summary(ensemble_boosting)
 summary(ensemble_boosting$finalModel)
@@ -961,7 +961,7 @@ if(refresh_models)
 } else{
 	ensemble_cubist <- readRDS('./data/ensemble_cubist.RDS')
 }
-ensemble_cubist
+# ensemble_cubist
 # ensemble_cubist$finalModel
 summary(ensemble_cubist)
 summary(ensemble_cubist$finalModel)
@@ -1212,7 +1212,7 @@ final_models_metrics <- data.frame(model = factor(as.character(top_models$model)
 								   mae = map_dbl(model_stats, ~ .['model_mae']),
 								   correlation = map_dbl(model_stats, ~ .['model_correlation']))
 
-min_rmse <- min(final_models_metrics$rmse)
+min_rmse <- min(final_models_metrics$test_set_rmse)
 min_mae <- min(final_models_metrics$mae)
 max_correlation <- max(final_models_metrics$correlation)
 
