@@ -38,3 +38,4 @@ vignettes/*.pdf
 .Ruserdata
 *.Rproj
 .Rapp.history
+.Rproj.user

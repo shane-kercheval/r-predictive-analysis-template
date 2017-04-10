@@ -726,7 +726,7 @@ if(refresh_models)
 } else{
 	nlm_mars <- readRDS('./data/nlm_mars.RDS')
 }
-nlm_mars$finalModel
+#nlm_mars$finalModel
 summary(nlm_mars$finalModel)
 plot(nlm_mars)
 require(earth)
@@ -909,7 +909,7 @@ if(refresh_models)
 	ensemble_random_forest <- readRDS('./data/ensemble_random_forest.RDS')
 }
 ensemble_random_forest
-ensemble_random_forest$finalModel
+#ensemble_random_forest$finalModel
 summary(ensemble_random_forest$finalModel)
 plot(ensemble_random_forest)
 ```
@@ -926,7 +926,7 @@ if(refresh_models)
 	ensemble_random_forest_cond_inf <- readRDS('./data/ensemble_random_forest_cond_inf.RDS')
 }
 ensemble_random_forest_cond_inf
-ensemble_random_forest_cond_inf$finalModel
+#ensemble_random_forest_cond_inf$finalModel
 summary(ensemble_random_forest_cond_inf)
 summary(ensemble_random_forest_cond_inf$finalModel)
 plot(ensemble_random_forest_cond_inf)
@@ -944,7 +944,7 @@ if(refresh_models)
 	ensemble_boosting <- readRDS('./data/ensemble_boosting.RDS')
 }
 ensemble_boosting
-ensemble_boosting$finalModel
+# ensemble_boosting$finalModel
 summary(ensemble_boosting)
 summary(ensemble_boosting$finalModel)
 plot(ensemble_boosting)
@@ -962,7 +962,7 @@ if(refresh_models)
 	ensemble_cubist <- readRDS('./data/ensemble_cubist.RDS')
 }
 ensemble_cubist
-ensemble_cubist$finalModel
+# ensemble_cubist$finalModel
 summary(ensemble_cubist)
 summary(ensemble_cubist$finalModel)
 plot(ensemble_cubist)
