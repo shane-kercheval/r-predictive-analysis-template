@@ -66,7 +66,6 @@ regression_dataset$random2 = sample(c(TRUE,FALSE), nrow(regression_dataset), TRU
 regression_dataset <- regression_dataset %>%
 	mutate_if(is.logical, as.factor)
 
-
 regression_column_names <- colnames(regression_dataset)
 numeric_columns <- map_lgl(regression_column_names, ~ {
 	return (is.numeric(regression_dataset[, .]))
@@ -197,7 +196,6 @@ kable(outliers)
 
 ```{r correlation, echo = FALSE, fig.height=10, fig.width=10}
 #pairs.panels(regression_dataset[, numeric_columns])
-
 correlations <- cor(regression_dataset[, numeric_columns])
 corrplot::corrplot(correlations, order = "hclust", tl.cex = .35, col = colorRampPalette(rev(c("#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#FFFFFF", "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061")))(200))
 ```
