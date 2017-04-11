@@ -42,6 +42,16 @@ regression_dataset <- concrete %>%
 	dplyr::select(target, everything())
 regression_dataset <- as.data.frame(regression_dataset)
 
+# insurance = fread('./regression_data/insurance.csv')
+# regression_dataset <- insurance %>%
+# 	dplyr::rename(target = expenses) %>%
+# 	dplyr::mutate(sex = factor(sex),
+# 				  region = factor(region),
+# 				  smoker = factor(smoker)) %>%
+# 	dplyr::select(target, everything())
+# regression_dataset <- as.data.frame(regression_dataset)
+# str(regression_dataset)
+
 #library(AppliedPredictiveModeling)
 #data(abalone) # http://archive.ics.uci.edu/ml/datasets/Abalone
 # regression_dataset <- abalone %>%
@@ -333,7 +343,6 @@ walk(regression_column_names, ~ {
 		}, error = function(e) {
 			cat('\n\nError with boxplot.\n\n')
 		})
-		
 
 	}else if(is.factor(dataset_column)){
 		
