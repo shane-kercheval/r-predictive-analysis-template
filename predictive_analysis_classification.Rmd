@@ -1,0 +1,36 @@
+---
+title: "Predictive Analysis"
+author: "Shane Kercheval"
+output:
+  md_document:
+    variant: markdown_github
+    toc: true
+    toc_depth: 3
+---
+
+```{r setup, echo = FALSE, results='hide', message=FALSE, warning=FALSE}
+options(scipen=999) # non-scientific notation
+options(width=180)
+source('~/r-tools/output/plots.R', chdir=TRUE)
+source('~/r-tools/output/markdown.R', chdir=TRUE)
+library('data.table')
+library(partykit) # Use the partykit package to make some nice plots. First, convert the rpart objects to party objects.
+library(psych)
+library(knitr)
+library(scales)
+library(DMwR)
+library(e1071)
+library(Hmisc)
+library(corrplot)
+library(stringr)
+library(tidyverse)
+library(caret)
+
+opts_chunk$set(out.width='750px', dpi=200)
+
+require(doMC)
+registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
+
+seed <- 123
+refresh_models <- FALSE
+```

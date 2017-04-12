@@ -1,6 +1,9 @@
 # r-predictive-analysis-template
 
-The main objective of the associated *.Rmds are for finding the best potential predictive models for a given dataset, using a shotgun approach of trying many different models with reasonable defaults.
+The main objective of the associated `*.Rmd`s are for finding the best potential predictive models for a given dataset, using a shotgun approach of trying many different models with reasonable defaults.
+
+- Regression: [predictive_analysis_regression.Rmd](./predictive_analysis_regression.Rmd)
+- Classification: [predictive_analysis_classification.Rmd](./predictive_analysis_classification.Rmd)
 
 The intent is not to skip the thinking process. The intent is to get the most a lot of information in a relatively short amount of time.
 
