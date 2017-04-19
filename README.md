@@ -5,9 +5,9 @@ The main objective of the associated `*.Rmd`s are for finding the best potential
 - Regression: [predictive_analysis_regression.Rmd](./predictive_analysis_regression.Rmd)
 - Classification: [predictive_analysis_classification.Rmd](./predictive_analysis_classification.Rmd)
 
-The intent is not to skip the thinking process. The intent is to get the most a lot of information in a relatively short amount of time.
+The intent is not to skip the thinking process. The intent is to get a lot of information in a relatively short amount of time.
 
-The information will help determine which potential models are worth spending time on and optimizing/improving.
+The information will help determine which potential models are worth spending time on and further optimizing/improving.
 
 ## predictive_analysis_regression.Rmd
 

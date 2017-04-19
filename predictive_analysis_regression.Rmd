@@ -36,13 +36,13 @@ refresh_models <- FALSE
 ```
 
 ```{r dataset_definition, echo = FALSE}
-concrete = fread('./regression_data/concrete.csv')
+concrete <- fread('./regression_data/concrete.csv')
 regression_dataset <- concrete %>%
 	dplyr::rename(target = strength) %>%
 	dplyr::select(target, everything())
 regression_dataset <- as.data.frame(regression_dataset)
 
-# insurance = fread('./regression_data/insurance.csv')
+# insurance <- fread('./regression_data/insurance.csv')
 # regression_dataset <- insurance %>%
 # 	dplyr::rename(target = expenses) %>%
 # 	dplyr::mutate(sex = factor(sex),
@@ -59,9 +59,9 @@ regression_dataset <- as.data.frame(regression_dataset)
 # 	dplyr::select(target, everything())
 
 set.seed(123)
-regression_dataset$random1 = sample(c(TRUE,FALSE), nrow(regression_dataset), TRUE)
+regression_dataset$random1 <- sample(c(TRUE,FALSE), nrow(regression_dataset), TRUE)
 set.seed(321)
-regression_dataset$random2 = sample(c(TRUE,FALSE), nrow(regression_dataset), TRUE)
+regression_dataset$random2 <- sample(c(TRUE,FALSE), nrow(regression_dataset), TRUE)
 
 ###### solubility data from APM examples
 # library(AppliedPredictiveModeling)
