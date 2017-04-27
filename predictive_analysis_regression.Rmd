@@ -25,6 +25,7 @@ library(corrplot)
 library(stringr)
 library(tidyverse)
 library(caret)
+library(randomForest)
 
 opts_chunk$set(out.width='750px', dpi=200)
 
@@ -74,12 +75,15 @@ regression_dataset$random2 <- sample(c(TRUE,FALSE), nrow(regression_dataset), TR
 
 ```{r dataset_prepare, echo = FALSE}
 regression_dataset <- regression_dataset %>%
+	#mutate_if(is.character, as.factor) %>%
 	mutate_if(is.logical, as.factor)
 
 regression_column_names <- colnames(regression_dataset)
 numeric_columns <- map_lgl(regression_column_names, ~ {
 	return (is.numeric(regression_dataset[, .]))
 })
+numeric_column_names <- regression_column_names[numeric_columns]
+numeric_column_names <- numeric_column_names[numeric_column_names != 'target']
 
 sample_size <- nrow(regression_dataset)
 num_predictors <- length(regression_dataset) - 1
@@ -275,7 +279,10 @@ while(max(abs(predictor_correlations), na.rm = TRUE) > correlation_threshold) {
 	}	
 	
 }
-recommended_columns_custom <- c('target', colnames(predictor_correlations))
+
+recommended_numeric_columns <- colnames(predictor_correlations)
+non_numeric_columns <- regression_column_names[!(regression_column_names %in% numeric_column_names)] # includes target
+recommended_columns_custom <- c(non_numeric_columns, recommended_numeric_columns)
 recommended_removal <- regression_column_names[!(regression_column_names %in% recommended_columns_custom)]
 ```
 
@@ -1174,39 +1181,50 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 		cat('\n\nPre-Processing:\n\n')
 		cat(codebc(pre_process))
 	}
-	set.seed(seed)
-	# some models have different parameters for `train`, which we need to use when training the final model
-	if(model_method == 'rf')
+	
+	if(refresh_models)
 	{
-		final_model <- train(
-			target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
-			ntree = parameter_random_forest_ntree, importance = TRUE)
-
-	}else if(model_method == 'cforest'){
 		
-		final_model <- train(
-			target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
-			controls = cforest_unbiased(ntree = parameter_random_forest_ntree), importance = TRUE)
+		set.seed(seed)
+		# some models have different parameters for `train`, which we need to use when training the final model
+		if(model_method == 'rf')
+		{
+			final_model <- train(
+				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
+				ntree = parameter_random_forest_ntree, importance = TRUE)
 
-	}else if(model_method == 'avNNet' || model_method == 'nnet'){
-		
-		final_model <- train(
-			target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid,
-			linout = parameter_neural_network_linout,
-			trace = parameter_neural_network_trace,
-			MaxNWts = parameter_neural_network_max_num_weights,
-			maxit = parameter_neural_network_max_iterations)
+		}else if(model_method == 'cforest'){
+			
+			final_model <- train(
+				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
+				controls = cforest_unbiased(ntree = parameter_random_forest_ntree), importance = TRUE)
 
-	}else if(model_method == 'treebag'){
-		
-		final_model <- train(
-			target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid,
-			nbagg = tuning_treebag_nbagg)
+		}else if(model_method == 'avNNet' || model_method == 'nnet'){
+			
+			final_model <- train(
+				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid,
+				linout = parameter_neural_network_linout,
+				trace = parameter_neural_network_trace,
+				MaxNWts = parameter_neural_network_max_num_weights,
+				maxit = parameter_neural_network_max_iterations)
+
+		}else if(model_method == 'treebag'){
+			
+			final_model <- train(
+				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid,
+				nbagg = tuning_treebag_nbagg)
+
+		}else{
+
+			final_model <- train(
+				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid)
+		}
+
+		saveRDS(final_model, file = paste0('./regression_data/top_model_', model_name, '.RDS'))
 
 	}else{
 
-		final_model <- train(
-			target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid)
+		final_model <- readRDS(file = paste0('./regression_data/top_model_', model_name, '.RDS'))
 	}
 
 	summary(final_model$finalModel)

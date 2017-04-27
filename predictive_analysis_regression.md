@@ -200,9 +200,9 @@ This method is described in APM pg 47 as the following steps
 -   If `A` has a larger average correlation, remove it; otherwise, remove predcitor `B`
 -   Repeat until no absolute correlations are above the threshold (`0.9`)
 
-> columns recommended for removal: `random1, random2`
+> columns recommended for removal: \`\`
 
-> final columns recommended: `target, cement, slag, ash, water, superplastic, coarseagg, fineagg, age`
+> final columns recommended: `target, random1, random2, cement, slag, ash, water, superplastic, coarseagg, fineagg, age`
 
 Graphs
 ------
@@ -622,25 +622,27 @@ summary(lm_remove_collinearity_custom)
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -27.915  -6.638   0.724   7.012  34.243 
+    ## -27.882  -6.431   0.735   6.936  34.283 
     ## 
     ## Coefficients:
     ##              Estimate Std. Error t value             Pr(>|t|)    
-    ## (Intercept)   35.6050     0.3628  98.131 < 0.0000000000000002 ***
-    ## cement        12.5124     0.9645  12.973 < 0.0000000000000002 ***
-    ## slag           9.0631     0.9474   9.566 < 0.0000000000000002 ***
-    ## ash            5.8477     0.8726   6.702      0.0000000000384 ***
-    ## water         -3.2440     0.9036  -3.590              0.00035 ***
-    ## superplastic   1.4941     0.6100   2.449              0.01453 *  
-    ## coarseagg      1.4845     0.7873   1.885              0.05972 .  
-    ## fineagg        1.5907     0.9125   1.743              0.08168 .  
-    ## age            7.1324     0.3810  18.719 < 0.0000000000000002 ***
+    ## (Intercept)   35.6050     0.3632  98.027 < 0.0000000000000002 ***
+    ## random1TRUE    0.1455     0.3648   0.399             0.690204    
+    ## random2TRUE   -0.1291     0.3657  -0.353             0.724232    
+    ## cement        12.5118     0.9655  12.958 < 0.0000000000000002 ***
+    ## slag           9.0555     0.9485   9.547 < 0.0000000000000002 ***
+    ## ash            5.8400     0.8736   6.685      0.0000000000429 ***
+    ## water         -3.2206     0.9056  -3.556             0.000398 ***
+    ## superplastic   1.5227     0.6132   2.483             0.013220 *  
+    ## coarseagg      1.4982     0.7886   1.900             0.057802 .  
+    ## fineagg        1.5839     0.9136   1.734             0.083349 .  
+    ## age            7.1341     0.3822  18.664 < 0.0000000000000002 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 10.43 on 817 degrees of freedom
-    ## Multiple R-squared:  0.6102, Adjusted R-squared:  0.6063 
-    ## F-statistic: 159.8 on 8 and 817 DF,  p-value: < 0.00000000000000022
+    ## Residual standard error: 10.44 on 815 degrees of freedom
+    ## Multiple R-squared:  0.6103, Adjusted R-squared:  0.6055 
+    ## F-statistic: 127.6 on 10 and 815 DF,  p-value: < 0.00000000000000022
 
 ``` r
 plot(lm_remove_collinearity_custom$finalModel)
@@ -1788,6 +1790,12 @@ if(refresh_models)
 } else{
     ensemble_bagged_tree <- readRDS('./regression_data/ensemble_bagged_tree.RDS')
 }
+```
+
+    ## Warning: namespace 'ipred' is not available and has been replaced
+    ## by .GlobalEnv when processing object 'terminal'
+
+``` r
 ensemble_bagged_tree
 ```
 
@@ -1803,8 +1811,6 @@ ensemble_bagged_tree
     ## 
     ##   RMSE      Rsquared 
     ##   7.609265  0.8008812
-    ## 
-    ## 
 
 ``` r
 summary(ensemble_bagged_tree)
@@ -1839,10 +1845,8 @@ ensemble_random_forest
     ## 
     ## 826 samples
     ##  10 predictor
-
-    ## Warning in gsub("knnImpute", paste(x$k, "nearest neighbor imputation"), : argument 'replacement' has length > 1 and only the first element will be used
-
-    ## Pre-processing: cement nearest neighbor imputation (10), centered (10), scaled (10) 
+    ## 
+    ## Pre-processing: nearest neighbor imputation (10), centered (10), scaled (10) 
     ## Resampling: Cross-Validated (10 fold, repeated 3 times) 
     ## Summary of sample sizes: 742, 745, 743, 743, 743, 742, ... 
     ## Resampling results across tuning parameters:
@@ -2057,66 +2061,66 @@ Resamples & Top Models
     ## Number of resamples: 30 
     ## 
     ## RMSE 
-    ##                                Min. 1st Qu. Median   Mean 3rd Qu.   Max. NA's
-    ## lm_no_pre_processing          8.738  10.010 10.500 10.510  11.000 11.940    0
-    ## lm_basic_pre_processing       8.738  10.010 10.500 10.510  11.000 11.940    0
-    ## lm_median_impute              8.738  10.010 10.500 10.510  11.000 11.940    0
-    ## lm_near_zero_variance         8.738  10.010 10.500 10.510  11.000 11.940    0
-    ## lm_skewness_y                 5.886   6.981  7.393  7.388   7.959  8.468    0
-    ## lm_skewness_bc                6.051   6.709  7.052  7.139   7.458  8.208    0
-    ## lm_remove_collinearity_caret  8.738  10.010 10.500 10.510  11.000 11.940    0
-    ## lm_remove_collinearity_custom 8.738  10.010 10.490 10.490  10.970 11.880    0
-    ## lm_robust                     6.602   7.339  7.789  7.742   8.293  8.647    0
-    ## lm_spatial_sign               8.084   9.189  9.579  9.660  10.050 11.120    0
-    ## lm_pca                        6.544   7.312  7.784  7.731   8.244  8.592    0
-    ## lm_pcr                        9.020  10.250 10.650 10.740  11.290 11.960    0
-    ## lm_pls                        8.740  10.010 10.500 10.510  11.000 11.940    0
-    ## lm_ridge                      8.738  10.010 10.500 10.510  11.000 11.940    0
-    ## lm_enet                       8.766  10.010 10.520 10.510  11.000 11.920    0
-    ## nlm_neur_net_averaging_pca    4.748   5.185  6.044  5.883   6.398  7.012    0
-    ## nlm_mars                      5.361   5.883  6.239  6.241   6.625  7.334    0
-    ## nlm_svm_radial                5.233   6.060  6.501  6.519   6.910  7.646    0
-    ## nlm_svm_linear                8.885  10.220 10.930 10.900  11.450 12.950    0
-    ## nlm_svm_poly                  6.645   7.829  8.081  8.134   8.540  9.639    0
-    ## tree_cart                     6.711   7.514  7.882  8.092   8.369 10.580    0
-    ## tree_cart2                    7.847   8.720  9.012  9.176   9.696 10.340    0
-    ## tree_cond_inference           6.535   7.073  7.748  7.807   8.324  9.858    0
-    ## tree_cond_inference2          6.536   7.020  7.480  7.578   7.884  9.067    0
-    ## ensemble_bagged_tree          6.173   7.097  7.686  7.609   8.125  8.614    0
-    ## ensemble_random_forest        3.995   4.511  4.933  4.967   5.394  6.079    0
-    ## ensemble_boosting             3.126   3.685  4.018  4.028   4.357  5.003    0
-    ## ensemble_cubist               3.853   4.256  4.630  4.640   4.999  5.524    0
+    ##                                   Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+    ## lm_no_pre_processing          8.738478 10.010057 10.497878 10.514757 11.000751 11.940636    0
+    ## lm_basic_pre_processing       8.738478 10.010057 10.497878 10.514757 11.000751 11.940636    0
+    ## lm_median_impute              8.738478 10.010057 10.497878 10.514757 11.000751 11.940636    0
+    ## lm_near_zero_variance         8.738478 10.010057 10.497878 10.514757 11.000751 11.940636    0
+    ## lm_skewness_y                 5.885970  6.980959  7.393021  7.388440  7.959172  8.467634    0
+    ## lm_skewness_bc                6.051467  6.709106  7.051514  7.138558  7.458175  8.207896    0
+    ## lm_remove_collinearity_caret  8.738478 10.010057 10.497878 10.514757 11.000751 11.940636    0
+    ## lm_remove_collinearity_custom 8.738478 10.010057 10.497878 10.514757 11.000751 11.940636    0
+    ## lm_robust                     6.601819  7.338742  7.788631  7.742115  8.293228  8.646746    0
+    ## lm_spatial_sign               8.083810  9.188881  9.579182  9.659868 10.052552 11.115776    0
+    ## lm_pca                        6.543975  7.312288  7.783855  7.731158  8.244214  8.591784    0
+    ## lm_pcr                        9.020453 10.254945 10.646466 10.735250 11.290506 11.956643    0
+    ## lm_pls                        8.739534 10.009050 10.498699 10.514593 10.997821 11.939257    0
+    ## lm_ridge                      8.738478 10.010057 10.497878 10.514757 11.000751 11.940636    0
+    ## lm_enet                       8.766058 10.011650 10.520798 10.513972 11.003917 11.921695    0
+    ## nlm_neur_net_averaging_pca    4.748123  5.184613  6.044048  5.883033  6.397794  7.011654    0
+    ## nlm_mars                      5.360653  5.883339  6.238895  6.240566  6.625160  7.333883    0
+    ## nlm_svm_radial                5.232939  6.059667  6.501122  6.518945  6.910123  7.645726    0
+    ## nlm_svm_linear                8.885056 10.224090 10.932951 10.897490 11.445453 12.950250    0
+    ## nlm_svm_poly                  6.645202  7.828922  8.080644  8.134308  8.539647  9.638576    0
+    ## tree_cart                     6.711325  7.513569  7.881865  8.092351  8.369132 10.579532    0
+    ## tree_cart2                    7.847382  8.719991  9.012310  9.175958  9.695644 10.344805    0
+    ## tree_cond_inference           6.534783  7.073133  7.747693  7.806524  8.323706  9.857765    0
+    ## tree_cond_inference2          6.536448  7.020205  7.479727  7.578241  7.884452  9.066629    0
+    ## ensemble_bagged_tree          6.172881  7.097359  7.686422  7.609265  8.125044  8.613750    0
+    ## ensemble_random_forest        3.995251  4.510693  4.932979  4.966603  5.393772  6.079412    0
+    ## ensemble_boosting             3.126248  3.685153  4.018325  4.028151  4.356902  5.003080    0
+    ## ensemble_cubist               3.853350  4.255797  4.630432  4.639967  4.998612  5.523623    0
     ## 
     ## Rsquared 
-    ##                                 Min. 1st Qu. Median   Mean 3rd Qu.   Max. NA's
-    ## lm_no_pre_processing          0.4657  0.5715 0.6050 0.6049  0.6417 0.7947    0
-    ## lm_basic_pre_processing       0.4657  0.5715 0.6050 0.6049  0.6417 0.7947    0
-    ## lm_median_impute              0.4657  0.5715 0.6050 0.6049  0.6417 0.7947    0
-    ## lm_near_zero_variance         0.4657  0.5715 0.6050 0.6049  0.6417 0.7947    0
-    ## lm_skewness_y                 0.7388  0.7891 0.8046 0.8047  0.8252 0.8663    0
-    ## lm_skewness_bc                0.7381  0.7984 0.8274 0.8183  0.8380 0.8714    0
-    ## lm_remove_collinearity_caret  0.4657  0.5715 0.6050 0.6049  0.6417 0.7947    0
-    ## lm_remove_collinearity_custom 0.4671  0.5726 0.6063 0.6067  0.6417 0.7947    0
-    ## lm_robust                     0.7092  0.7654 0.7904 0.7858  0.8086 0.8355    0
-    ## lm_spatial_sign               0.5524  0.6312 0.6693 0.6660  0.7014 0.8350    0
-    ## lm_pca                        0.7107  0.7661 0.7899 0.7865  0.8102 0.8370    0
-    ## lm_pcr                        0.4804  0.5512 0.5922 0.5857  0.6168 0.7717    0
-    ## lm_pls                        0.4658  0.5714 0.6051 0.6049  0.6418 0.7947    0
-    ## lm_ridge                      0.4657  0.5715 0.6050 0.6049  0.6417 0.7947    0
-    ## lm_enet                       0.4695  0.5728 0.6053 0.6046  0.6412 0.7941    0
-    ## nlm_neur_net_averaging_pca    0.8333  0.8604 0.8724 0.8762  0.8985 0.9197    0
-    ## nlm_mars                      0.8041  0.8460 0.8682 0.8615  0.8778 0.9048    0
-    ## nlm_svm_radial                0.7699  0.8290 0.8484 0.8480  0.8740 0.9032    0
-    ## nlm_svm_linear                0.4604  0.5588 0.5838 0.5893  0.6164 0.7454    0
-    ## nlm_svm_poly                  0.6658  0.7437 0.7717 0.7638  0.7889 0.8460    0
-    ## tree_cart                     0.6258  0.7540 0.7856 0.7679  0.7993 0.8320    0
-    ## tree_cart2                    0.5934  0.6733 0.6923 0.7004  0.7269 0.8077    0
-    ## tree_cond_inference           0.6823  0.7593 0.7933 0.7839  0.8211 0.8485    0
-    ## tree_cond_inference2          0.6970  0.7829 0.7962 0.7969  0.8264 0.8430    0
-    ## ensemble_bagged_tree          0.7120  0.7758 0.8035 0.8009  0.8277 0.8656    0
-    ## ensemble_random_forest        0.8512  0.9052 0.9156 0.9144  0.9300 0.9516    0
-    ## ensemble_boosting             0.8977  0.9333 0.9438 0.9419  0.9505 0.9642    0
-    ## ensemble_cubist               0.8809  0.9108 0.9257 0.9235  0.9364 0.9482    0
+    ##                                    Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+    ## lm_no_pre_processing          0.4656696 0.5714508 0.6050429 0.6048799 0.6416742 0.7947447    0
+    ## lm_basic_pre_processing       0.4656696 0.5714508 0.6050429 0.6048799 0.6416742 0.7947447    0
+    ## lm_median_impute              0.4656696 0.5714508 0.6050429 0.6048799 0.6416742 0.7947447    0
+    ## lm_near_zero_variance         0.4656696 0.5714508 0.6050429 0.6048799 0.6416742 0.7947447    0
+    ## lm_skewness_y                 0.7387950 0.7890597 0.8045592 0.8046701 0.8252289 0.8662577    0
+    ## lm_skewness_bc                0.7380665 0.7984465 0.8274261 0.8182863 0.8380072 0.8713801    0
+    ## lm_remove_collinearity_caret  0.4656696 0.5714508 0.6050429 0.6048799 0.6416742 0.7947447    0
+    ## lm_remove_collinearity_custom 0.4656696 0.5714508 0.6050429 0.6048799 0.6416742 0.7947447    0
+    ## lm_robust                     0.7091638 0.7653943 0.7904017 0.7857616 0.8086358 0.8355487    0
+    ## lm_spatial_sign               0.5524285 0.6311870 0.6693305 0.6660099 0.7013985 0.8349695    0
+    ## lm_pca                        0.7107165 0.7660678 0.7898693 0.7864924 0.8102328 0.8369624    0
+    ## lm_pcr                        0.4804495 0.5511912 0.5921717 0.5856976 0.6167787 0.7717105    0
+    ## lm_pls                        0.4658338 0.5714005 0.6051009 0.6048908 0.6417536 0.7946863    0
+    ## lm_ridge                      0.4656696 0.5714508 0.6050429 0.6048799 0.6416742 0.7947447    0
+    ## lm_enet                       0.4694774 0.5727657 0.6052748 0.6046441 0.6411779 0.7940750    0
+    ## nlm_neur_net_averaging_pca    0.8332915 0.8604190 0.8723552 0.8761662 0.8984994 0.9197226    0
+    ## nlm_mars                      0.8041402 0.8460351 0.8681909 0.8615293 0.8778465 0.9047973    0
+    ## nlm_svm_radial                0.7698679 0.8289878 0.8484217 0.8479704 0.8740063 0.9032133    0
+    ## nlm_svm_linear                0.4604173 0.5587927 0.5838388 0.5893012 0.6164380 0.7454254    0
+    ## nlm_svm_poly                  0.6658420 0.7437070 0.7717173 0.7638321 0.7888754 0.8460427    0
+    ## tree_cart                     0.6258185 0.7540236 0.7856241 0.7679315 0.7993443 0.8320331    0
+    ## tree_cart2                    0.5934375 0.6732754 0.6922716 0.7003796 0.7268814 0.8076605    0
+    ## tree_cond_inference           0.6823096 0.7592862 0.7932960 0.7839204 0.8211438 0.8484643    0
+    ## tree_cond_inference2          0.6970032 0.7829267 0.7961661 0.7969249 0.8264006 0.8430229    0
+    ## ensemble_bagged_tree          0.7120208 0.7758003 0.8034596 0.8008812 0.8276941 0.8656369    0
+    ## ensemble_random_forest        0.8511594 0.9051965 0.9155719 0.9143650 0.9299679 0.9515721    0
+    ## ensemble_boosting             0.8977295 0.9333470 0.9437963 0.9418764 0.9504757 0.9641534    0
+    ## ensemble_cubist               0.8808580 0.9107882 0.9257168 0.9234823 0.9363818 0.9482455    0
 
 <img src="predictive_analysis_regression_files/figure-markdown_github/resamples_regression-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/resamples_regression-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/resamples_regression-3.png" width="750px" />
 
@@ -2141,7 +2145,7 @@ top_x_models <- 5
 
     Loading required package: splines
 
-    Loaded gbm 2.1.1
+    Loaded gbm 2.1.3
 
     Loading required package: plyr
 
@@ -2172,10 +2176,6 @@ top_x_models <- 5
 
         compact
 
-Iter TrainDeviance ValidDeviance StepSize Improve 1 241.1421 nan 0.1000 33.6977 2 212.6304 nan 0.1000 29.4750 3 189.7272 nan 0.1000 22.7933 4 169.9480 nan 0.1000 19.6884 5 152.0770 nan 0.1000 15.9338 6 136.4286 nan 0.1000 14.7907 7 123.6048 nan 0.1000 13.5533 8 111.0273 nan 0.1000 11.5059 9 101.1243 nan 0.1000 8.7104 10 92.1489 nan 0.1000 8.1265 20 46.7188 nan 0.1000 2.3071 40 23.4752 nan 0.1000 0.3468 60 16.6125 nan 0.1000 0.0633 80 13.6876 nan 0.1000 -0.0364 100 11.9089 nan 0.1000 -0.0587 120 10.5621 nan 0.1000 -0.0562 140 9.4999 nan 0.1000 -0.0859 160 8.4922 nan 0.1000 -0.0154 180 7.6193 nan 0.1000 -0.0150 200 7.0723 nan 0.1000 -0.0325 220 6.5095 nan 0.1000 -0.0709 240 5.9969 nan 0.1000 -0.0518 260 5.6018 nan 0.1000 -0.0636 280 5.3132 nan 0.1000 -0.0276 300 4.9921 nan 0.1000 -0.0631 320 4.6774 nan 0.1000 -0.0384 340 4.4204 nan 0.1000 -0.0447 360 4.2436 nan 0.1000 -0.0365 380 4.0563 nan 0.1000 -0.0629 400 3.8732 nan 0.1000 -0.0490 420 3.7135 nan 0.1000 -0.0184 440 3.5799 nan 0.1000 -0.0369 460 3.4581 nan 0.1000 -0.0451 480 3.3046 nan 0.1000 -0.0283 500 3.1875 nan 0.1000 -0.0341 520 3.0685 nan 0.1000 -0.0355 540 2.9537 nan 0.1000 -0.0228 560 2.8320 nan 0.1000 -0.0499 580 2.7524 nan 0.1000 -0.0241 600 2.6658 nan 0.1000 -0.0314 620 2.6026 nan 0.1000 -0.0386 640 2.5372 nan 0.1000 -0.0294 660 2.4678 nan 0.1000 -0.0182 680 2.4059 nan 0.1000 -0.0146 700 2.3257 nan 0.1000 -0.0218 720 2.2759 nan 0.1000 -0.0401 740 2.2305 nan 0.1000 -0.0188 760 2.1830 nan 0.1000 -0.0204 780 2.1353 nan 0.1000 -0.0127 800 2.0886 nan 0.1000 -0.0261 820 2.0316 nan 0.1000 -0.0254 840 1.9846 nan 0.1000 -0.0199 860 1.9441 nan 0.1000 -0.0330 880 1.9180 nan 0.1000 -0.0167 900 1.8648 nan 0.1000 -0.0186 920 1.8235 nan 0.1000 -0.0173 940 1.8028 nan 0.1000 -0.0143 950 1.7788 nan 0.1000 -0.0137
-
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-1.png" width="750px" />
-
 > Model RMSE: `4.2679`
 
 > Model MAE: `2.6338`
@@ -2190,20 +2190,20 @@ Metrics from Test Data:
 Actual Observations:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-       7.32   23.84   34.36   36.68   45.58   82.60 
+       7.32   23.84   34.37   36.68   45.59   82.60 
 
 Predictios:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      6.416  25.090  34.590  36.950  47.250  81.600 
+      6.416  25.088  34.591  36.949  47.251  81.596 
 
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-4.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-5.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-6.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-4.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-5.png" width="750px" />
 
 ### ensemble\_cubist
 
     Loading required package: Cubist
 
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-7.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-6.png" width="750px" />
 
 > Model RMSE: `4.8704`
 
@@ -2219,47 +2219,20 @@ Metrics from Test Data:
 Actual Observations:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-       7.32   23.84   34.36   36.68   45.58   82.60 
+       7.32   23.84   34.37   36.68   45.59   82.60 
 
 Predictios:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      7.181  26.360  35.160  37.140  45.900  78.440 
+      7.181  26.357  35.163  37.140  45.896  78.439 
 
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-8.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-9.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-10.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-11.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-12.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-7.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-8.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-9.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-10.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-11.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-12.png" width="750px" />
 
 ### ensemble\_random\_forest
 
 Pre-Processing:
 
     [1] "knnImpute" "center"    "scale"    
-
-    Loading required package: randomForest
-
-    randomForest 4.6-12
-
-    Type rfNews() to see new features/changes/bug fixes.
-
-
-    Attaching package: 'randomForest'
-
-    The following object is masked from 'package:Hmisc':
-
-        combine
-
-    The following object is masked from 'package:psych':
-
-        outlier
-
-    The following object is masked from 'package:dplyr':
-
-        combine
-
-    The following object is masked from 'package:ggplot2':
-
-        margin
-
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-13.png" width="750px" />
 
 > Model RMSE: `5.1219`
 
@@ -2275,14 +2248,14 @@ Metrics from Test Data:
 Actual Observations:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-       7.32   23.84   34.36   36.68   45.58   82.60 
+       7.32   23.84   34.37   36.68   45.59   82.60 
 
 Predictios:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      9.266  27.110  35.130  37.090  46.970  77.190 
+      9.266  27.115  35.126  37.091  46.972  77.189 
 
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-14.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-15.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-16.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-17.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-18.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-13.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-14.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-15.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-16.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-17.png" width="750px" />
 
 ### nlm\_neur\_net\_averaging\_pca
 
@@ -2292,30 +2265,30 @@ Pre-Processing:
 
     Loading required package: nnet
 
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-19.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-18.png" width="750px" />
 
-> Model RMSE: `6.0027`
+> Model RMSE: `6.0322`
 
-> Model MAE: `4.3966`
+> Model MAE: `4.5052`
 
-> Model Correaltion Between Actual & Predicted: `0.9358`
+> Model Correaltion Between Actual & Predicted: `0.9356`
 
 Metrics from Test Data:
 
-         RMSE  Rsquared 
-    6.0026652 0.8757497 
+        RMSE Rsquared 
+    6.032193 0.875268 
 
 Actual Observations:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-       7.32   23.84   34.36   36.68   45.58   82.60 
+       7.32   23.84   34.37   36.68   45.59   82.60 
 
 Predictios:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      7.548  25.820  34.050  36.860  47.020  76.930 
+      5.784  23.919  33.670  36.302  46.695  73.387 
 
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-20.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-21.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-22.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-23.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-24.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-25.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-19.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-20.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-21.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-22.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-23.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-24.png" width="750px" />
 
 ### nlm\_mars
 
@@ -2333,11 +2306,11 @@ Metrics from Test Data:
 Actual Observations:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-       7.32   23.84   34.36   36.68   45.58   82.60 
+       7.32   23.84   34.37   36.68   45.59   82.60 
 
 Predictios:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      4.044  27.230  36.490  37.970  46.900  76.120 
+      4.044  27.233  36.494  37.972  46.896  76.117 
 
-<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-26.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-27.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-28.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-29.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-30.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-31.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-32.png" width="750px" />
+<img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-25.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-26.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-27.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-28.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-29.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-30.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-31.png" width="750px" />
