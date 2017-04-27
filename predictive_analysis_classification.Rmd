@@ -25,6 +25,7 @@ library(corrplot)
 library(stringr)
 library(tidyverse)
 library(caret)
+library(gmodels)
 
 opts_chunk$set(out.width='750px', dpi=200)
 
@@ -33,4 +34,430 @@ registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are the
 
 seed <- 123
 refresh_models <- FALSE
+```
+
+```{r dataset_definition, echo = FALSE}
+credit <- fread('./classification_data/credit.csv')
+classification_dataset <- credit %>%
+	dplyr::rename(target = default) %>%
+	dplyr::mutate(phone = ifelse(phone == 'yes', TRUE, FALSE)) %>% # technically don't need to do this but there seems to be an error in dplyr.mutate_if https://github.com/tidyverse/dplyr/pull/2011 which says it is resolved, but still seems to be a problem, dispite having latest version
+	dplyr::select(target, everything())
+classification_dataset <- as.data.frame(classification_dataset)
+```
+
+```{r dataset_prepare, echo = FALSE}
+classification_dataset <- classification_dataset %>%
+	dplyr::mutate_if(is.character, as.factor) %>%
+	dplyr::mutate_if(is.logical, as.factor)
+
+classification_column_names <- colnames(classification_dataset)
+numeric_columns <- map_lgl(classification_column_names, ~ {
+	return (is.numeric(classification_dataset[, .]))
+})
+numeric_column_names <- classification_column_names[numeric_columns]
+
+sample_size <- nrow(classification_dataset)
+num_predictors <- length(classification_dataset) - 1
+```
+
+# Tuning Parameters
+
+```{r tuning_parameters}
+# train/test set
+training_percentage <- 0.80
+```
+
+# Dataset
+
+> Assumes the dataset has factors for strings; logical for TRUE/FALSE; `target` for outcome variable
+
+## Summary
+
+> Total predictors: ``r num_predictors``
+
+> Total data-points/rows: ``r sample_size``
+
+> Number of training data-points: ``r round(sample_size * training_percentage)``
+
+Rule of thumbs for dimensions (Probabilistic and Statistical Modeling in Computer Science; pg 430):
+
+> r < sqrt(n); where r is the number of predictors and sqrt(n) is the square root of the sample size (``r round(sqrt(sample_size))``): ``r num_predictors < round(sqrt(sample_size))``
+
+> r < sqrt(n_t); where r is the number of predictors and sqrt(n_t) is the square root of the training set size (``r round(sqrt(round(sample_size * training_percentage)))``): ``r num_predictors < round(sqrt(round(sample_size * training_percentage)))``
+
+```{r summary, echo = FALSE}
+summary(classification_dataset)
+```
+
+## Skewness
+
+Note: `Box-Cox` can only be applied to sets (i.e. predictors) where all values are `> 0`. So some/most/all? `NA`s will be from that limiation.
+
+```{r skewness, echo = FALSE}
+skewnewss_statistics <- map_dbl(classification_column_names, ~ {
+	column_name <- .
+
+	dataset_column <- classification_dataset[, column_name]
+	if(is.numeric(dataset_column) && min(dataset_column > 0))
+	{
+		return (BoxCoxTrans(dataset_column)$skewness)
+	}else{
+		return (NA)
+	}
+})
+
+kable(data.frame(column = classification_column_names, boxcox_skewness = skewnewss_statistics))
+```
+
+## Outliers
+
+```{r outliers, echo = FALSE}
+outliers <- map(numeric_column_names, ~ {
+	numeric_data <- classification_dataset[, .]
+
+	outlier_range <- 2 # this multipied by IQR (traditionally this number is 1.5)
+
+	lower_quantile <- quantile(numeric_data)[2]
+	upper_quantile <- quantile(numeric_data)[4]
+	iqr <- upper_quantile - lower_quantile
+
+	threshold_upper <- (iqr * outlier_range) + upper_quantile
+	threshold_lower <- lower_quantile - (iqr * 1.5) # Any numeric_data point outside (> threshold_upper or < threshold_lower) these values is a mild outlier
+
+	upper_outlier_count <- sum(numeric_data > threshold_upper)
+	lower_outlier_count <- sum(numeric_data < threshold_lower)
+
+	return (list(upper_outlier_count, lower_outlier_count))
+})
+
+outliers <- data.frame(columns = numeric_column_names, lower_outlier_count = map_chr(outliers, ~ {.[[2]]}), upper_outlier_count = map_chr(outliers, ~ {.[[1]]}))
+kable(outliers)
+```
+
+## Correlation & Collinearity
+
+```{r correlation, echo = FALSE, fig.height=10, fig.width=10}
+#pairs.panels(classification_dataset[, numeric_columns])
+correlations <- cor(classification_dataset[, numeric_columns])
+corrplot::corrplot(correlations, order = "hclust", tl.cex = .35, col = colorRampPalette(rev(c("#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#FFFFFF", "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061")))(200))
+```
+
+### Collinearity Removal
+
+```{r removal_setup, echo = FALSE}
+correlation_threshold <- 0.90
+```
+
+#### Caret's `findCorrelation`
+
+Shows caret's recommendation of removing collinear columns based on correlation threshold of ``r correlation_threshold``
+
+```{r caret_collinearity, echo = FALSE}
+numeric_predictor_data <- classification_dataset[, numeric_columns]
+collinear_indexes <- findCorrelation(cor(numeric_predictor_data), correlation_threshold)
+if(length(collinear_indexes) == 0)
+{
+	recommended_columns_caret <- colnames(classification_dataset)
+}else{
+	recommended_columns_caret <- c('target', colnames(numeric_predictor_data)[-collinear_indexes])	
+}
+```
+
+> columns recommended for removal: ``r paste(colnames(numeric_predictor_data)[collinear_indexes], collapse = ', ')``
+
+> final columns recommended: ``r paste(recommended_columns_caret, collapse = ', ')``
+
+#### Heuristic
+
+This method is described in APM pg 47 as the following steps
+
+- calculate the correlation matrix of predictors
+- determine the two predictors associated with the largest absolute pairwise correlation (call them predictors `A` and `B`)
+- Determine the average correlation between `A` and the other variables.
+	- Do the same for `B`
+- If `A` has a larger average correlation, remove it; otherwise, remove predcitor `B`
+- Repeat until no absolute correlations are above the threshold (``r correlation_threshold``)
+
+```{r heuristic_collinearity, echo = FALSE}
+predictor_correlations <- cor(numeric_predictor_data)
+
+walk(1:nrow(predictor_correlations), ~ {
+	predictor_correlations[.,.] <<- NA	
+})
+
+while(max(abs(predictor_correlations), na.rm = TRUE) > correlation_threshold) {
+	## caret's findCorrelation function is used to identify columns to remove.
+	num_cols_rows <- nrow(predictor_correlations)
+	#highCorr <- findCorrelation(predictor_correlations, .75)
+	ab_index <- which(abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) & abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
+	a_index <- ceil(ab_index / num_cols_rows) # get the row number 
+	b_index <- ab_index - (num_cols_rows * (a_index-1))
+
+	ave_a_predictor_correlations <- mean(abs(predictor_correlations[a_index, ]), na.rm = TRUE)
+	ave_b_predictor_correlations <- mean(abs(predictor_correlations[b_index, ]), na.rm = TRUE)
+
+	if(ave_a_predictor_correlations > ave_b_predictor_correlations)
+	{
+		predictor_correlations <<- predictor_correlations[-a_index, -a_index]
+				
+	}else
+	{
+		predictor_correlations <<- predictor_correlations[-b_index, -b_index]
+	}	
+	
+}
+recommended_numeric_columns <- colnames(predictor_correlations)
+non_numeric_columns <- classification_column_names[!(classification_column_names %in% numeric_column_names)] # includes target
+recommended_columns_custom <- c(recommended_numeric_columns, non_numeric_columns)
+recommended_removal <- classification_column_names[!(classification_column_names %in% recommended_columns_custom)]
+```
+
+> columns recommended for removal: ``r paste(recommended_removal, collapse = ', ')``
+
+> final columns recommended: ``r paste(recommended_columns_custom, collapse = ', ')``
+
+## Graphs
+
+```{r graphs, echo = FALSE, fig.height=4, fig.width=6, comment='', results='asis'}
+walk(classification_column_names, ~ {
+	column_name <- .
+	
+	if(column_name == 'target')
+	{
+		return ()
+	}
+
+	cat(paste('\n\n###', column_name, '\n\n'))
+	dataset_column <- classification_dataset[, column_name]
+	if(is.numeric(dataset_column))
+	{
+		df_data <- data.frame(continuous_variable=dataset_column)
+		fun_args <- list(mean = mean(df_data$continuous_variable), sd = sd(df_data$continuous_variable))
+		quantiles <- quantile(df_data$continuous_variable, c(0.02, 0.98)) # cut off any 'outliers' (crude) so it doesn't skew graph
+		
+		result = tryCatch({
+			print(ggplot(data = df_data, mapping = aes(x = continuous_variable)) +
+				geom_histogram(mapping=aes(y = ..density..), bins = 30) + # histogram of data
+				geom_density(col = "red") + # emperical PDF
+				stat_function(fun = dnorm, args = fun_args, col = "blue") + # theoretical normal PDF, based on data's mean & standard deviation
+				coord_cartesian(xlim = c(quantiles[1], quantiles[2])) + labs(x = column_name))
+
+		}, error = function(e) {
+			cat('\n\nError with histogram.\n\n')
+		})
+
+		print(ggplot(data = df_data, mapping = aes(x = column_name,  y = continuous_variable, group = 1)) +
+			geom_boxplot())
+
+		print(ggplot(data = classification_dataset, mapping = aes(x = target, y = dataset_column)) +
+				geom_boxplot() + 
+				labs(x = column_name))
+		
+		if(length(levels(classification_dataset$target)) == 2){
+			levels <- levels(classification_dataset$target)
+			level_1 <- levels[1]
+			level_2 <- levels[2]
+
+			level_1_values <- (classification_dataset %>% filter(target == level_1))[, column_name]
+			level_2_values <- (classification_dataset %>% filter(target == level_2))[, column_name]
+
+			#https://www.r-bloggers.com/two-sample-students-t-test-1/
+			# Before proceeding with the t-test, it is necessary to evaluate the sample variances of the two groups, using a Fisher’s F-test to verify the homoskedasticity (homogeneity of variances).
+			homogeneous <- var.test(level_1_values, level_2_values)$p.value > 0.05 # If we obtain a p-value greater than 0.05, then we fail to reject the null and can assume that the two variances are homogeneous
+			different_means <- t.test(level_1_values, level_2_values, var.equal = homogeneous, paired = FALSE)$p.value <= 0.05 # if we obtain a p-value of <= 0.05 then we reject the null and conclude that the true difference in means is not equal to 0
+			
+			cat(paste('\n\nstatistically different means (check assumptions for t-test):', different_means, '\n\n'))
+
+			# https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/
+			# Comparison of the averages of two independent groups of samples, of which we can not assume a distribution of Gaussian type; is also known as Mann-Whitney U-test.
+			cat('\n\n"The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)"')
+
+			different_means <- wilcox.test(level_1_values, level_2_values, correct = FALSE, paired = FALSE)$p.value <= 0.05
+			cat(paste('\n\nstatistically different means (Wilcoxon-Matt-Whitney):', different_means, '\n\n'))
+		}
+
+	}else if(is.factor(dataset_column) || is.logical(dataset_column)){
+		
+		print(ggplot(data = classification_dataset, mapping = aes(x = dataset_column)) + 
+			geom_bar(mapping=aes(fill = dataset_column)) + 
+			ggtitle(paste('Histogram of', column_name)) + ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
+
+		df_data <- data.frame(categorical_variable=classification_dataset$target, column = classification_dataset[, column_name ])
+		print(df_data %>% 
+			dplyr::count(column, categorical_variable) %>%
+			ggplot(mapping = aes(x = column, y = categorical_variable)) +
+			geom_tile(mapping = aes(fill = n)))
+
+		print(ggplot(df_data, aes(column, ..count..)) + geom_bar(aes(fill = categorical_variable), position = "dodge"))
+
+		result = tryCatch({
+			count_table <- table(classification_dataset[, c('target', column_name)])
+			cat(paste('\n\nChi-Square p-value:', round(chisq.test(count_table)$p.value, 3), '\n\n'))
+		}, error = function(e) {
+			cat(paste('\n\n', e, '\n\n'))
+		})
+
+	}else{
+		stop(paste('unknown data type -', column_name))
+	}
+})
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+library(AppliedPredictiveModeling)
+
+### Simulate some two class data with two predictors
+set.seed(975)
+training <- quadBoundaryFunc(500)
+testing <- quadBoundaryFunc(1000)
+testing$class2 <- ifelse(testing$class == "Class1", 1, 0)
+testing$ID <- 1:nrow(testing)
+
+### Fit models
+library(MASS)
+qdaFit <- qda(class ~ X1 + X2, data = training)
+library(randomForest)
+rfFit <- randomForest(class ~ X1 + X2, data = training, ntree = 2000)
+
+### Predict the test set
+testing$qda <- predict(qdaFit, testing)$posterior[,1]
+testing$rf <- predict(rfFit, testing, type = "prob")[,1]
+
+
+### Generate the calibration analysis
+library(caret)
+calData1 <- calibration(class ~ qda + rf, data = testing, cuts = 10)
+
+### Plot the curve
+xyplot(calData1, auto.key = list(columns = 2))
+
+### To calibrate the data, treat the probabilities as inputs into the
+### model
+
+trainProbs <- training
+trainProbs$qda <- predict(qdaFit)$posterior[,1]
+
+### These models take the probabilities as inputs and, based on the
+### true class, re-calibrate them.
+library(klaR)
+nbCal <- NaiveBayes(class ~ qda, data = trainProbs, usekernel = TRUE)
+
+### We use relevel() here because glm() models the probability of the
+### second factor level.
+lrCal <- glm(relevel(class, "Class2") ~ qda, data = trainProbs, family = binomial)
+
+### Now re-predict the test set using the modified class probability
+### estimates
+testing$qda2 <- predict(nbCal, testing[, "qda", drop = FALSE])$posterior[,1]
+testing$qda3 <- predict(lrCal, testing[, "qda", drop = FALSE], type = "response")
+```
+
+```{r, eval=FALSE, include=FALSE}
+
+### Manipulate the data a bit for pretty plotting
+simulatedProbs <- testing[, c("class", "rf", "qda3")]
+names(simulatedProbs) <- c("TrueClass", "RandomForestProb", "QDACalibrated")
+simulatedProbs$RandomForestClass <-  predict(rfFit, testing)
+
+calData2 <- calibration(class ~ qda + qda2 + qda3, data = testing)
+calData2$data$calibModelVar <- as.character(calData2$data$calibModelVar)
+calData2$data$calibModelVar <- ifelse(calData2$data$calibModelVar == "qda", 
+                                      "QDA",
+                                      calData2$data$calibModelVar)
+calData2$data$calibModelVar <- ifelse(calData2$data$calibModelVar == "qda2", 
+                                      "Bayesian Calibration",
+                                      calData2$data$calibModelVar)
+
+calData2$data$calibModelVar <- ifelse(calData2$data$calibModelVar == "qda3", 
+                                      "Sigmoidal Calibration",
+                                      calData2$data$calibModelVar)
+
+calData2$data$calibModelVar <- factor(calData2$data$calibModelVar,
+                                      levels = c("QDA", 
+                                                 "Bayesian Calibration", 
+                                                 "Sigmoidal Calibration"))
+
+xyplot(calData2, auto.key = list(columns = 1))
+
+### Recreate the model used in the over-fitting chapter
+
+library(caret)
+data(GermanCredit)
+
+## First, remove near-zero variance predictors then get rid of a few predictors 
+## that duplicate values. For example, there are two possible values for the 
+## housing variable: "Rent", "Own" and "ForFree". So that we don't have linear
+## dependencies, we get rid of one of the levels (e.g. "ForFree")
+
+GermanCredit <- GermanCredit[, -nearZeroVar(GermanCredit)]
+GermanCredit$CheckingAccountStatus.lt.0 <- NULL
+GermanCredit$SavingsAccountBonds.lt.100 <- NULL
+GermanCredit$EmploymentDuration.lt.1 <- NULL
+GermanCredit$EmploymentDuration.Unemployed <- NULL
+GermanCredit$Personal.Male.Married.Widowed <- NULL
+GermanCredit$Property.Unknown <- NULL
+GermanCredit$Housing.ForFree <- NULL
+
+## Split the data into training (80%) and test sets (20%)
+set.seed(100)
+inTrain <- createDataPartition(GermanCredit$Class, p = .8)[[1]]
+GermanCreditTrain <- GermanCredit[ inTrain, ]
+GermanCreditTest  <- GermanCredit[-inTrain, ]
+
+set.seed(1056)
+logisticReg <- train(Class ~ .,
+                     data = GermanCreditTrain,
+                     method = "glm",
+                     trControl = trainControl(method = "repeatedcv", 
+                                              repeats = 5))
+logisticReg
+
+### Predict the test set
+creditResults <- data.frame(obs = GermanCreditTest$Class)
+creditResults$prob <- predict(logisticReg, GermanCreditTest, type = "prob")[, "Bad"]
+creditResults$pred <- predict(logisticReg, GermanCreditTest)
+creditResults$Label <- ifelse(creditResults$obs == "Bad", 
+                              "True Outcome: Bad Credit", 
+                              "True Outcome: Good Credit")
+
+### Plot the probability of bad credit
+histogram(~prob|Label,
+          data = creditResults,
+          layout = c(2, 1),
+          nint = 20,
+          xlab = "Probability of Bad Credit",
+          type = "count")
+
+### Calculate and plot the calibration curve
+creditCalib <- calibration(obs ~ prob, data = creditResults)
+xyplot(creditCalib)
+
+### Create the confusion matrix from the test set.
+confusionMatrix(data = creditResults$pred, 
+                reference = creditResults$obs)
+
+### ROC curves:
+
+### Like glm(), roc() treats the last level of the factor as the event
+### of interest so we use relevel() to change the observed class data
+
+library(pROC)
+creditROC <- roc(relevel(creditResults$obs, "Good"), creditResults$prob)
+
+coords(creditROC, "all")[,1:3]
+
+auc(creditROC)
+ci.auc(creditROC)
+
+### Note the x-axis is reversed
+plot(creditROC)
+
+### Old-school:
+plot(creditROC, legacy.axes = TRUE)
+
+### Lift charts
+
+creditLift <- lift(obs ~ prob, data = creditResults)
+xyplot(creditLift)
 ```
