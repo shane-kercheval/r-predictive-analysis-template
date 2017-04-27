@@ -303,147 +303,87 @@ walk(classification_column_names, ~ {
 })
 ```
 
+# Spot-Check
 
-```{r, eval=FALSE, include=FALSE}
-library(AppliedPredictiveModeling)
+```{r spot_check_prepare_numeric, echo = FALSE}
+set.seed(seed)
+training_index <- createDataPartition(classification_dataset$target, p = training_percentage, list = TRUE)
+classification_train <- classification_dataset[training_index$Resample1, ]
+classification_test <- classification_dataset[-training_index$Resample1, ]
 
-### Simulate some two class data with two predictors
-set.seed(975)
-training <- quadBoundaryFunc(500)
-testing <- quadBoundaryFunc(1000)
-testing$class2 <- ifelse(testing$class == "Class1", 1, 0)
-testing$ID <- 1:nrow(testing)
-
-### Fit models
-library(MASS)
-qdaFit <- qda(class ~ X1 + X2, data = training)
-library(randomForest)
-rfFit <- randomForest(class ~ X1 + X2, data = training, ntree = 2000)
-
-### Predict the test set
-testing$qda <- predict(qdaFit, testing)$posterior[,1]
-testing$rf <- predict(rfFit, testing, type = "prob")[,1]
-
-
-### Generate the calibration analysis
-library(caret)
-calData1 <- calibration(class ~ qda + rf, data = testing, cuts = 10)
-
-### Plot the curve
-xyplot(calData1, auto.key = list(columns = 2))
-
-### To calibrate the data, treat the probabilities as inputs into the
-### model
-
-trainProbs <- training
-trainProbs$qda <- predict(qdaFit)$posterior[,1]
-
-### These models take the probabilities as inputs and, based on the
-### true class, re-calibrate them.
-library(klaR)
-nbCal <- NaiveBayes(class ~ qda, data = trainProbs, usekernel = TRUE)
-
-### We use relevel() here because glm() models the probability of the
-### second factor level.
-lrCal <- glm(relevel(class, "Class2") ~ qda, data = trainProbs, family = binomial)
-
-### Now re-predict the test set using the modified class probability
-### estimates
-testing$qda2 <- predict(nbCal, testing[, "qda", drop = FALSE])$posterior[,1]
-testing$qda3 <- predict(lrCal, testing[, "qda", drop = FALSE], type = "response")
+prop.table(table(classification_train$target))
+prop.table(table(classification_test$target))
 ```
 
-```{r, eval=FALSE, include=FALSE}
+- Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
 
-### Manipulate the data a bit for pretty plotting
-simulatedProbs <- testing[, c("class", "rf", "qda3")]
-names(simulatedProbs) <- c("TrueClass", "RandomForestProb", "QDACalibrated")
-simulatedProbs$RandomForestClass <-  predict(rfFit, testing)
+> used ``r percent(training_percentage)`` of data for `training` set (``r nrow(classification_train)``), and ``r percent(1 - training_percentage)`` for `test` set (``r nrow(classification_test)``).
 
-calData2 <- calibration(class ~ qda + qda2 + qda3, data = testing)
-calData2$data$calibModelVar <- as.character(calData2$data$calibModelVar)
-calData2$data$calibModelVar <- ifelse(calData2$data$calibModelVar == "qda", 
-                                      "QDA",
-                                      calData2$data$calibModelVar)
-calData2$data$calibModelVar <- ifelse(calData2$data$calibModelVar == "qda2", 
-                                      "Bayesian Calibration",
-                                      calData2$data$calibModelVar)
 
-calData2$data$calibModelVar <- ifelse(calData2$data$calibModelVar == "qda3", 
-                                      "Sigmoidal Calibration",
-                                      calData2$data$calibModelVar)
+```{r}
+random_forest <- randomForest(target ~ ., data = classification_train, ntree = 2000)
+predictions_raw <- predict(random_forest, classification_test %>% select(-target), type = "prob")
+observations <- classification_test$target
 
-calData2$data$calibModelVar <- factor(calData2$data$calibModelVar,
-                                      levels = c("QDA", 
-                                                 "Bayesian Calibration", 
-                                                 "Sigmoidal Calibration"))
+df_temp <- data.frame(target = classification_train$target, predictions = predictions)
 
-xyplot(calData2, auto.key = list(columns = 1))
+df_temp$no_prob <- predictions_raw[, "no"]
+df_temp$yes_prob <- predictions_raw[, "yes"]
+df_temp$predictions_class <- predict(random_forest, classification_test %>% select(-target))
+calData1 <- calibration(target ~ no_prob + yes_prob, data = df_temp, cuts = 10)
+xyplot(calData1, auto.key = list(columns = 2))
 
-### Recreate the model used in the over-fitting chapter
 
-library(caret)
-data(GermanCredit)
-
-## First, remove near-zero variance predictors then get rid of a few predictors 
-## that duplicate values. For example, there are two possible values for the 
-## housing variable: "Rent", "Own" and "ForFree". So that we don't have linear
-## dependencies, we get rid of one of the levels (e.g. "ForFree")
-
-GermanCredit <- GermanCredit[, -nearZeroVar(GermanCredit)]
-GermanCredit$CheckingAccountStatus.lt.0 <- NULL
-GermanCredit$SavingsAccountBonds.lt.100 <- NULL
-GermanCredit$EmploymentDuration.lt.1 <- NULL
-GermanCredit$EmploymentDuration.Unemployed <- NULL
-GermanCredit$Personal.Male.Married.Widowed <- NULL
-GermanCredit$Property.Unknown <- NULL
-GermanCredit$Housing.ForFree <- NULL
-
-## Split the data into training (80%) and test sets (20%)
-set.seed(100)
-inTrain <- createDataPartition(GermanCredit$Class, p = .8)[[1]]
-GermanCreditTrain <- GermanCredit[ inTrain, ]
-GermanCreditTest  <- GermanCredit[-inTrain, ]
-
-set.seed(1056)
-logisticReg <- train(Class ~ .,
-                     data = GermanCreditTrain,
-                     method = "glm",
-                     trControl = trainControl(method = "repeatedcv", 
-                                              repeats = 5))
-logisticReg
-
-### Predict the test set
-creditResults <- data.frame(obs = GermanCreditTest$Class)
-creditResults$prob <- predict(logisticReg, GermanCreditTest, type = "prob")[, "Bad"]
-creditResults$pred <- predict(logisticReg, GermanCreditTest)
-creditResults$Label <- ifelse(creditResults$obs == "Bad", 
-                              "True Outcome: Bad Credit", 
-                              "True Outcome: Good Credit")
+df_temp$Label <- ifelse(observations == "no", 
+                              "True Outcome: No", 
+                              "True Outcome: Yes")
 
 ### Plot the probability of bad credit
-histogram(~prob|Label,
-          data = creditResults,
+histogram(~no_prob|Label,
+          data = df_temp,
           layout = c(2, 1),
           nint = 20,
-          xlab = "Probability of Bad Credit",
+          xlab = "Probability of No",
           type = "count")
 
-### Calculate and plot the calibration curve
-creditCalib <- calibration(obs ~ prob, data = creditResults)
-xyplot(creditCalib)
+histogram(~yes_prob|Label,
+          data = df_temp,
+          layout = c(2, 1),
+          nint = 20,
+          xlab = "Probability of Yes",
+          type = "count")
 
 ### Create the confusion matrix from the test set.
-confusionMatrix(data = creditResults$pred, 
-                reference = creditResults$obs)
+confusionMatrix(data = df_temp$predictions_class, reference = df_temp$target)
 
 ### ROC curves:
+library(ROCR)
+test_probabilities <- predict(random_forest, newdata = classification_test, type = 'prob')
+test_probabilities_target <- test_probabilities[, 'yes']
+
+
+roc_pred <- prediction(predictions = test_probabilities_target, labels = classification_test$target)
+roc_perf <- performance(roc_pred, measure = 'tpr', x.measure = 'fpr')
+plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7))
+```
+
+### AUC
+
+```{r substages_analysis_logistic_auc, echo=FALSE}
+# calculate AUC
+perf_auc <- performance(roc_pred, measure = 'auc')
+logistic_auc <- unlist(perf_auc@y.values)
+```
+
+> AUC: ``r logistic_auc``
+
+```{r}
 
 ### Like glm(), roc() treats the last level of the factor as the event
 ### of interest so we use relevel() to change the observed class data
 
 library(pROC)
-creditROC <- roc(relevel(creditResults$obs, "Good"), creditResults$prob)
+creditROC <- roc(relevel(df_temp$target, "yes"), df_temp$no_prob)
 
 coords(creditROC, "all")[,1:3]
 
