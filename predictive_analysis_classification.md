@@ -343,6 +343,17 @@ histogram(~predictions | label, data = df_results, layout = c(2, 1), nint = 20, 
 
 ``` r
 ### Create the confusion matrix from the test set.
+confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
+confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
+                                true_neg = confusion_matrix['no', 'no'],
+                                false_pos = confusion_matrix['no', 'yes'],
+                                false_neg = confusion_matrix['yes', 'no'])
+visualize_quality_of_model(confusion_ls)
+```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-4.png" width="750px" />
+
+``` r
 confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
 ```
 
@@ -393,7 +404,7 @@ roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
 plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7))
 ```
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-4.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-5.png" width="750px" />
 
 ``` r
 # calculate AUC
@@ -410,4 +421,4 @@ creditLift <- lift(actual_observations ~ probabilities_positive, data = df_resul
 xyplot(creditLift)
 ```
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-5.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-6.png" width="750px" />

@@ -13,6 +13,7 @@ options(scipen=999) # non-scientific notation
 options(width=180)
 source('~/r-tools/output/plots.R', chdir=TRUE)
 source('~/r-tools/output/markdown.R', chdir=TRUE)
+source('~/r-tools/general/model_measurements.R', chdir=TRUE)
 library('data.table')
 library(partykit) # Use the partykit package to make some nice plots. First, convert the rpart objects to party objects.
 library(psych)
@@ -356,6 +357,12 @@ histogram(~probabilities_negative | label, data = df_results, layout = c(2, 1), 
 histogram(~predictions | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count')
 
 ### Create the confusion matrix from the test set.
+confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
+confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
+								true_neg = confusion_matrix['no', 'no'],
+								false_pos = confusion_matrix['no', 'yes'],
+								false_neg = confusion_matrix['yes', 'no'])
+visualize_quality_of_model(confusion_ls)
 confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
 
 ### ROC curves:
