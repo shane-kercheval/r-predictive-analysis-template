@@ -22,13 +22,14 @@
         -   [job](#job)
         -   [dependents](#dependents)
         -   [phone](#phone)
+-   [Spot-Check](#spot-check)
 
 Tuning Parameters
 =================
 
 ``` r
 # train/test set
-training_percentage <- 0.80
+training_percentage <- 0.90
 ```
 
 Dataset
@@ -43,17 +44,17 @@ Summary
 
 > Total data-points/rows: `1000`
 
-> Number of training data-points: `800`
+> Number of training data-points: `900`
 
 Rule of thumbs for dimensions (Probabilistic and Statistical Modeling in Computer Science; pg 430):
 
 > r &lt; sqrt(n); where r is the number of predictors and sqrt(n) is the square root of the sample size (`32`): `TRUE`
 
-> r &lt; sqrt(n\_t); where r is the number of predictors and sqrt(n\_t) is the square root of the training set size (`28`): `TRUE`
+> r &lt; sqrt(n\_t); where r is the number of predictors and sqrt(n\_t) is the square root of the training set size (`30`): `TRUE`
 
     ##  target      checking_balance months_loan_duration   credit_history                 purpose        amount           savings_balance  employment_duration percent_of_income
-    ##  no :700   < 0 DM    :274     Min.   : 4.0         critical :293    business            : 97   Min.   :  250   < 100 DM     :603    < 1 year   :172      Min.   :1.000    
-    ##  yes:300   > 200 DM  : 63     1st Qu.:12.0         good     :530    car                 :337   1st Qu.: 1366   > 1000 DM    : 48    > 7 years  :253      1st Qu.:2.000    
+    ##  yes:300   < 0 DM    :274     Min.   : 4.0         critical :293    business            : 97   Min.   :  250   < 100 DM     :603    < 1 year   :172      Min.   :1.000    
+    ##  no :700   > 200 DM  : 63     1st Qu.:12.0         good     :530    car                 :337   1st Qu.: 1366   > 1000 DM    : 48    > 7 years  :253      1st Qu.:2.000    
     ##            1 - 200 DM:269     Median :18.0         perfect  : 40    car0                : 12   Median : 2320   100 - 500 DM :103    1 - 4 years:339      Median :3.000    
     ##            unknown   :394     Mean   :20.9         poor     : 88    education           : 59   Mean   : 3271   500 - 1000 DM: 63    4 - 7 years:174      Mean   :2.973    
     ##                               3rd Qu.:24.0         very good: 49    furniture/appliances:473   3rd Qu.: 3972   unknown      :183    unemployed : 62      3rd Qu.:4.000    
@@ -139,128 +140,274 @@ Graphs
 
 ### checking\_balance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-3.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-2.png" width="750px" />
 
-Chi-Square p-value: 0
+> Chi-Square p-value: `0`
 
 ### months\_loan\_duration
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-4.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-5.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-6.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-4.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-5.png" width="750px" />
 
 statistically different means (check assumptions for t-test): TRUE
 
-"The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)"
+The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
 
 statistically different means (Wilcoxon-Matt-Whitney): TRUE
 
 ### credit\_history
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-9.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-7.png" width="750px" />
 
-Chi-Square p-value: 0
+> Chi-Square p-value: `0`
 
 ### purpose
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-10.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-11.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-8.png" width="750px" />
 
     Warning in chisq.test(count_table): Chi-squared approximation may be incorrect
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-12.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-9.png" width="750px" />
 
-Chi-Square p-value: 0.145
+> Chi-Square p-value: `0.145`
 
 ### amount
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-14.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-15.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-10.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-11.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-12.png" width="750px" />
 
 statistically different means (check assumptions for t-test): TRUE
 
-"The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)"
+The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
 
 statistically different means (Wilcoxon-Matt-Whitney): TRUE
 
 ### savings\_balance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-16.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-18.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-14.png" width="750px" />
 
-Chi-Square p-value: 0
+> Chi-Square p-value: `0`
 
 ### employment\_duration
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-21.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-15.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-16.png" width="750px" />
 
-Chi-Square p-value: 0.001
+> Chi-Square p-value: `0.001`
 
 ### percent\_of\_income
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-22.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-23.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-24.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-19.png" width="750px" />
 
 statistically different means (check assumptions for t-test): TRUE
 
-"The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)"
+The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
 
 statistically different means (Wilcoxon-Matt-Whitney): TRUE
 
 ### years\_at\_residence
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-25.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-26.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-27.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-22.png" width="750px" />
 
 statistically different means (check assumptions for t-test): FALSE
 
-"The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)"
+The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
 
 statistically different means (Wilcoxon-Matt-Whitney): FALSE
 
 ### age
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-28.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-29.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-30.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-23.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-24.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-25.png" width="750px" />
 
 statistically different means (check assumptions for t-test): TRUE
 
-"The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)"
+The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
 
 statistically different means (Wilcoxon-Matt-Whitney): TRUE
 
 ### other\_credit
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-33.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-26.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-27.png" width="750px" />
 
-Chi-Square p-value: 0.002
+> Chi-Square p-value: `0.002`
 
 ### housing
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-34.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-35.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-36.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-28.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-29.png" width="750px" />
 
-Chi-Square p-value: 0
+> Chi-Square p-value: `0`
 
 ### existing\_loans\_count
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-37.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-39.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-30.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-32.png" width="750px" />
 
 statistically different means (check assumptions for t-test): FALSE
 
-"The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)"
+The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
 
 statistically different means (Wilcoxon-Matt-Whitney): FALSE
 
 ### job
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-40.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-41.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-42.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-34.png" width="750px" />
 
-Chi-Square p-value: 0.597
+> Chi-Square p-value: `0.597`
 
 ### dependents
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-44.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-45.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-35.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-37.png" width="750px" />
 
 statistically different means (check assumptions for t-test): FALSE
 
-"The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)"
+The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
 
 statistically different means (Wilcoxon-Matt-Whitney): FALSE
 
 ### phone
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-46.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-47.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-48.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-39.png" width="750px" />
 
-Chi-Square p-value: 0.279
+> Chi-Square p-value: `0.279`
+
+Spot-Check
+==========
+
+    ## 
+    ## yes  no 
+    ## 0.3 0.7
+
+    ## 
+    ## yes  no 
+    ## 0.3 0.7
+
+-   Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
+
+> used `90%` of data for `training` set (`900`), and `10%` for `test` set (`100`).
+
+``` r
+set.seed(123)
+final_model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
+#library(C50)
+#set.seed(123)
+#final_model <- C5.0(classification_train %>% select(-target), classification_train$target) # exclude 'default' column, but include it as target factor vector for classification
+summary(final_model)
+```
+
+    ##                 Length Class  Mode     
+    ## call               4   -none- call     
+    ## type               1   -none- character
+    ## predicted        900   factor numeric  
+    ## err.rate        6000   -none- numeric  
+    ## confusion          6   -none- numeric  
+    ## votes           1800   matrix numeric  
+    ## oob.times        900   -none- numeric  
+    ## classes            2   -none- character
+    ## importance        16   -none- numeric  
+    ## importanceSD       0   -none- NULL     
+    ## localImportance    0   -none- NULL     
+    ## proximity          0   -none- NULL     
+    ## ntree              1   -none- numeric  
+    ## mtry               1   -none- numeric  
+    ## forest            14   -none- list     
+    ## y                900   factor numeric  
+    ## test               0   -none- NULL     
+    ## inbag              0   -none- NULL     
+    ## terms              3   terms  call
+
+``` r
+predictions_raw <- predict(final_model, classification_test %>% dplyr::select(-target), type = 'prob')
+actual_observations <- classification_test$target
+probabilities_negative <- predictions_raw[, target_negative_class]
+probabilities_positive <- predictions_raw[, target_positive_class]
+
+df_results <- data.frame(actual_observations = actual_observations, predictions = probabilities_positive, probabilities_negative = probabilities_negative)
+df_results$predicted_class <- predict(final_model, classification_test %>% dplyr::select(-target))
+
+calibration_data <- calibration(actual_observations ~ predictions, data = df_results, cuts = 10)
+xyplot(calibration_data, auto.key = list(columns = 2))
+```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-1.png" width="750px" />
+
+``` r
+df_results$label <- ifelse(actual_observations == target_negative_class, paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
+
+### Plot the probability of bad credit
+histogram(~probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count')
+```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-2.png" width="750px" />
+
+``` r
+histogram(~predictions | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count')
+```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-3.png" width="750px" />
+
+``` r
+### Create the confusion matrix from the test set.
+confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
+```
+
+    ## Confusion Matrix and Statistics
+    ## 
+    ##           Reference
+    ## Prediction yes no
+    ##        yes  15  4
+    ##        no   15 66
+    ##                                           
+    ##                Accuracy : 0.81            
+    ##                  95% CI : (0.7193, 0.8816)
+    ##     No Information Rate : 0.7             
+    ##     P-Value [Acc > NIR] : 0.008887        
+    ##                                           
+    ##                   Kappa : 0.4947          
+    ##  Mcnemar's Test P-Value : 0.021781        
+    ##                                           
+    ##             Sensitivity : 0.5000          
+    ##             Specificity : 0.9429          
+    ##          Pos Pred Value : 0.7895          
+    ##          Neg Pred Value : 0.8148          
+    ##              Prevalence : 0.3000          
+    ##          Detection Rate : 0.1500          
+    ##    Detection Prevalence : 0.1900          
+    ##       Balanced Accuracy : 0.7214          
+    ##                                           
+    ##        'Positive' Class : yes             
+    ## 
+
+``` r
+### ROC curves:
+library(ROCR)
+```
+
+    ## Loading required package: gplots
+
+    ## 
+    ## Attaching package: 'gplots'
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     lowess
+
+``` r
+roc_pred <- prediction(predictions = probabilities_positive, labels = actual_observations)
+roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
+plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7))
+```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-4.png" width="750px" />
+
+``` r
+# calculate AUC
+perf_auc <- performance(roc_pred, measure = 'auc')
+model_auc <- unlist(perf_auc@y.values)
+model_auc
+```
+
+    ## [1] 0.8235714
+
+``` r
+### Lift charts
+creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
+xyplot(creditLift)
+```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-5.png" width="750px" />
