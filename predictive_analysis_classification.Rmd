@@ -28,6 +28,7 @@ library(tidyverse)
 library(caret)
 library(gmodels)
 library(randomForest)
+library(ROCR)
 
 opts_chunk$set(out.width='750px', dpi=200)
 
@@ -332,29 +333,32 @@ prop.table(table(classification_test$target))
 > used ``r percent(training_percentage)`` of data for `training` set (``r nrow(classification_train)``), and ``r percent(1 - training_percentage)`` for `test` set (``r nrow(classification_test)``).
 
 
-```{r}
+```{r, echo = FALSE}
 set.seed(123)
 final_model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
 #library(C50)
 #set.seed(123)
 #final_model <- C5.0(classification_train %>% select(-target), classification_train$target) # exclude 'default' column, but include it as target factor vector for classification
 summary(final_model)
-predictions_raw <- predict(final_model, classification_test %>% dplyr::select(-target), type = 'prob')
+probabilities_raw <- predict(final_model, classification_test %>% dplyr::select(-target), type = 'prob')
 actual_observations <- classification_test$target
-probabilities_negative <- predictions_raw[, target_negative_class]
-probabilities_positive <- predictions_raw[, target_positive_class]
+probabilities_negative <- probabilities_raw[, target_negative_class]
+probabilities_positive <- probabilities_raw[, target_positive_class]
 
-df_results <- data.frame(actual_observations = actual_observations, predictions = probabilities_positive, probabilities_negative = probabilities_negative)
+names(probabilities_negative) <- NULL
+names(probabilities_positive) <- NULL
+
+df_results <- data.frame(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, probabilities_negative = probabilities_negative)
 df_results$predicted_class <- predict(final_model, classification_test %>% dplyr::select(-target))
 
-calibration_data <- calibration(actual_observations ~ predictions, data = df_results, cuts = 10)
+calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
 xyplot(calibration_data, auto.key = list(columns = 2))
 
 df_results$label <- ifelse(actual_observations == target_negative_class, paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
 
 ### Plot the probability of bad credit
 histogram(~probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count')
-histogram(~predictions | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count')
+histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count')
 
 ### Create the confusion matrix from the test set.
 confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
@@ -366,7 +370,6 @@ visualize_quality_of_model(confusion_ls)
 confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
 
 ### ROC curves:
-library(ROCR)
 roc_pred <- prediction(predictions = probabilities_positive, labels = actual_observations)
 roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
 plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7))
@@ -379,4 +382,7 @@ model_auc
 ### Lift charts
 creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
 xyplot(creditLift)
+
+
+df_gain_lift <- df_results %>% dplyr::select(actual_observations, predicted_class, predicted_probabilities)
 ```

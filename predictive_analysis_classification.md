@@ -281,15 +281,6 @@ Spot-Check
 
 > used `90%` of data for `training` set (`900`), and `10%` for `test` set (`100`).
 
-``` r
-set.seed(123)
-final_model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
-#library(C50)
-#set.seed(123)
-#final_model <- C5.0(classification_train %>% select(-target), classification_train$target) # exclude 'default' column, but include it as target factor vector for classification
-summary(final_model)
-```
-
     ##                 Length Class  Mode     
     ## call               4   -none- call     
     ## type               1   -none- character
@@ -311,51 +302,7 @@ summary(final_model)
     ## inbag              0   -none- NULL     
     ## terms              3   terms  call
 
-``` r
-predictions_raw <- predict(final_model, classification_test %>% dplyr::select(-target), type = 'prob')
-actual_observations <- classification_test$target
-probabilities_negative <- predictions_raw[, target_negative_class]
-probabilities_positive <- predictions_raw[, target_positive_class]
-
-df_results <- data.frame(actual_observations = actual_observations, predictions = probabilities_positive, probabilities_negative = probabilities_negative)
-df_results$predicted_class <- predict(final_model, classification_test %>% dplyr::select(-target))
-
-calibration_data <- calibration(actual_observations ~ predictions, data = df_results, cuts = 10)
-xyplot(calibration_data, auto.key = list(columns = 2))
-```
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-1.png" width="750px" />
-
-``` r
-df_results$label <- ifelse(actual_observations == target_negative_class, paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
-
-### Plot the probability of bad credit
-histogram(~probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count')
-```
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-2.png" width="750px" />
-
-``` r
-histogram(~predictions | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count')
-```
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-3.png" width="750px" />
-
-``` r
-### Create the confusion matrix from the test set.
-confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
-confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
-                                true_neg = confusion_matrix['no', 'no'],
-                                false_pos = confusion_matrix['no', 'yes'],
-                                false_neg = confusion_matrix['yes', 'no'])
-visualize_quality_of_model(confusion_ls)
-```
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-4.png" width="750px" />
-
-``` r
-confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
-```
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-4.png" width="750px" />
 
     ## Confusion Matrix and Statistics
     ## 
@@ -384,41 +331,8 @@ confusionMatrix(data = df_results$predicted_class, reference = df_results$actual
     ##        'Positive' Class : yes             
     ## 
 
-``` r
-### ROC curves:
-library(ROCR)
-```
-
-    ## Loading required package: gplots
-
-    ## 
-    ## Attaching package: 'gplots'
-
-    ## The following object is masked from 'package:stats':
-    ## 
-    ##     lowess
-
-``` r
-roc_pred <- prediction(predictions = probabilities_positive, labels = actual_observations)
-roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
-plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7))
-```
-
 <img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-5.png" width="750px" />
 
-``` r
-# calculate AUC
-perf_auc <- performance(roc_pred, measure = 'auc')
-model_auc <- unlist(perf_auc@y.values)
-model_auc
-```
-
     ## [1] 0.8235714
-
-``` r
-### Lift charts
-creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
-xyplot(creditLift)
-```
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-6.png" width="750px" />
