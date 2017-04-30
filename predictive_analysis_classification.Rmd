@@ -383,6 +383,9 @@ model_auc
 creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
 xyplot(creditLift)
 
+gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = 'yes')
+gl_charts <- gain_lift_charts(gl_table = gl_table)
 
-df_gain_lift <- df_results %>% dplyr::select(actual_observations, predicted_class, predicted_probabilities)
+gl_charts[[1]]
+gl_charts[[2]]
 ```

@@ -335,4 +335,4 @@ Spot-Check
 
     ## [1] 0.8235714
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-6.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-8.png" width="750px" />

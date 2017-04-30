@@ -11,6 +11,8 @@ The information will help determine which potential models are worth spending ti
 
 ## predictive_analysis_regression.Rmd
 
+- example output: [predictive_analysis_regression.md](./predictive_analysis_regression.md)
+
 The two main outputs for the regression analysis are:
 
 - **shotgun approach**: plot showing cross-validated `RMSE` and `R-Squared` for a variety of models (with reasonable defaults) training on a training set.
@@ -25,4 +27,6 @@ The two main outputs for the regression analysis are:
 
 ## predictive_analysis_classification.Rmd
 
-TBD
+The classification code is currently being implemented
+
+- example output: [predictive_analysis_classification.md](./predictive_analysis_classification.md)
