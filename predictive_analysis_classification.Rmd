@@ -380,7 +380,7 @@ model_auc
 creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
 xyplot(creditLift)
 
-gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = 'yes')
+gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = target_positive_class)
 gl_charts <- gain_lift_charts(gl_table = gl_table)
 
 gl_charts[[1]]
@@ -390,7 +390,17 @@ gl_charts[[2]]
 calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
 xyplot(calibration_data, auto.key = list(columns = 2))
 
-cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = 'yes')
+cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = target_positive_class)
 cal_chart <- calibration_chart(cal_table = cal_table)
+
+# recalibrate probabilities using Naive Bayes
+require(klaR)
+recalibrated_model <- NaiveBayes(actual_observations ~ predicted_probabilities, data = df_results, usekernel = TRUE)
+recalibrated_probabilities_raw <- predict(recalibrated_model, df_results, type = 'prob')
+recalibrated_probabilities <- recalibrated_probabilities$posterior[, target_positive_class]
+recal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = recalibrated_probabilities, target_positive_class = target_positive_class)
+recal_chart <- calibration_chart(cal_table = recal_table)
+
 cal_chart
+recal_chart
 ```
