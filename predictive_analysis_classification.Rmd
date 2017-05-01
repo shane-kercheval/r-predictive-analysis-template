@@ -333,7 +333,7 @@ prop.table(table(classification_test$target))
 > used ``r percent(training_percentage)`` of data for `training` set (``r nrow(classification_train)``), and ``r percent(1 - training_percentage)`` for `test` set (``r nrow(classification_test)``).
 
 
-```{r, echo = FALSE}
+```{r, echo=FALSE, fig.height=6, fig.width=9}
 set.seed(123)
 final_model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
 #library(C50)
@@ -350,9 +350,6 @@ names(probabilities_positive) <- NULL
 
 df_results <- data.frame(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, probabilities_negative = probabilities_negative)
 df_results$predicted_class <- predict(final_model, classification_test %>% dplyr::select(-target))
-
-calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
-xyplot(calibration_data, auto.key = list(columns = 2))
 
 df_results$label <- ifelse(actual_observations == target_negative_class, paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
 
@@ -379,7 +376,7 @@ perf_auc <- performance(roc_pred, measure = 'auc')
 model_auc <- unlist(perf_auc@y.values)
 model_auc
 
-### Lift charts
+# Gain/Lift charts
 creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
 xyplot(creditLift)
 
@@ -388,4 +385,12 @@ gl_charts <- gain_lift_charts(gl_table = gl_table)
 
 gl_charts[[1]]
 gl_charts[[2]]
+
+# Calibration Chart
+calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
+xyplot(calibration_data, auto.key = list(columns = 2))
+
+cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = 'yes')
+cal_chart <- calibration_chart(cal_table = cal_table)
+cal_chart
 ```

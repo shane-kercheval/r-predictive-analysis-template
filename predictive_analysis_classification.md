@@ -302,7 +302,7 @@ Spot-Check
     ## inbag              0   -none- NULL     
     ## terms              3   terms  call
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-4.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-3.png" width="750px" />
 
     ## Confusion Matrix and Statistics
     ## 
@@ -331,8 +331,8 @@ Spot-Check
     ##        'Positive' Class : yes             
     ## 
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-5.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-4.png" width="750px" />
 
     ## [1] 0.8235714
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-8.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-5.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-9.png" width="750px" />
