@@ -397,7 +397,7 @@ cal_chart <- calibration_chart(cal_table = cal_table)
 require(klaR)
 recalibrated_model <- NaiveBayes(actual_observations ~ predicted_probabilities, data = df_results, usekernel = TRUE)
 recalibrated_probabilities_raw <- predict(recalibrated_model, df_results, type = 'prob')
-recalibrated_probabilities <- recalibrated_probabilities$posterior[, target_positive_class]
+recalibrated_probabilities <- recalibrated_probabilities_raw$posterior[, target_positive_class]
 recal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = recalibrated_probabilities, target_positive_class = target_positive_class)
 recal_chart <- calibration_chart(cal_table = recal_table)
 
