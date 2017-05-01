@@ -302,7 +302,20 @@ Spot-Check
     ## inbag              0   -none- NULL     
     ## terms              3   terms  call
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-3.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-2.png" width="750px" />
+
+    ##       predictions
+    ## actual yes no
+    ##    yes  15 15
+    ##    no    4 66
+
+    ##      [,1]  [,2]
+    ## [1,] 26.4 -26.4
+    ## [2,] -2.0   0.0
+
+    ## [1] -8
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-3.png" width="750px" />
 
     ## Confusion Matrix and Statistics
     ## 

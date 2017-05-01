@@ -363,6 +363,21 @@ confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
 								true_neg = confusion_matrix['no', 'no'],
 								false_pos = confusion_matrix['no', 'yes'],
 								false_neg = confusion_matrix['yes', 'no'])
+observation_rates <- confusion_matrix / sum(confusion_matrix)
+
+average_profit <- 28.40
+average_cost <- 2
+gain_true_positive <- average_profit - average_cost # positive is gain
+gain_true_negative <- 0
+gain_false_positive <- -average_cost # negative is cost
+gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
+costs_gains <- matrix(c(gain_true_positive, gain_false_negative, gain_false_positive, gain_true_negative), nrow = 2, byrow = TRUE)
+
+confusion_matrix
+costs_gains
+expected_value = sum(confusion_matrix * costs_gains)
+expected_value
+
 visualize_quality_of_model(confusion_ls)
 confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
 
