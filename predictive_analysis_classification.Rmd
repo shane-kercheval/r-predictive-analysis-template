@@ -73,6 +73,10 @@ num_predictors <- length(classification_dataset) - 1
 ```{r tuning_parameters}
 # train/test set
 training_percentage <- 0.90
+
+# cross validation
+cross_validation_num_folds <- 10
+cross_validation_num_repeats <- 3
 ```
 
 # Dataset
@@ -318,7 +322,7 @@ walk(classification_column_names, ~ {
 
 # Spot-Check
 
-```{r spot_check_prepare_numeric, echo = FALSE}
+```{r spot_check_prepare_classification, echo = FALSE}
 set.seed(seed)
 training_index <- createDataPartition(classification_dataset$target, p = training_percentage, list = TRUE)
 classification_train <- classification_dataset[training_index$Resample1, ]
@@ -328,9 +332,57 @@ prop.table(table(classification_train$target))
 prop.table(table(classification_test$target))
 ```
 
+```{r spot_check_classification, echo = FALSE}
+# we have to make sure they are fit on exactly the same test sets in training and cross validation so we are sure we are making an apples-to-apples comparison
+set.seed(seed)
+spot_check_folds <- createMultiFolds(classification_train$target, k = cross_validation_num_folds, times = cross_validation_num_repeats) # maintains the `churn` ratio
+
+train_control <- trainControl(
+	summaryFunction = twoClassSummary,
+	classProbs = TRUE,
+	method = 'repeatedcv',
+	number = cross_validation_num_folds,
+	repeats = cross_validation_num_repeats,
+	verboseIter = FALSE,
+	savePredictions = TRUE,
+	index = spot_check_folds)
+
+metric <- 'ROC'
+```
+
 - Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
 
 > used ``r percent(training_percentage)`` of data for `training` set (``r nrow(classification_train)``), and ``r percent(1 - training_percentage)`` for `test` set (``r nrow(classification_test)``).
+
+### Logistic Regression - no pre processing
+
+```{r linear_regression_no_pre_processing}
+if(refresh_models)
+{
+	set.seed(seed)
+	glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
+	saveRDS(glm_no_pre_processing, file = './classification_data/glm_no_pre_processing.RDS')
+} else{
+	glm_no_pre_processing <- readRDS('./classification_data/glm_no_pre_processing.RDS')
+}
+summary(glm_no_pre_processing)
+#plot(glm_no_pre_processing$finalModel)
+```
+
+### Logistic Regression - basic processing
+
+```{r linear_regression_basic_processing}
+if(refresh_models)
+{
+	set.seed(seed)
+	glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('knnImpute', 'nzv', 'center', 'scale'), trControl=train_control)
+	saveRDS(glm_basic_processing, file = './classification_data/glm_basic_processing.RDS')
+} else{
+	glm_basic_processing <- readRDS('./classification_data/glm_basic_processing.RDS')
+}
+summary(glm_basic_processing)
+plot(glm_basic_processing$finalModel)
+```
 
 
 ```{r, echo=FALSE, fig.height=6, fig.width=9}
