@@ -438,11 +438,11 @@ top_models <- resamples_means %>%
 	filter(rank <= 5) %>% # LOWEST RMSE
 	arrange(rank) %>% 
 	dplyr::select(model, average) %>%
-	dplyr::rename(cross_validation_rmse = average) %>%
+	dplyr::rename(cross_validation_auc = average) %>%
 	mutate(model_object = map(model, ~ { numeric_models[names(numeric_models) == .][[1]] })) # add models to data.frame so when we choose the top models later we will 
 
 
-final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE) # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
+final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE, savePredictions = 'all') # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
 
 model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 	model_name <- .x
@@ -464,7 +464,7 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 		cat(paste0('\n\nPre-Processing: `', paste(pre_process, collapse = ', '), '`\n\n'))
 	}
 	
-	if(TRUE)
+	if(refresh_models)
 	{
 		set.seed(seed)
 		# some models have different parameters for `train`, which we need to use when training the final model
@@ -486,94 +486,159 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 	}
 
 	print(summary(final_model$finalModel))
-	#model_plots(model = final_model, testing_set = classification_test)
+	model_stats <- model_plots(model = final_model, testing_set = classification_test)
+	return (model_stats)
 })
+
+final_models_metrics <- data.frame(model = factor(as.character(top_models$model), levels = as.character(top_models$model)),
+								   test_set_auc = map_dbl(model_stats, ~ .['model_auc']),
+								   cross_validation_auc = top_models$cross_validation_auc,
+								   sensitivity = map_dbl(model_stats, ~ .['model_sensitivity']),
+								   specificity = map_dbl(model_stats, ~ .['model_specificity']))
+
+#min_rmse <- min(final_models_metrics$test_set_rmse)
+#min_mae <- min(final_models_metrics$mae)
+#max_correlation <- max(final_models_metrics$correlation)
+
+# prepare/format data for ggplot
+# final_models_metrics_long <- gather(final_models_metrics, metric, value, -model) %>%
+# 	mutate(model = factor(model, levels = rev(unique(model))),
+# 		type = ifelse(str_detect(metric, 'rmse'), str_split(metric, '_'), '')) %>%
+# 	mutate(type = map_chr(type, ~ { 
+# 			if(length(.) > 1)
+# 			{
+# 				return(paste0(.[1:2], collapse = ' '))
+# 			}else{
+# 				return ('test set')
+# 			}
+# 		}),
+# 	metric = ifelse(str_detect(metric, 'rmse'), 'rmse', as.character(metric))) %>%
+# 	mutate(metric = factor(metric, levels = unique(metric)))
+# 
+#best_values <- data.frame(metric = unique(final_models_metrics_long$metric), Z = c(min_rmse, min_mae, max_correlation))
+#ggplot(data = final_models_metrics_long, mapping = aes(x = model, y = value, col = type)) +
+#	geom_point() + 
+#	geom_hline(data = best_values, aes(yintercept = Z), color='red') +
+#	facet_grid(. ~ metric, scales = "free", space = "free_y") +
+#	coord_flip()
 ```
 
 
 ```{r, echo=FALSE, fig.height=6, fig.width=9}
-set.seed(123)
-final_model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
-#library(C50)
-#set.seed(123)
-#final_model <- C5.0(classification_train %>% select(-target), classification_train$target) # exclude 'default' column, but include it as target factor vector for classification
-summary(final_model)
-probabilities_raw <- predict(final_model, classification_test %>% dplyr::select(-target), type = 'prob')
-actual_observations <- classification_test$target
-probabilities_negative <- probabilities_raw[, target_negative_class]
-probabilities_positive <- probabilities_raw[, target_positive_class]
 
-names(probabilities_negative) <- NULL
-names(probabilities_positive) <- NULL
+model_plots <- function(model, testing_set, prediction_threshold = 0.35){
+	
+	#predictions <- predict(model, newdata = testing_set %>% dplyr::select(-target))
+	#predicted_vs_actual <- data.frame(obs = as.numeric(testing_set$target), pred = as.numeric(predictions), residuals = as.numeric(testing_set$target - predictions))
+	
+	
+	# set.seed(123)
+	# model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
+	#library(C50)
+	#set.seed(123)
+	#model <- C5.0(classification_train %>% select(-target), classification_train$target) # exclude 'default' column, but include it as target factor vector for classification
+	# summary(model)
 
-df_results <- data.frame(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, probabilities_negative = probabilities_negative)
-df_results$predicted_class <- predict(final_model, classification_test %>% dplyr::select(-target))
+	probabilities_raw <- predict(model, testing_set %>% dplyr::select(-target), type = 'prob')
+	actual_observations <- testing_set$target
+	probabilities_negative <- probabilities_raw[, target_negative_class]
+	probabilities_positive <- probabilities_raw[, target_positive_class]
 
-df_results$label <- ifelse(actual_observations == target_negative_class, paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
+	names(probabilities_negative) <- NULL
+	names(probabilities_positive) <- NULL
 
-### Plot the probability of bad credit
-histogram(~probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count')
-histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count')
+	df_results <- data.frame(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, probabilities_negative = probabilities_negative)
+	df_results$predicted_class <- predict(model, testing_set %>% dplyr::select(-target))
 
-### Create the confusion matrix from the test set.
-confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
-confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
-								true_neg = confusion_matrix['no', 'no'],
-								false_pos = confusion_matrix['no', 'yes'],
-								false_neg = confusion_matrix['yes', 'no'])
-observation_rates <- confusion_matrix / sum(confusion_matrix)
+	df_results$label <- ifelse(actual_observations == target_negative_class, paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
 
-average_profit <- 28.40
-average_cost <- 2
-gain_true_positive <- average_profit - average_cost # positive is gain
-gain_true_negative <- 0
-gain_false_positive <- -average_cost # negative is cost
-gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
-costs_gains <- matrix(c(gain_true_positive, gain_false_negative, gain_false_positive, gain_true_negative), nrow = 2, byrow = TRUE)
+	### Plot the probability of bad credit
+	print(histogram(~probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count'))
+	print(histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count'))
 
-confusion_matrix
-costs_gains
-expected_value = sum(confusion_matrix * costs_gains)
-expected_value
+	### Create the confusion matrix from the test set.
+	confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
+	confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
+									true_neg = confusion_matrix['no', 'no'],
+									false_pos = confusion_matrix['no', 'yes'],
+									false_neg = confusion_matrix['yes', 'no'])
+	observation_rates <- confusion_matrix / sum(confusion_matrix)
 
-visualize_quality_of_model(confusion_ls)
-confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
+	#average_profit <- 28.40
+	#average_cost <- 2
+	#gain_true_positive <- average_profit - average_cost # positive is gain
+	#gain_true_negative <- 0
+	#gain_false_positive <- -average_cost # negative is cost
+	#gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
+	#costs_gains <- matrix(c(gain_true_positive, gain_false_negative, gain_false_positive, gain_true_negative), nrow = 2, byrow = TRUE)
 
-### ROC curves:
-roc_pred <- prediction(predictions = probabilities_positive, labels = actual_observations)
-roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
-plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7))
+	#confusion_matrix
+	#costs_gains
+	#expected_value = sum(confusion_matrix * costs_gains)
+	#expected_value
 
-# calculate AUC
-perf_auc <- performance(roc_pred, measure = 'auc')
-model_auc <- unlist(perf_auc@y.values)
-model_auc
+	print(visualize_quality_of_model(confusion_ls))
+	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
+	cat(codebc(conf_matrix))
 
-# Gain/Lift charts
-creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
-xyplot(creditLift)
+	### ROC curves:
+	roc_pred <- prediction(predictions = probabilities_positive, labels = actual_observations)
+	roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
+	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
 
-gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = target_positive_class)
-gl_charts <- gain_lift_charts(gl_table = gl_table)
+	# calculate AUC
+	perf_auc <- performance(roc_pred, measure = 'auc')
+	model_auc <- unlist(perf_auc@y.values)
 
-gl_charts[[1]]
-gl_charts[[2]]
+	# Gain/Lift charts
+	creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
+	print(xyplot(creditLift))
 
-# Calibration Chart
-calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
-xyplot(calibration_data, auto.key = list(columns = 2))
+	gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = target_positive_class)
+	gl_charts <- gain_lift_charts(gl_table = gl_table)
 
-cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = target_positive_class)
-cal_chart <- calibration_chart(cal_table = cal_table)
+	print(gl_charts[[1]])
+	print(gl_charts[[2]])
 
-# recalibrate probabilities using Naive Bayes
-require(klaR)
-recalibrated_model <- NaiveBayes(actual_observations ~ predicted_probabilities, data = df_results, usekernel = TRUE)
-recalibrated_probabilities_raw <- predict(recalibrated_model, df_results, type = 'prob')
-recalibrated_probabilities <- recalibrated_probabilities_raw$posterior[, target_positive_class]
-recal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = recalibrated_probabilities, target_positive_class = target_positive_class)
-recal_chart <- calibration_chart(cal_table = recal_table)
+	# Calibration Chart
+	calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
+	print(xyplot(calibration_data, auto.key = list(columns = 2)))
 
-cal_chart
-recal_chart
+	cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = target_positive_class)
+	cal_chart <- calibration_chart(cal_table = cal_table)
+	
+	# cat('\n\n#### Recalibration\n\n')
+	# recalibrate probabilities using Naive Bayes
+# 	require(klaR)
+# 	training_predictions <- predict(model, classification_train %>% dplyr::select(-target), type = 'prob')
+# 	recalibration_training <- data.frame(actual_observations = model$trainingData$.outcome, predicted_probabilities = training_predictions[[target_positive_class]])
+# 	recalibrated_model <- NaiveBayes(actual_observations ~ predicted_probabilities, data = recalibration_training, usekernel = TRUE)
+# 	
+# #	new_predictions <- factor(ifelse(recalibration_training$predicted_probabilities >= 0.5, target_positive_class, target_negative_class), levels = c(target_positive_class, target_negative_class))
+# #	confusionMatrix(data = new_predictions, reference = recalibration_training$actual_observations)
+# 
+# 	recalibrated_probabilities_raw <- predict(recalibrated_model, df_results, type = 'prob')
+# 	recalibrated_probabilities <- recalibrated_probabilities_raw$posterior[, target_positive_class]
+# 	recal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = recalibrated_probabilities, target_positive_class = target_positive_class)
+# 	recal_chart <- calibration_chart(cal_table = recal_table)
+# 	
+# 	print(cal_chart)
+# 	print(recal_chart)
+# 
+# 	recal_roc_pred <- prediction(predictions = recalibrated_probabilities, labels = actual_observations)
+# 	recal_roc_perf <- performance(recal_roc_pred, measure = 'sens', x.measure = 'fpr')
+# 	print(plot(recal_roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
+# 	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
+# 	# calculate AUC
+# 	recal_perf_auc <- performance(recal_roc_pred, measure = 'auc')
+# 	recal_model_auc <- unlist(recal_perf_auc@y.values)
+# 	recal_model_auc
+	
+	# pick predictions with threshold based off of AUC
+	new_predictions <- factor(ifelse(recalibrated_probabilities >= prediction_threshold, target_positive_class, target_negative_class), levels = c(target_positive_class, target_negative_class))
+	conf_matrix <- confusionMatrix(data = new_predictions, reference = df_results$actual_observations)
+	cat(codebc(conf_matrix))
+
+	return (c(model_auc = model_auc, model_sensitivity = as.numeric(conf_matrix$byClass['Sensitivity']), model_specificity = as.numeric(conf_matrix$byClass['Specificity'])))
+}
 ```
