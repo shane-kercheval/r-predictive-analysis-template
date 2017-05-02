@@ -2176,6 +2176,8 @@ top_x_models <- 5
 
         compact
 
+Iter TrainDeviance ValidDeviance StepSize Improve 1 241.1421 nan 0.1000 33.6977 2 212.6304 nan 0.1000 29.4750 3 189.7272 nan 0.1000 22.7933 4 169.9480 nan 0.1000 19.6884 5 152.0770 nan 0.1000 15.9338 6 136.4286 nan 0.1000 14.7907 7 123.6048 nan 0.1000 13.5533 8 111.0273 nan 0.1000 11.5059 9 101.1243 nan 0.1000 8.7104 10 92.1489 nan 0.1000 8.1265 20 46.7188 nan 0.1000 2.3071 40 23.4752 nan 0.1000 0.3468 60 16.6125 nan 0.1000 0.0633 80 13.6876 nan 0.1000 -0.0364 100 11.9089 nan 0.1000 -0.0587 120 10.5621 nan 0.1000 -0.0562 140 9.4999 nan 0.1000 -0.0859 160 8.4922 nan 0.1000 -0.0154 180 7.6193 nan 0.1000 -0.0150 200 7.0723 nan 0.1000 -0.0325 220 6.5095 nan 0.1000 -0.0709 240 5.9969 nan 0.1000 -0.0518 260 5.6018 nan 0.1000 -0.0636 280 5.3132 nan 0.1000 -0.0276 300 4.9921 nan 0.1000 -0.0631 320 4.6774 nan 0.1000 -0.0384 340 4.4204 nan 0.1000 -0.0447 360 4.2436 nan 0.1000 -0.0365 380 4.0563 nan 0.1000 -0.0629 400 3.8732 nan 0.1000 -0.0490 420 3.7135 nan 0.1000 -0.0184 440 3.5799 nan 0.1000 -0.0369 460 3.4581 nan 0.1000 -0.0451 480 3.3046 nan 0.1000 -0.0283 500 3.1875 nan 0.1000 -0.0341 520 3.0685 nan 0.1000 -0.0355 540 2.9537 nan 0.1000 -0.0228 560 2.8320 nan 0.1000 -0.0499 580 2.7524 nan 0.1000 -0.0241 600 2.6658 nan 0.1000 -0.0314 620 2.6026 nan 0.1000 -0.0386 640 2.5372 nan 0.1000 -0.0294 660 2.4678 nan 0.1000 -0.0182 680 2.4059 nan 0.1000 -0.0146 700 2.3257 nan 0.1000 -0.0218 720 2.2759 nan 0.1000 -0.0401 740 2.2305 nan 0.1000 -0.0188 760 2.1830 nan 0.1000 -0.0204 780 2.1353 nan 0.1000 -0.0127 800 2.0886 nan 0.1000 -0.0261 820 2.0316 nan 0.1000 -0.0254 840 1.9846 nan 0.1000 -0.0199 860 1.9441 nan 0.1000 -0.0330 880 1.9180 nan 0.1000 -0.0167 900 1.8648 nan 0.1000 -0.0186 920 1.8235 nan 0.1000 -0.0173 940 1.8028 nan 0.1000 -0.0143 950 1.7788 nan 0.1000 -0.0137
+
 > Model RMSE: `4.2679`
 
 > Model MAE: `2.6338`
@@ -2263,16 +2265,16 @@ Pre-Processing: `nzv, YeoJohnson, center, scale, knnImpute, pca`
 
 <img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-18.png" width="750px" />
 
-> Model RMSE: `6.0322`
+> Model RMSE: `5.8511`
 
-> Model MAE: `4.5052`
+> Model MAE: `4.2161`
 
-> Model Correaltion Between Actual & Predicted: `0.9356`
+> Model Correaltion Between Actual & Predicted: `0.9391`
 
 Metrics from Test Data:
 
-        RMSE Rsquared 
-    6.032193 0.875268 
+         RMSE  Rsquared 
+    5.8510595 0.8819404 
 
 Actual Observations:
 
@@ -2282,7 +2284,7 @@ Actual Observations:
 Predictios:
 
        Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-      5.784  23.919  33.670  36.302  46.695  73.387 
+      7.716  25.036  34.408  36.845  46.135  74.887 
 
 <img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-19.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-20.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-21.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-22.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-23.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-24.png" width="750px" />
 

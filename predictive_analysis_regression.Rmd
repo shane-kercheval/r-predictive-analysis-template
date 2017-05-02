@@ -1228,7 +1228,8 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 	}
 
 	#cat(codebc(summary(final_model$finalModel)))
-	model_plots(model = final_model, testing_set = regression_test)
+	model_stats <- model_plots(model = final_model, testing_set = regression_test)
+	return (model_stats)
 })
 
 final_models_metrics <- data.frame(model = factor(as.character(top_models$model), levels = as.character(top_models$model)),
