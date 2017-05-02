@@ -356,7 +356,7 @@ metric <- 'ROC'
 
 ### Logistic Regression - no pre processing
 
-```{r linear_regression_no_pre_processing}
+```{r classification_no_pre_processing}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -371,7 +371,7 @@ summary(glm_no_pre_processing)
 
 ### Logistic Regression - basic processing
 
-```{r linear_regression_basic_processing}
+```{r classification_basic_processing}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -382,6 +382,112 @@ if(refresh_models)
 }
 summary(glm_basic_processing)
 plot(glm_basic_processing$finalModel)
+```
+
+
+## Resamples & Top Models
+
+### Resamples
+
+```{r resamples_regression, echo=FALSE, fig.height=6, fig.width=9}
+numeric_models <- list(
+		glm_no_pre_processing = glm_no_pre_processing,
+		glm_basic_processing = glm_basic_processing
+		)
+
+resamples <- resamples(numeric_models)
+
+# Table comparison
+(resamples_summary <- summary(resamples))
+
+resamples_long <- resamples$values %>%
+	dplyr::select(-Resample) %>%
+	gather(type, value) %>%
+	separate(col=type, into=c('model', 'metric'), sep = '~') %>%
+	mutate(model = factor(model, levels = rev(resamples$models)), metric = factor(metric, levels = c('ROC', 'Sens', 'Spec')))
+
+resamples_means <- resamples_long %>%
+	dplyr::group_by(model, metric) %>%
+	dplyr::summarise(average = mean(value)) %>%
+	dplyr::ungroup()
+
+max_roc_mean <- max(resamples_means %>% filter(metric == 'ROC') %>% dplyr::select(average))
+max_sensitivity_mean <- max(resamples_means %>% filter(metric == 'Sens') %>% dplyr::select(average))
+max_specificity_mean <- max(resamples_means %>% filter(metric == 'Spec') %>% dplyr::select(average))
+
+best_values <- data.frame(metric = levels(resamples_long$metric), Z = c(max_roc_mean, max_sensitivity_mean, max_specificity_mean))
+ggplot(data = resamples_long, mapping = aes(x = model, y = value)) +
+	geom_boxplot() + 
+	stat_summary(fun.y=mean, colour="red", geom="point", shape=21, size=3, show.legend = FALSE) + 
+	geom_hline(data = best_values, aes(yintercept = Z), color='red') +
+	facet_grid(. ~ metric, scales = "free", space = "free_y") +
+	coord_flip()
+
+densityplot(resamples, metric = 'ROC')
+densityplot(resamples, metric = 'Sens')
+densityplot(resamples, metric = 'Spec')
+```
+
+# Train Top Models on Entire Dataset & Predict on Test Set
+
+
+```{r top_models, echo=FALSE, fig.height=6, fig.width=9}
+top_models <- resamples_means %>% 
+	filter(metric == 'ROC') %>% 
+	mutate(rank = row_number(average)) %>% 
+	filter(rank <= 5) %>% # LOWEST RMSE
+	arrange(rank) %>% 
+	dplyr::select(model, average) %>%
+	dplyr::rename(cross_validation_rmse = average) %>%
+	mutate(model_object = map(model, ~ { numeric_models[names(numeric_models) == .][[1]] })) # add models to data.frame so when we choose the top models later we will 
+
+
+final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE) # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
+
+model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
+	model_name <- .x
+	model_object <- .y
+
+	cat(paste0('\n\n### ', model_object$modelInfo$label, ' (', model_name,')\n\n'))
+	
+	# get method, tuning grid, pre-processing steps.
+	model_method <- model_object$method
+	tune_grid <- model_object$bestTune
+	
+	if(is.null(model_object$preProcess$method))
+	{
+		pre_process <- NULL
+	}else{
+		pre_process_call <- as.character(model_object$call$preProc)
+		pre_process <- pre_process_call[!(pre_process_call %in% c('c'))]
+		
+		cat(paste0('\n\nPre-Processing: `', paste(pre_process, collapse = ', '), '`\n\n'))
+	}
+	
+	if(TRUE)
+	{
+		set.seed(seed)
+		# some models have different parameters for `train`, which we need to use when training the final model
+		if(model_method == 'asdf')
+		{
+			#final_model <- train(
+			#	target ~ ., data = classification_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
+			#	ntree = parameter_random_forest_ntree, importance = TRUE)
+
+		}else{
+			final_model <- train(target ~ ., data = classification_train, method = model_method, metric = metric, preProc = pre_process, trControl = final_train_control, tuneGrid = tune_grid)
+		}
+
+		saveRDS(final_model, file = paste0('./classification_data/top_model_', model_name, '.RDS'))
+
+	}else{
+
+		final_model <- readRDS(file = paste0('./classification_data/top_model_', model_name, '.RDS'))
+	}
+
+	print(summary(final_model$finalModel))
+	#model_plots(model = final_model, testing_set = classification_test)
+})
 ```
 
 
