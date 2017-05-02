@@ -55,11 +55,11 @@
         -   [Resamples](#resamples)
         -   [Top Models](#top-models)
 -   [Train Top Models on Entire Dataset & Predict on Test Set](#train-top-models-on-entire-dataset-predict-on-test-set)
-    -   [ensemble\_boosting](#ensemble_boosting)
-    -   [ensemble\_cubist](#ensemble_cubist)
-    -   [ensemble\_random\_forest](#ensemble_random_forest)
-    -   [nlm\_neur\_net\_averaging\_pca](#nlm_neur_net_averaging_pca)
-    -   [nlm\_mars](#nlm_mars)
+    -   [Stochastic Gradient Boosting (ensemble\_boosting)](#stochastic-gradient-boosting-ensemble_boosting)
+    -   [Cubist (ensemble\_cubist)](#cubist-ensemble_cubist)
+    -   [Random Forest (ensemble\_random\_forest)](#random-forest-ensemble_random_forest)
+    -   [Model Averaged Neural Network (nlm\_neur\_net\_averaging\_pca)](#model-averaged-neural-network-nlm_neur_net_averaging_pca)
+    -   [Multivariate Adaptive Regression Spline (nlm\_mars)](#multivariate-adaptive-regression-spline-nlm_mars)
 
 Tuning Parameters
 =================
@@ -2139,7 +2139,7 @@ top_x_models <- 5
 
 -   Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
 
-### ensemble\_boosting
+### Stochastic Gradient Boosting (ensemble\_boosting)
 
     Loading required package: gbm
 
@@ -2199,7 +2199,7 @@ Predictios:
 
 <img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-1.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-2.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-3.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-4.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-5.png" width="750px" />
 
-### ensemble\_cubist
+### Cubist (ensemble\_cubist)
 
     Loading required package: Cubist
 
@@ -2228,11 +2228,9 @@ Predictios:
 
 <img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-7.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-8.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-9.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-10.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-11.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-12.png" width="750px" />
 
-### ensemble\_random\_forest
+### Random Forest (ensemble\_random\_forest)
 
-Pre-Processing:
-
-    [1] "knnImpute" "center"    "scale"    
+Pre-Processing: `knnImpute`
 
 > Model RMSE: `5.1219`
 
@@ -2257,11 +2255,9 @@ Predictios:
 
 <img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-13.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-14.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-15.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-16.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-17.png" width="750px" />
 
-### nlm\_neur\_net\_averaging\_pca
+### Model Averaged Neural Network (nlm\_neur\_net\_averaging\_pca)
 
-Pre-Processing:
-
-    [1] "YeoJohnson" "center"     "scale"      "knnImpute"  "pca"       
+Pre-Processing: `nzv, YeoJohnson, center, scale, knnImpute, pca`
 
     Loading required package: nnet
 
@@ -2290,7 +2286,7 @@ Predictios:
 
 <img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-19.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-20.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-21.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-22.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-23.png" width="750px" /><img src="predictive_analysis_regression_files/figure-markdown_github/determine_best_models-24.png" width="750px" />
 
-### nlm\_mars
+### Multivariate Adaptive Regression Spline (nlm\_mars)
 
 > Model RMSE: `6.2572`
 

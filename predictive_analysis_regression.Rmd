@@ -1167,7 +1167,7 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 	model_name <- .x
 	model_object <- .y
 
-	cat(paste('\n\n### ', model_name, '\n\n'))
+	cat(paste0('\n\n### ', model_object$modelInfo$label, ' (', model_name,')\n\n'))
 	
 	# get method, tuning grid, pre-processing steps.
 	model_method <- model_object$method
@@ -1177,14 +1177,14 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 	{
 		pre_process <- NULL
 	}else{
-		pre_process <- names(model_object$preProcess$method)[map_lgl(model_object$preProcess$method, ~ {length(.) > 0})]
-		cat('\n\nPre-Processing:\n\n')
-		cat(codebc(pre_process))
+		pre_process_call <- as.character(model_object$call$preProc)
+		pre_process <- pre_process_call[!(pre_process_call %in% c('c'))]
+		
+		cat(paste0('\n\nPre-Processing: `', paste(pre_process, collapse = ', '), '`\n\n'))
 	}
 	
 	if(refresh_models)
-	{
-		
+	{	
 		set.seed(seed)
 		# some models have different parameters for `train`, which we need to use when training the final model
 		if(model_method == 'rf')
@@ -1227,7 +1227,7 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 		final_model <- readRDS(file = paste0('./regression_data/top_model_', model_name, '.RDS'))
 	}
 
-	summary(final_model$finalModel)
+	#cat(codebc(summary(final_model$finalModel)))
 	model_plots(model = final_model, testing_set = regression_test)
 })
 
