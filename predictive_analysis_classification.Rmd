@@ -35,13 +35,13 @@ opts_chunk$set(out.width='750px', dpi=200)
 require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
-seed <- 123
+custom_seed <- 123
 refresh_models <- FALSE
 ```
 
 ```{r dataset_definition, echo = FALSE}
-credit <- fread('./classification_data/credit.csv')
-classification_dataset <- credit %>%
+df_credit <- fread('./classification_data/credit.csv')
+classification_dataset <- df_credit %>%
 	dplyr::rename(target = default) %>%
 	dplyr::mutate(phone = ifelse(phone == 'yes', TRUE, FALSE)) %>% # technically don't need to do this but there seems to be an error in dplyr.mutate_if https://github.com/tidyverse/dplyr/pull/2011 which says it is resolved, but still seems to be a problem, dispite having latest version
 	dplyr::select(target, everything())
@@ -64,7 +64,7 @@ numeric_columns <- map_lgl(classification_column_names, ~ {
 })
 numeric_column_names <- classification_column_names[numeric_columns]
 
-sample_size <- nrow(classification_dataset)
+num_sample_size <- nrow(classification_dataset)
 num_predictors <- length(classification_dataset) - 1
 ```
 
@@ -87,15 +87,15 @@ cross_validation_num_repeats <- 3
 
 > Total predictors: ``r num_predictors``
 
-> Total data-points/rows: ``r sample_size``
+> Total data-points/rows: ``r num_sample_size``
 
-> Number of training data-points: ``r round(sample_size * training_percentage)``
+> Number of training data-points: ``r round(num_sample_size * training_percentage)``
 
 Rule of thumbs for dimensions (Probabilistic and Statistical Modeling in Computer Science; pg 430):
 
-> r < sqrt(n); where r is the number of predictors and sqrt(n) is the square root of the sample size (``r round(sqrt(sample_size))``): ``r num_predictors < round(sqrt(sample_size))``
+> r < sqrt(n); where r is the number of predictors and sqrt(n) is the square root of the sample size (``r round(sqrt(num_sample_size))``): ``r num_predictors < round(sqrt(num_sample_size))``
 
-> r < sqrt(n_t); where r is the number of predictors and sqrt(n_t) is the square root of the training set size (``r round(sqrt(round(sample_size * training_percentage)))``): ``r num_predictors < round(sqrt(round(sample_size * training_percentage)))``
+> r < sqrt(n_t); where r is the number of predictors and sqrt(n_t) is the square root of the training set size (``r round(sqrt(round(num_sample_size * training_percentage)))``): ``r num_predictors < round(sqrt(round(num_sample_size * training_percentage)))``
 
 ```{r summary, echo = FALSE}
 summary(classification_dataset)
@@ -124,7 +124,7 @@ kable(data.frame(column = classification_column_names, boxcox_skewness = skewnew
 ## Outliers
 
 ```{r outliers, echo = FALSE}
-outliers <- map(numeric_column_names, ~ {
+df_outliers <- map(numeric_column_names, ~ {
 	numeric_data <- classification_dataset[, .]
 
 	outlier_range <- 2 # this multipied by IQR (traditionally this number is 1.5)
@@ -142,16 +142,16 @@ outliers <- map(numeric_column_names, ~ {
 	return (list(upper_outlier_count, lower_outlier_count))
 })
 
-outliers <- data.frame(columns = numeric_column_names, lower_outlier_count = map_chr(outliers, ~ {.[[2]]}), upper_outlier_count = map_chr(outliers, ~ {.[[1]]}))
-kable(outliers)
+df_outliers <- data.frame(columns = numeric_column_names, lower_outlier_count = map_chr(df_outliers, ~ {.[[2]]}), upper_outlier_count = map_chr(df_outliers, ~ {.[[1]]}))
+kable(df_outliers)
 ```
 
 ## Correlation & Collinearity
 
 ```{r correlation, echo = FALSE, fig.height=10, fig.width=10}
 #pairs.panels(classification_dataset[, numeric_columns])
-correlations <- cor(classification_dataset[, numeric_columns])
-corrplot::corrplot(correlations, order = 'hclust', tl.cex = .35, col = colorRampPalette(rev(c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF', '#D1E5F0', '#92C5DE', '#4393C3', '#2166AC', '#053061')))(200))
+matrix_correlations <- cor(classification_dataset[, numeric_columns])
+corrplot::corrplot(matrix_correlations, order = 'hclust', tl.cex = .35, col = colorRampPalette(rev(c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF', '#D1E5F0', '#92C5DE', '#4393C3', '#2166AC', '#053061')))(200))
 ```
 
 ### Collinearity Removal
@@ -323,7 +323,7 @@ walk(classification_column_names, ~ {
 # Spot-Check
 
 ```{r spot_check_prepare_classification, echo = FALSE}
-set.seed(seed)
+set.seed(custom_seed)
 training_index <- createDataPartition(classification_dataset$target, p = training_percentage, list = TRUE)
 classification_train <- classification_dataset[training_index$Resample1, ]
 classification_test <- classification_dataset[-training_index$Resample1, ]
@@ -334,7 +334,7 @@ prop.table(table(classification_test$target))
 
 ```{r spot_check_classification, echo = FALSE}
 # we have to make sure they are fit on exactly the same test sets in training and cross validation so we are sure we are making an apples-to-apples comparison
-set.seed(seed)
+set.seed(custom_seed)
 spot_check_folds <- createMultiFolds(classification_train$target, k = cross_validation_num_folds, times = cross_validation_num_repeats) # maintains the `churn` ratio
 
 train_control <- trainControl(
@@ -359,14 +359,14 @@ metric <- 'ROC'
 ```{r classification_no_pre_processing}
 if(refresh_models)
 {
-	set.seed(seed)
-	glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
-	saveRDS(glm_no_pre_processing, file = './classification_data/glm_no_pre_processing.RDS')
+	set.seed(custom_seed)
+	model_glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
+	saveRDS(model_glm_no_pre_processing, file = './classification_data/model_glm_no_pre_processing.RDS')
 } else{
-	glm_no_pre_processing <- readRDS('./classification_data/glm_no_pre_processing.RDS')
+	model_glm_no_pre_processing <- readRDS('./classification_data/model_glm_no_pre_processing.RDS')
 }
-summary(glm_no_pre_processing)
-#plot(glm_no_pre_processing$finalModel)
+summary(model_glm_no_pre_processing)
+#plot(model_glm_no_pre_processing$finalModel)
 ```
 
 ### Logistic Regression - basic processing
@@ -374,14 +374,14 @@ summary(glm_no_pre_processing)
 ```{r classification_basic_processing}
 if(refresh_models)
 {
-	set.seed(seed)
-	glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('knnImpute', 'nzv', 'center', 'scale'), trControl=train_control)
-	saveRDS(glm_basic_processing, file = './classification_data/glm_basic_processing.RDS')
+	set.seed(custom_seed)
+	model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('knnImpute', 'nzv', 'center', 'scale'), trControl=train_control)
+	saveRDS(model_glm_basic_processing, file = './classification_data/model_glm_basic_processing.RDS')
 } else{
-	glm_basic_processing <- readRDS('./classification_data/glm_basic_processing.RDS')
+	model_glm_basic_processing <- readRDS('./classification_data/model_glm_basic_processing.RDS')
 }
-summary(glm_basic_processing)
-plot(glm_basic_processing$finalModel)
+summary(model_glm_basic_processing)
+plot(model_glm_basic_processing$finalModel)
 ```
 
 
@@ -391,8 +391,8 @@ plot(glm_basic_processing$finalModel)
 
 ```{r resamples_regression, echo=FALSE, fig.height=6, fig.width=9}
 numeric_models <- list(
-		glm_no_pre_processing = glm_no_pre_processing,
-		glm_basic_processing = glm_basic_processing
+		model_glm_no_pre_processing = model_glm_no_pre_processing,
+		model_glm_basic_processing = model_glm_basic_processing
 		)
 
 resamples <- resamples(numeric_models)
@@ -430,6 +430,81 @@ densityplot(resamples, metric = 'Spec')
 
 # Train Top Models on Entire Dataset & Predict on Test Set
 
+```{r model_definitions, echo=FALSE, fig.height=5, fig.width=8}
+
+model_plots <- function(model, testing_set, prediction_threshold = 0.5){
+
+	predictions_probabilities_raw <- predict(model, testing_set %>% dplyr::select(-target), type = 'prob')
+	actual_observations <- testing_set$target
+	predicted_probabilities_negative <- predictions_probabilities_raw[, target_negative_class]
+	predicted_probabilities_positive <- predictions_probabilities_raw[, target_positive_class]
+
+	names(predicted_probabilities_negative) <- NULL
+	names(predicted_probabilities_positive) <- NULL
+
+	df_results <- data.frame(	actual_observations = actual_observations,
+						 		predicted_probabilities = predicted_probabilities_positive,
+						 		predicted_probabilities_negative = predicted_probabilities_negative)
+	df_results$predicted_class <- predict(model, testing_set %>% dplyr::select(-target))
+	df_results$label <- ifelse(actual_observations == target_negative_class,
+									paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
+
+	### Plot the probability of negative/positive
+	print(histogram(~predicted_probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count'))
+	print(histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count'))
+
+	### Create the confusion matrix from the test set.
+	confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
+	confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
+									true_neg = confusion_matrix['no', 'no'],
+									false_pos = confusion_matrix['no', 'yes'],
+									false_neg = confusion_matrix['yes', 'no'])
+	observation_rates <- confusion_matrix / sum(confusion_matrix)
+
+	average_profit <- 5
+	average_cost <- 2
+	gain_true_positive <- average_profit - average_cost # positive is gain
+	gain_true_negative <- 0
+	gain_false_positive <- -average_cost # negative is cost
+	gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
+	gain_cost_matrix <- matrix(c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
+
+	print(expected_value_chart(predicted_probabilities_positive = predicted_probabilities_positive, actual_outcomes = actual_observations == 'yes', gain_cost_matrix = gain_cost_matrix))
+
+	print(visualize_quality_of_model(confusion_ls))
+	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
+	cat(codebc(conf_matrix))
+
+	### ROC curves:
+	roc_pred <- prediction(predictions = predicted_probabilities_positive, labels = actual_observations)
+	roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
+	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
+
+	# calculate AUC
+	perf_auc <- performance(roc_pred, measure = 'auc')
+	model_auc <- unlist(perf_auc@y.values)
+
+	# Gain/Lift charts
+	creditLift <- lift(actual_observations ~ predicted_probabilities_positive, data = df_results)
+	print(xyplot(creditLift))
+
+	gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = predicted_probabilities_positive, target_positive_class = target_positive_class)
+	gl_charts <- gain_lift_charts(gl_table = gl_table)
+
+	print(gl_charts[[1]])
+	print(gl_charts[[2]])
+
+	# Calibration Chart
+	calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
+	print(xyplot(calibration_data, auto.key = list(columns = 2)))
+
+	cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = predicted_probabilities_positive, target_positive_class = target_positive_class)
+	cal_chart <- calibration_chart(cal_table = cal_table)
+	print(cal_chart)
+
+	return (c(model_auc = model_auc, model_sensitivity = as.numeric(conf_matrix$byClass['Sensitivity']), model_specificity = as.numeric(conf_matrix$byClass['Specificity'])))
+}
+```
 
 ```{r top_models, echo=FALSE, fig.height=6, fig.width=9}
 top_models <- resamples_means %>% 
@@ -440,7 +515,6 @@ top_models <- resamples_means %>%
 	dplyr::select(model, average) %>%
 	dplyr::rename(cross_validation_auc = average) %>%
 	mutate(model_object = map(model, ~ { numeric_models[names(numeric_models) == .][[1]] })) # add models to data.frame so when we choose the top models later we will 
-
 
 final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE, savePredictions = 'all') # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
 
@@ -466,13 +540,16 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 	
 	if(refresh_models)
 	{
-		set.seed(seed)
+		set.seed(custom_seed)
 		# some models have different parameters for `train`, which we need to use when training the final model
 		if(model_method == 'asdf')
 		{
 			#final_model <- train(
 			#	target ~ ., data = classification_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
 			#	ntree = parameter_random_forest_ntree, importance = TRUE)
+
+			set.seed(123)
+  			final_model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
 
 		}else{
 			final_model <- train(target ~ ., data = classification_train, method = model_method, metric = metric, preProc = pre_process, trControl = final_train_control, tuneGrid = tune_grid)
@@ -521,124 +598,4 @@ final_models_metrics <- data.frame(model = factor(as.character(top_models$model)
 #	geom_hline(data = best_values, aes(yintercept = Z), color='red') +
 #	facet_grid(. ~ metric, scales = "free", space = "free_y") +
 #	coord_flip()
-```
-
-
-```{r, echo=FALSE, fig.height=6, fig.width=9}
-
-model_plots <- function(model, testing_set, prediction_threshold = 0.35){
-	
-	#predictions <- predict(model, newdata = testing_set %>% dplyr::select(-target))
-	#predicted_vs_actual <- data.frame(obs = as.numeric(testing_set$target), pred = as.numeric(predictions), residuals = as.numeric(testing_set$target - predictions))
-	
-	
-	# set.seed(123)
-	# model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
-	#library(C50)
-	#set.seed(123)
-	#model <- C5.0(classification_train %>% select(-target), classification_train$target) # exclude 'default' column, but include it as target factor vector for classification
-	# summary(model)
-
-	probabilities_raw <- predict(model, testing_set %>% dplyr::select(-target), type = 'prob')
-	actual_observations <- testing_set$target
-	probabilities_negative <- probabilities_raw[, target_negative_class]
-	probabilities_positive <- probabilities_raw[, target_positive_class]
-
-	names(probabilities_negative) <- NULL
-	names(probabilities_positive) <- NULL
-
-	df_results <- data.frame(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, probabilities_negative = probabilities_negative)
-	df_results$predicted_class <- predict(model, testing_set %>% dplyr::select(-target))
-
-	df_results$label <- ifelse(actual_observations == target_negative_class, paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
-
-	### Plot the probability of bad credit
-	print(histogram(~probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count'))
-	print(histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count'))
-
-	### Create the confusion matrix from the test set.
-	confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
-	confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
-									true_neg = confusion_matrix['no', 'no'],
-									false_pos = confusion_matrix['no', 'yes'],
-									false_neg = confusion_matrix['yes', 'no'])
-	observation_rates <- confusion_matrix / sum(confusion_matrix)
-
-	#average_profit <- 28.40
-	#average_cost <- 2
-	#gain_true_positive <- average_profit - average_cost # positive is gain
-	#gain_true_negative <- 0
-	#gain_false_positive <- -average_cost # negative is cost
-	#gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
-	#costs_gains <- matrix(c(gain_true_positive, gain_false_negative, gain_false_positive, gain_true_negative), nrow = 2, byrow = TRUE)
-
-	#confusion_matrix
-	#costs_gains
-	#expected_value = sum(confusion_matrix * costs_gains)
-	#expected_value
-
-	print(visualize_quality_of_model(confusion_ls))
-	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
-	cat(codebc(conf_matrix))
-
-	### ROC curves:
-	roc_pred <- prediction(predictions = probabilities_positive, labels = actual_observations)
-	roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
-	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
-
-	# calculate AUC
-	perf_auc <- performance(roc_pred, measure = 'auc')
-	model_auc <- unlist(perf_auc@y.values)
-
-	# Gain/Lift charts
-	creditLift <- lift(actual_observations ~ probabilities_positive, data = df_results)
-	print(xyplot(creditLift))
-
-	gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = target_positive_class)
-	gl_charts <- gain_lift_charts(gl_table = gl_table)
-
-	print(gl_charts[[1]])
-	print(gl_charts[[2]])
-
-	# Calibration Chart
-	calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
-	print(xyplot(calibration_data, auto.key = list(columns = 2)))
-
-	cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = probabilities_positive, target_positive_class = target_positive_class)
-	cal_chart <- calibration_chart(cal_table = cal_table)
-	
-	# cat('\n\n#### Recalibration\n\n')
-	# recalibrate probabilities using Naive Bayes
-# 	require(klaR)
-# 	training_predictions <- predict(model, classification_train %>% dplyr::select(-target), type = 'prob')
-# 	recalibration_training <- data.frame(actual_observations = model$trainingData$.outcome, predicted_probabilities = training_predictions[[target_positive_class]])
-# 	recalibrated_model <- NaiveBayes(actual_observations ~ predicted_probabilities, data = recalibration_training, usekernel = TRUE)
-# 	
-# #	new_predictions <- factor(ifelse(recalibration_training$predicted_probabilities >= 0.5, target_positive_class, target_negative_class), levels = c(target_positive_class, target_negative_class))
-# #	confusionMatrix(data = new_predictions, reference = recalibration_training$actual_observations)
-# 
-# 	recalibrated_probabilities_raw <- predict(recalibrated_model, df_results, type = 'prob')
-# 	recalibrated_probabilities <- recalibrated_probabilities_raw$posterior[, target_positive_class]
-# 	recal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = recalibrated_probabilities, target_positive_class = target_positive_class)
-# 	recal_chart <- calibration_chart(cal_table = recal_table)
-# 	
-# 	print(cal_chart)
-# 	print(recal_chart)
-# 
-# 	recal_roc_pred <- prediction(predictions = recalibrated_probabilities, labels = actual_observations)
-# 	recal_roc_perf <- performance(recal_roc_pred, measure = 'sens', x.measure = 'fpr')
-# 	print(plot(recal_roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
-# 	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
-# 	# calculate AUC
-# 	recal_perf_auc <- performance(recal_roc_pred, measure = 'auc')
-# 	recal_model_auc <- unlist(recal_perf_auc@y.values)
-# 	recal_model_auc
-	
-	# pick predictions with threshold based off of AUC
-	new_predictions <- factor(ifelse(recalibrated_probabilities >= prediction_threshold, target_positive_class, target_negative_class), levels = c(target_positive_class, target_negative_class))
-	conf_matrix <- confusionMatrix(data = new_predictions, reference = df_results$actual_observations)
-	cat(codebc(conf_matrix))
-
-	return (c(model_auc = model_auc, model_sensitivity = as.numeric(conf_matrix$byClass['Sensitivity']), model_specificity = as.numeric(conf_matrix$byClass['Specificity'])))
-}
 ```
