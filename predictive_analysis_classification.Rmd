@@ -36,7 +36,7 @@ require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
 custom_seed <- 123
-refresh_models <- FALSE
+refresh_models <- TRUE
 ```
 
 ```{r dataset_definition, echo = FALSE}
@@ -431,7 +431,6 @@ densityplot(resamples, metric = 'Spec')
 # Train Top Models on Entire Dataset & Predict on Test Set
 
 ```{r model_definitions, echo=FALSE, fig.height=5, fig.width=8}
-
 model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 
 	predictions_probabilities_raw <- predict(model, testing_set %>% dplyr::select(-target), type = 'prob')
@@ -506,7 +505,7 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 }
 ```
 
-```{r top_models, echo=FALSE, fig.height=6, fig.width=9}
+```{r top_models, echo=FALSE, fig.height=5, fig.width=8}
 top_models <- resamples_means %>% 
 	filter(metric == 'ROC') %>% 
 	mutate(rank = row_number(average)) %>% 
@@ -548,10 +547,11 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 			#	target ~ ., data = classification_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
 			#	ntree = parameter_random_forest_ntree, importance = TRUE)
 
-			set.seed(123)
+			set.seed(custom_seed)
   			final_model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
 
 		}else{
+			set.seed(custom_seed)
 			final_model <- train(target ~ ., data = classification_train, method = model_method, metric = metric, preProc = pre_process, trControl = final_train_control, tuneGrid = tune_grid)
 		}
 
@@ -573,29 +573,29 @@ final_models_metrics <- data.frame(model = factor(as.character(top_models$model)
 								   sensitivity = map_dbl(model_stats, ~ .['model_sensitivity']),
 								   specificity = map_dbl(model_stats, ~ .['model_specificity']))
 
-#min_rmse <- min(final_models_metrics$test_set_rmse)
-#min_mae <- min(final_models_metrics$mae)
-#max_correlation <- max(final_models_metrics$correlation)
+max_test_auc <- max(final_models_metrics$test_set_auc)
+max_sensitivity <- max(final_models_metrics$sensitivity)
+max_specificity <- max(final_models_metrics$specificity)
 
-# prepare/format data for ggplot
-# final_models_metrics_long <- gather(final_models_metrics, metric, value, -model) %>%
-# 	mutate(model = factor(model, levels = rev(unique(model))),
-# 		type = ifelse(str_detect(metric, 'rmse'), str_split(metric, '_'), '')) %>%
-# 	mutate(type = map_chr(type, ~ { 
-# 			if(length(.) > 1)
-# 			{
-# 				return(paste0(.[1:2], collapse = ' '))
-# 			}else{
-# 				return ('test set')
-# 			}
-# 		}),
-# 	metric = ifelse(str_detect(metric, 'rmse'), 'rmse', as.character(metric))) %>%
-# 	mutate(metric = factor(metric, levels = unique(metric)))
-# 
-#best_values <- data.frame(metric = unique(final_models_metrics_long$metric), Z = c(min_rmse, min_mae, max_correlation))
-#ggplot(data = final_models_metrics_long, mapping = aes(x = model, y = value, col = type)) +
-#	geom_point() + 
-#	geom_hline(data = best_values, aes(yintercept = Z), color='red') +
-#	facet_grid(. ~ metric, scales = "free", space = "free_y") +
-#	coord_flip()
+#prepare/format data for ggplot
+final_models_metrics_long <- gather(final_models_metrics, metric, value, -model) %>%
+	mutate(model = factor(model, levels = rev(unique(model))),
+		type = ifelse(str_detect(metric, 'auc'), str_split(metric, '_'), '')) %>%
+	mutate(type = map_chr(type, ~ {
+			if(length(.) > 1)
+			{
+				return(paste0(.[1:2], collapse = ' '))
+			}else{
+				return ('test set')
+			}
+		}),
+	metric = ifelse(str_detect(metric, 'auc'), 'auc', as.character(metric))) %>%
+	mutate(metric = factor(metric, levels = unique(metric)))
+
+best_values <- data.frame(metric = unique(final_models_metrics_long$metric), Z = c(max_test_auc, max_sensitivity, max_specificity))
+ggplot(data = final_models_metrics_long, mapping = aes(x = model, y = value, col = type)) +
+	geom_point(size = 3, alpha = 0.7) +
+	geom_hline(data = best_values, aes(yintercept = Z), color='red') +
+	facet_grid(. ~ metric, scales = "free", space = "free_y") +
+	coord_flip()
 ```

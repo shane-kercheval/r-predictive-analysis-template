@@ -23,6 +23,11 @@
         -   [dependents](#dependents)
         -   [phone](#phone)
 -   [Spot-Check](#spot-check)
+    -   [Logistic Regression - no pre processing](#logistic-regression---no-pre-processing)
+    -   [Logistic Regression - basic processing](#logistic-regression---basic-processing)
+    -   [Resamples & Top Models](#resamples-top-models)
+        -   [Resamples](#resamples)
+-   [Train Top Models on Entire Dataset & Predict on Test Set](#train-top-models-on-entire-dataset-predict-on-test-set)
 
 Tuning Parameters
 =================
@@ -30,6 +35,10 @@ Tuning Parameters
 ``` r
 # train/test set
 training_percentage <- 0.90
+
+# cross validation
+cross_validation_num_folds <- 10
+cross_validation_num_repeats <- 3
 ```
 
 Dataset
@@ -281,84 +290,374 @@ Spot-Check
 
 > used `90%` of data for `training` set (`900`), and `10%` for `test` set (`100`).
 
-    ##                 Length Class  Mode     
-    ## call               4   -none- call     
-    ## type               1   -none- character
-    ## predicted        900   factor numeric  
-    ## err.rate        6000   -none- numeric  
-    ## confusion          6   -none- numeric  
-    ## votes           1800   matrix numeric  
-    ## oob.times        900   -none- numeric  
-    ## classes            2   -none- character
-    ## importance        16   -none- numeric  
-    ## importanceSD       0   -none- NULL     
-    ## localImportance    0   -none- NULL     
-    ## proximity          0   -none- NULL     
-    ## ntree              1   -none- numeric  
-    ## mtry               1   -none- numeric  
-    ## forest            14   -none- list     
-    ## y                900   factor numeric  
-    ## test               0   -none- NULL     
-    ## inbag              0   -none- NULL     
-    ## terms              3   terms  call
+### Logistic Regression - no pre processing
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-2.png" width="750px" />
+``` r
+if(refresh_models)
+{
+    set.seed(custom_seed)
+    model_glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
+    saveRDS(model_glm_no_pre_processing, file = './classification_data/model_glm_no_pre_processing.RDS')
+} else{
+    model_glm_no_pre_processing <- readRDS('./classification_data/model_glm_no_pre_processing.RDS')
+}
+summary(model_glm_no_pre_processing)
+```
 
-    ##       predictions
-    ## actual yes no
-    ##    yes  15 15
-    ##    no    4 66
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.6364  -0.7956   0.4122   0.7664   1.8864  
+    ## 
+    ## Coefficients:
+    ##                                     Estimate  Std. Error z value          Pr(>|z|)    
+    ## (Intercept)                       1.67233497  0.93888105   1.781          0.074880 .  
+    ## `checking_balance> 200 DM`        0.91202032  0.36959975   2.468          0.013603 *  
+    ## `checking_balance1 - 200 DM`      0.36146669  0.21675128   1.668          0.095384 .  
+    ## checking_balanceunknown           1.69919542  0.23318347   7.287 0.000000000000317 ***
+    ## months_loan_duration             -0.01909034  0.00930934  -2.051          0.040300 *  
+    ## credit_historygood               -0.83854132  0.26057700  -3.218          0.001291 ** 
+    ## credit_historyperfect            -1.18300647  0.42783664  -2.765          0.005691 ** 
+    ## credit_historypoor               -0.70792254  0.34560901  -2.048          0.040527 *  
+    ## `credit_historyvery good`        -1.43539610  0.42810208  -3.353          0.000800 ***
+    ## purposecar                       -0.14052327  0.32598325  -0.431          0.666414    
+    ## purposecar0                       0.63233919  0.81457907   0.776          0.437585    
+    ## purposeeducation                 -0.58632030  0.43971583  -1.333          0.182398    
+    ## `purposefurniture/appliances`     0.16610147  0.31881865   0.521          0.602373    
+    ## purposerenovations               -0.68269967  0.60731250  -1.124          0.260957    
+    ## amount                           -0.00013829  0.00004389  -3.151          0.001627 ** 
+    ## `savings_balance> 1000 DM`        1.03432320  0.51321912   2.015          0.043867 *  
+    ## `savings_balance100 - 500 DM`     0.13185558  0.28429005   0.464          0.642786    
+    ## `savings_balance500 - 1000 DM`    0.27415120  0.41264732   0.664          0.506452    
+    ## savings_balanceunknown            0.90758459  0.26502755   3.424          0.000616 ***
+    ## `employment_duration> 7 years`    0.51216659  0.29605002   1.730          0.083630 .  
+    ## `employment_duration1 - 4 years`  0.16207344  0.23846600   0.680          0.496726    
+    ## `employment_duration4 - 7 years`  0.92790647  0.30112909   3.081          0.002060 ** 
+    ## employment_durationunemployed     0.14840842  0.43655991   0.340          0.733894    
+    ## percent_of_income                -0.34774866  0.08869354  -3.921 0.000088259512881 ***
+    ## years_at_residence               -0.00385951  0.08729784  -0.044          0.964736    
+    ## age                               0.01108220  0.00927862   1.194          0.232329    
+    ## other_creditnone                  0.52544326  0.24108458   2.179          0.029295 *  
+    ## other_creditstore                 0.12816587  0.42389741   0.302          0.762384    
+    ## housingown                        0.27205220  0.30231677   0.900          0.368178    
+    ## housingrent                      -0.25445634  0.34509987  -0.737          0.460915    
+    ## existing_loans_count             -0.33507655  0.19199533  -1.745          0.080944 .  
+    ## jobskilled                        0.04584693  0.28901415   0.159          0.873959    
+    ## jobunemployed                     0.09476193  0.65453976   0.145          0.884887    
+    ## jobunskilled                      0.14669504  0.35145618   0.417          0.676392    
+    ## dependents                       -0.11052559  0.24712936  -0.447          0.654703    
+    ## phoneTRUE                         0.41866313  0.20925782   2.001          0.045424 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  857.01  on 864  degrees of freedom
+    ## AIC: 929.01
+    ## 
+    ## Number of Fisher Scoring iterations: 5
 
-    ##      [,1]  [,2]
-    ## [1,] 26.4 -26.4
-    ## [2,] -2.0   0.0
+``` r
+#plot(model_glm_no_pre_processing$finalModel)
+```
 
-    ## [1] -8
+### Logistic Regression - basic processing
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-3.png" width="750px" />
+``` r
+if(refresh_models)
+{
+    set.seed(custom_seed)
+    model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('knnImpute', 'nzv', 'center', 'scale'), trControl=train_control)
+    saveRDS(model_glm_basic_processing, file = './classification_data/model_glm_basic_processing.RDS')
+} else{
+    model_glm_basic_processing <- readRDS('./classification_data/model_glm_basic_processing.RDS')
+}
+summary(model_glm_basic_processing)
+```
 
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error z value             Pr(>|z|)    
+    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    ## purposecar                        0.034689   0.130295   0.266             0.790058    
+    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
+    ## age                               0.128240   0.104123   1.232             0.218093    
+    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    ## housingown                        0.151433   0.135406   1.118             0.263413    
+    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
+    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
+    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  872.53  on 870  degrees of freedom
+    ## AIC: 932.53
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+``` r
+plot(model_glm_basic_processing$finalModel)
+```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/classification_basic_processing-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/classification_basic_processing-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/classification_basic_processing-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/classification_basic_processing-4.png" width="750px" />
+
+Resamples & Top Models
+----------------------
+
+### Resamples
+
+    ## 
+    ## Call:
+    ## summary.resamples(object = resamples)
+    ## 
+    ## Models: model_glm_no_pre_processing, model_glm_basic_processing 
+    ## Number of resamples: 30 
+    ## 
+    ## ROC 
+    ##                                  Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+    ## model_glm_no_pre_processing 0.6748971 0.7308936 0.7598471 0.7628258 0.7839506 0.8536155    0
+    ## model_glm_basic_processing  0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
+    ## 
+    ## Sens 
+    ##                                  Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+    ## model_glm_no_pre_processing 0.2592593 0.4074074 0.4814815 0.4530864 0.5185185 0.5555556    0
+    ## model_glm_basic_processing  0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
+    ## 
+    ## Spec 
+    ##                                  Min.   1st Qu.    Median      Mean   3rd Qu.     Max. NA's
+    ## model_glm_no_pre_processing 0.7460317 0.8253968 0.8730159 0.8592593 0.8888889 0.952381    0
+    ## model_glm_basic_processing  0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.952381    0
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-4.png" width="750px" />
+
+Train Top Models on Entire Dataset & Predict on Test Set
+========================================================
+
+    ## 
+    ## 
+    ## ### Generalized Linear Model (model_glm_basic_processing)
+    ## 
+    ## 
+    ## 
+    ## Pre-Processing: `knnImpute, nzv, center, scale`
+    ## 
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error z value             Pr(>|z|)    
+    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    ## purposecar                        0.034689   0.130295   0.266             0.790058    
+    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
+    ## age                               0.128240   0.104123   1.232             0.218093    
+    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    ## housingown                        0.151433   0.135406   1.118             0.263413    
+    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
+    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
+    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  872.53  on 870  degrees of freedom
+    ## AIC: 932.53
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-4.png" width="750px" />
+
+    ## ```
     ## Confusion Matrix and Statistics
     ## 
     ##           Reference
     ## Prediction yes no
-    ##        yes  15  4
-    ##        no   15 66
+    ##        yes  14  8
+    ##        no   16 62
     ##                                           
-    ##                Accuracy : 0.81            
-    ##                  95% CI : (0.7193, 0.8816)
+    ##                Accuracy : 0.76            
+    ##                  95% CI : (0.6643, 0.8398)
     ##     No Information Rate : 0.7             
-    ##     P-Value [Acc > NIR] : 0.008887        
+    ##     P-Value [Acc > NIR] : 0.1136          
     ##                                           
-    ##                   Kappa : 0.4947          
-    ##  Mcnemar's Test P-Value : 0.021781        
+    ##                   Kappa : 0.3814          
+    ##  Mcnemar's Test P-Value : 0.1530          
     ##                                           
-    ##             Sensitivity : 0.5000          
-    ##             Specificity : 0.9429          
-    ##          Pos Pred Value : 0.7895          
-    ##          Neg Pred Value : 0.8148          
+    ##             Sensitivity : 0.4667          
+    ##             Specificity : 0.8857          
+    ##          Pos Pred Value : 0.6364          
+    ##          Neg Pred Value : 0.7949          
     ##              Prevalence : 0.3000          
-    ##          Detection Rate : 0.1500          
-    ##    Detection Prevalence : 0.1900          
-    ##       Balanced Accuracy : 0.7214          
+    ##          Detection Rate : 0.1400          
+    ##    Detection Prevalence : 0.2200          
+    ##       Balanced Accuracy : 0.6762          
     ##                                           
     ##        'Positive' Class : yes             
-    ## 
+    ##                                           
+    ## ```
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-4.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-5.png" width="750px" />
 
-    ## [1] 0.8235714
+    ## NULL
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-5.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-8.png" width="750px" />
-
-    ## Loading required package: klaR
-
-    ## Loading required package: MASS
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-10.png" width="750px" />
 
     ## 
-    ## Attaching package: 'MASS'
-
-    ## The following object is masked from 'package:dplyr':
     ## 
-    ##     select
+    ## ### Generalized Linear Model (model_glm_no_pre_processing)
+    ## 
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.6364  -0.7956   0.4122   0.7664   1.8864  
+    ## 
+    ## Coefficients:
+    ##                                     Estimate  Std. Error z value          Pr(>|z|)    
+    ## (Intercept)                       1.67233497  0.93888105   1.781          0.074880 .  
+    ## `checking_balance> 200 DM`        0.91202032  0.36959975   2.468          0.013603 *  
+    ## `checking_balance1 - 200 DM`      0.36146669  0.21675128   1.668          0.095384 .  
+    ## checking_balanceunknown           1.69919542  0.23318347   7.287 0.000000000000317 ***
+    ## months_loan_duration             -0.01909034  0.00930934  -2.051          0.040300 *  
+    ## credit_historygood               -0.83854132  0.26057700  -3.218          0.001291 ** 
+    ## credit_historyperfect            -1.18300647  0.42783664  -2.765          0.005691 ** 
+    ## credit_historypoor               -0.70792254  0.34560901  -2.048          0.040527 *  
+    ## `credit_historyvery good`        -1.43539610  0.42810208  -3.353          0.000800 ***
+    ## purposecar                       -0.14052327  0.32598325  -0.431          0.666414    
+    ## purposecar0                       0.63233919  0.81457907   0.776          0.437585    
+    ## purposeeducation                 -0.58632030  0.43971583  -1.333          0.182398    
+    ## `purposefurniture/appliances`     0.16610147  0.31881865   0.521          0.602373    
+    ## purposerenovations               -0.68269967  0.60731250  -1.124          0.260957    
+    ## amount                           -0.00013829  0.00004389  -3.151          0.001627 ** 
+    ## `savings_balance> 1000 DM`        1.03432320  0.51321912   2.015          0.043867 *  
+    ## `savings_balance100 - 500 DM`     0.13185558  0.28429005   0.464          0.642786    
+    ## `savings_balance500 - 1000 DM`    0.27415120  0.41264732   0.664          0.506452    
+    ## savings_balanceunknown            0.90758459  0.26502755   3.424          0.000616 ***
+    ## `employment_duration> 7 years`    0.51216659  0.29605002   1.730          0.083630 .  
+    ## `employment_duration1 - 4 years`  0.16207344  0.23846600   0.680          0.496726    
+    ## `employment_duration4 - 7 years`  0.92790647  0.30112909   3.081          0.002060 ** 
+    ## employment_durationunemployed     0.14840842  0.43655991   0.340          0.733894    
+    ## percent_of_income                -0.34774866  0.08869354  -3.921 0.000088259512881 ***
+    ## years_at_residence               -0.00385951  0.08729784  -0.044          0.964736    
+    ## age                               0.01108220  0.00927862   1.194          0.232329    
+    ## other_creditnone                  0.52544326  0.24108458   2.179          0.029295 *  
+    ## other_creditstore                 0.12816587  0.42389741   0.302          0.762384    
+    ## housingown                        0.27205220  0.30231677   0.900          0.368178    
+    ## housingrent                      -0.25445634  0.34509987  -0.737          0.460915    
+    ## existing_loans_count             -0.33507655  0.19199533  -1.745          0.080944 .  
+    ## jobskilled                        0.04584693  0.28901415   0.159          0.873959    
+    ## jobunemployed                     0.09476193  0.65453976   0.145          0.884887    
+    ## jobunskilled                      0.14669504  0.35145618   0.417          0.676392    
+    ## dependents                       -0.11052559  0.24712936  -0.447          0.654703    
+    ## phoneTRUE                         0.41866313  0.20925782   2.001          0.045424 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  857.01  on 864  degrees of freedom
+    ## AIC: 929.01
+    ## 
+    ## Number of Fisher Scoring iterations: 5
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/unnamed-chunk-1-10.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-11.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-12.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-14.png" width="750px" />
+
+    ## ```
+    ## Confusion Matrix and Statistics
+    ## 
+    ##           Reference
+    ## Prediction yes no
+    ##        yes  14  9
+    ##        no   16 61
+    ##                                           
+    ##                Accuracy : 0.75            
+    ##                  95% CI : (0.6534, 0.8312)
+    ##     No Information Rate : 0.7             
+    ##     P-Value [Acc > NIR] : 0.1631          
+    ##                                           
+    ##                   Kappa : 0.3622          
+    ##  Mcnemar's Test P-Value : 0.2301          
+    ##                                           
+    ##             Sensitivity : 0.4667          
+    ##             Specificity : 0.8714          
+    ##          Pos Pred Value : 0.6087          
+    ##          Neg Pred Value : 0.7922          
+    ##              Prevalence : 0.3000          
+    ##          Detection Rate : 0.1400          
+    ##    Detection Prevalence : 0.2300          
+    ##       Balanced Accuracy : 0.6690          
+    ##                                           
+    ##        'Positive' Class : yes             
+    ##                                           
+    ## ```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" />
+
+    ## NULL
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-21.png" width="750px" />
