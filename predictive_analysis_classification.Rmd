@@ -36,7 +36,7 @@ require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
 custom_seed <- 123
-refresh_models <- TRUE
+refresh_models <- FALSE
 ```
 
 ```{r dataset_definition, echo = FALSE}
@@ -447,6 +447,9 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	df_results$predicted_class <- predict(model, testing_set %>% dplyr::select(-target))
 	df_results$label <- ifelse(actual_observations == target_negative_class,
 									paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
+
+	# prop.table(table(classification_test$target))[target_positive_class]
+	# ggplot(df_results, aes(predicted_probabilities)) + geom_histogram(binwidth = 0.1)
 
 	### Plot the probability of negative/positive
 	print(histogram(~predicted_probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count'))
