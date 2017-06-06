@@ -36,6 +36,19 @@ seed <- 123
 refresh_models <- FALSE
 ```
 
+```{r function_definition, echo = FALSE}
+check_data <- function(dataset, validate_n_p = TRUE)
+{
+	if(validate_n_p) {
+		number_of_samples <- nrow(dataset)
+		number_of_dimensions <- ncol(dataset)
+		sample_to_dimension_ratio <- number_of_samples / number_of_dimensions
+
+		stopifnot(sample_to_dimension_ratio >= 5)
+	}
+}
+```
+
 ```{r dataset_definition, echo = FALSE}
 concrete <- fread('./regression_data/concrete.csv')
 regression_dataset <- concrete %>%
@@ -207,6 +220,8 @@ kable(outliers)
 ```
 
 ## Correlation & Collinearity
+
+### Correlation
 
 ```{r correlation, echo = FALSE, fig.height=10, fig.width=10}
 #pairs.panels(regression_dataset[, numeric_columns])
@@ -390,10 +405,11 @@ ggplot(data = df_target_long, mapping = aes(x = type,  y = target, group = type)
 	geom_boxplot()
 ```
 
+> Using ``r cross_validation_num_folds``-fold cross-validation with ``r cross_validation_num_repeats`` repeats.
+
 - Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
 
 > used ``r percent(training_percentage)`` of data for `training` set (``r nrow(regression_train)``), and ``r percent(1 - training_percentage)`` for `test` set (``r nrow(regression_test)``).
-
 
 ```{r spot_check_numeric, echo = FALSE}
 # we have to make sure they are fit on exactly the same test sets in training and cross validation so we are sure we are making an apples-to-apples comparison
@@ -414,6 +430,7 @@ train_control <- trainControl(
 ```{r linear_regression_no_pre_processing}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_no_pre_processing <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control)
 	saveRDS(lm_no_pre_processing, file = './regression_data/lm_no_pre_processing.RDS')
@@ -429,6 +446,7 @@ plot(lm_no_pre_processing$finalModel)
 ```{r linear_regression_basic_pre_processing}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_basic_pre_processing <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'knnImpute'))
 	saveRDS(lm_basic_pre_processing, file = './regression_data/lm_basic_pre_processing.RDS')
@@ -444,6 +462,7 @@ plot(lm_basic_pre_processing$finalModel)
 ```{r linear_regression_impute}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_median_impute <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'medianImpute'))
 	saveRDS(lm_median_impute, file = './regression_data/lm_median_impute.RDS')
@@ -459,6 +478,7 @@ plot(lm_median_impute$finalModel)
 ```{r linear_regression_basic}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_near_zero_variance <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
 	saveRDS(lm_near_zero_variance, file = './regression_data/lm_near_zero_variance.RDS')
@@ -474,6 +494,7 @@ plot(lm_near_zero_variance$finalModel)
 ```{r linear_regression_YeoJohnson}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_skewness_y <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
 	saveRDS(lm_skewness_y, file = './regression_data/lm_skewness_y.RDS')
@@ -489,6 +510,7 @@ plot(lm_skewness_y$finalModel)
 ```{r linear_regression_BoxCox}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_skewness_bc <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('BoxCox', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
 	saveRDS(lm_skewness_bc, file = './regression_data/lm_skewness_bc.RDS')
@@ -504,6 +526,7 @@ plot(lm_skewness_bc$finalModel)
 ```{r linear_regression_collinear_caret}
 if(refresh_models)
 {
+	check_data(regression_train[, recommended_columns_caret], validate_n_p = TRUE)
 	set.seed(seed)
 	lm_remove_collinearity_caret <- train(target ~ ., data = regression_train[, recommended_columns_caret], method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
 	saveRDS(lm_remove_collinearity_caret, file = './regression_data/lm_remove_collinearity_caret.RDS')
@@ -519,6 +542,7 @@ plot(lm_remove_collinearity_caret$finalModel)
 ```{r linear_regression_collinear_calc}
 if(refresh_models)
 {
+	check_data(regression_train[, recommended_columns_custom], validate_n_p = TRUE)
 	set.seed(seed)
 	lm_remove_collinearity_custom <- train(target ~ ., data = regression_train[, recommended_columns_custom], method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
 	saveRDS(lm_remove_collinearity_custom, file = './regression_data/lm_remove_collinearity_custom.RDS')
@@ -534,6 +558,7 @@ plot(lm_remove_collinearity_custom$finalModel)
 ```{r robust_linear}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_robust <- train(target ~ ., data = regression_train, method = 'rlm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # by default uses the 'Huber' approach. (APM pg 130.) 'The Huber function uses the squared residuals when they are 'small' and the simple difference between the observed and predicted values values when the residuals are above a threshold.' (APM pg 109f)
 	saveRDS(lm_robust, file = './regression_data/lm_robust.RDS')
@@ -549,6 +574,7 @@ plot(lm_robust$finalModel)
 ```{r linear_regression_spatial_sign}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_spatial_sign <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'knnImpute', 'spatialSign'))
 	saveRDS(lm_spatial_sign, file = './regression_data/lm_spatial_sign.RDS')
@@ -614,6 +640,7 @@ xyplot(RMSE ~ ncomp, data = rbind(lm_pls$results %>% mutate(Model = 'PLS'), lm_p
 ```{r ridge_regression}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_ridge <- train(target ~ ., data = regression_train, method = 'ridge', tuneGrid = expand.grid(lambda = tuning_ridge_lambda) , trControl = train_control, preProc = c('center', 'scale', 'knnImpute'))
 	saveRDS(lm_ridge, file = './regression_data/lm_ridge.RDS')
@@ -629,6 +656,7 @@ plot(lm_ridge)
 ```{r ridge_lasso}
 if(refresh_models)
 {
+	check_data(regression_train, validate_n_p = TRUE)
 	set.seed(seed)
 	lm_enet <- train(target ~ ., data = regression_train, method = 'enet', tuneGrid = expand.grid(lambda = tuning_enet_lambda, fraction = tuning_enet_fraction), trControl = train_control, preProc = c('center', 'scale', 'knnImpute'))
 	saveRDS(lm_enet, file = './regression_data/lm_enet.RDS')

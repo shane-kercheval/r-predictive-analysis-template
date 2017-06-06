@@ -25,6 +25,7 @@ library(Hmisc)
 library(corrplot)
 library(stringr)
 library(tidyverse)
+library(reshape2)
 library(caret)
 library(gmodels)
 library(randomForest)
@@ -36,7 +37,20 @@ require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
 custom_seed <- 123
-refresh_models <- FALSE
+refresh_models <- TRUE
+```
+
+```{r function_definition, echo = FALSE}
+check_data <- function(dataset, validate_n_p = TRUE)
+{
+	if(validate_n_p) {
+		number_of_samples <- nrow(dataset)
+		number_of_dimensions <- ncol(dataset)
+		sample_to_dimension_ratio <- number_of_samples / number_of_dimensions
+
+		stopifnot(sample_to_dimension_ratio >= 5)
+	}
+}
 ```
 
 ```{r dataset_definition, echo = FALSE}
@@ -148,7 +162,9 @@ kable(df_outliers)
 
 ## Correlation & Collinearity
 
-```{r correlation, echo = FALSE, fig.height=10, fig.width=10}
+### Correlation
+
+```{r correlation, echo = FALSE, fig.height=5, fig.width=5}
 #pairs.panels(classification_dataset[, numeric_columns])
 matrix_correlations <- cor(classification_dataset[, numeric_columns])
 corrplot::corrplot(matrix_correlations, order = 'hclust', tl.cex = .35, col = colorRampPalette(rev(c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF', '#D1E5F0', '#92C5DE', '#4393C3', '#2166AC', '#053061')))(200))
@@ -327,8 +343,21 @@ set.seed(custom_seed)
 training_index <- createDataPartition(classification_dataset$target, p = training_percentage, list = TRUE)
 classification_train <- classification_dataset[training_index$Resample1, ]
 classification_test <- classification_dataset[-training_index$Resample1, ]
+```
 
+## Class Balance 
+
+Make sure class balance is even amount training/test datasets.
+
+### Training Data
+
+```{r echo = FALSE}
 prop.table(table(classification_train$target))
+```
+
+### Test
+
+```{r echo = FALSE}
 prop.table(table(classification_test$target))
 ```
 
@@ -350,39 +379,115 @@ train_control <- trainControl(
 metric <- 'ROC'
 ```
 
-- Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
+> Using ``r cross_validation_num_folds``-fold cross-validation with ``r cross_validation_num_repeats`` repeats, using the ``r metric`` statistic to evaluate each model.
 
 > used ``r percent(training_percentage)`` of data for `training` set (``r nrow(classification_train)``), and ``r percent(1 - training_percentage)`` for `test` set (``r nrow(classification_test)``).
 
 ### Logistic Regression - no pre processing
 
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
+
 ```{r classification_no_pre_processing}
 if(refresh_models)
 {
+	check_data(classification_train, validate_n_p = TRUE)
 	set.seed(custom_seed)
+	#model_glm_no_pre_processing <- train(target ~ ., data=classification_train %>% mutate(target = factor(target, levels = c('no', 'yes'))), method='glm', metric=metric, trControl=train_control)
 	model_glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
 	saveRDS(model_glm_no_pre_processing, file = './classification_data/model_glm_no_pre_processing.RDS')
 } else{
 	model_glm_no_pre_processing <- readRDS('./classification_data/model_glm_no_pre_processing.RDS')
 }
 summary(model_glm_no_pre_processing)
-#plot(model_glm_no_pre_processing$finalModel)
 ```
 
-### Logistic Regression - basic processing
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+### Logistic Regression - basic pre-processing
+
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
 ```{r classification_basic_processing}
 if(refresh_models)
 {
+	check_data(classification_train, validate_n_p = TRUE)
 	set.seed(custom_seed)
-	model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('knnImpute', 'nzv', 'center', 'scale'), trControl=train_control)
+	model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl=train_control)
 	saveRDS(model_glm_basic_processing, file = './classification_data/model_glm_basic_processing.RDS')
 } else{
 	model_glm_basic_processing <- readRDS('./classification_data/model_glm_basic_processing.RDS')
 }
 summary(model_glm_basic_processing)
-plot(model_glm_basic_processing$finalModel)
 ```
+
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+### Logistic Regression - remove collinear data - based on caret's recommendation
+
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
+
+```{r logistic_regression_collinear_caret}
+if(refresh_models)
+{
+	check_data(classification_train[, recommended_columns_caret], validate_n_p = TRUE)
+	set.seed(custom_seed)
+	glm_remove_collinearity_caret <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
+	saveRDS(glm_remove_collinearity_caret, file = './classification_data/glm_remove_collinearity_caret.RDS')
+} else{
+	glm_remove_collinearity_caret <- readRDS('./classification_data/glm_remove_collinearity_caret.RDS')
+}
+summary(glm_remove_collinearity_caret)
+```
+
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+### Logistic Regression - remove collinear data - based on calculation
+
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
+
+```{r logistic_regression_collinear_calc}
+if(refresh_models)
+{
+	check_data(classification_train[, recommended_columns_custom], validate_n_p = TRUE)
+	set.seed(custom_seed)
+	glm_remove_collinearity_custom <- train(target ~ ., data = classification_train[, recommended_columns_custom], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
+	saveRDS(glm_remove_collinearity_custom, file = './classification_data/glm_remove_collinearity_custom.RDS')
+} else{
+	glm_remove_collinearity_custom <- readRDS('./classification_data/glm_remove_collinearity_custom.RDS')
+}
+summary(glm_remove_collinearity_custom)
+```
+
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+### Logistic Regression - remove collinear data - based on calculation
+
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
+
+```{r logistic_regression_stepwise_backward}
+if(refresh_models)
+{
+	check_data(classification_train, validate_n_p = TRUE)
+	set.seed(custom_seed)
+	
+	set.seed(custom_seed)
+	pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
+	columns_not_in_preprocessed_data <- colnames(classification_train)[!(colnames(classification_train) %in% colnames(pre_processed_numeric_data$data))] # figure out which columns we need to add back in (i.e. all (non-numeric) that are in classification_train but are NOT in pre_processed_numeric_data
+	pre_processed_classification_train <- cbind(classification_train[, columns_not_in_preprocessed_data], pre_processed_numeric_data$data)
+
+	set.seed(custom_seed)
+	stepwise_glm_model <- step(glm(family = binomial, formula = target ~ ., data = pre_processed_classification_train), direction="backward", trace=0) # do stepwise regression (glm doesn't like factor target variables), then use the formula in train in order to take advantage of k-fold Cross Validation
+	# stepwise_glm_model$formula gives the `optimal` formula (need to do this because coefficients will have factor variable names, not original columns. The formula will exclude columns not statistically significant)
+	# now feed this back into training to do cross validation
+	logistic_regression_stepwise_backward <- train(stepwise_glm_model$formula, data = classification_train, method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
+	saveRDS(logistic_regression_stepwise_backward, file = './classification_data/logistic_regression_stepwise_backward.RDS')
+} else{
+	logistic_regression_stepwise_backward <- readRDS('./classification_data/logistic_regression_stepwise_backward.RDS')
+}
+summary(logistic_regression_stepwise_backward)
+```
+
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
 
 
 ## Resamples & Top Models
@@ -392,7 +497,10 @@ plot(model_glm_basic_processing$finalModel)
 ```{r resamples_regression, echo=FALSE, fig.height=6, fig.width=9}
 numeric_models <- list(
 		model_glm_no_pre_processing = model_glm_no_pre_processing,
-		model_glm_basic_processing = model_glm_basic_processing
+		model_glm_basic_processing = model_glm_basic_processing,
+		glm_remove_collinearity_caret = glm_remove_collinearity_caret,
+		glm_remove_collinearity_custom = glm_remove_collinearity_custom,
+		logistic_regression_stepwise_backward = logistic_regression_stepwise_backward
 		)
 
 resamples <- resamples(numeric_models)
@@ -423,12 +531,21 @@ ggplot(data = resamples_long, mapping = aes(x = model, y = value)) +
 	facet_grid(. ~ metric, scales = "free", space = "free_y") +
 	coord_flip()
 
-densityplot(resamples, metric = 'ROC')
+resamples$values %>% select(contains('~ROC')) %>%
+	gather(model, ROC) %>%
+	mutate(model = factor(model)) %>%
+ggplot() + 
+	geom_density(aes(ROC, color = model)) + 
+    geom_jitter(aes(ROC, 0, color = model), alpha = 0.5, height = 0.02) 
+
+# densityplot(resamples, metric = 'ROC')
 densityplot(resamples, metric = 'Sens')
 densityplot(resamples, metric = 'Spec')
 ```
 
-# Train Top Models on Entire Dataset & Predict on Test Set
+# Train Top Models on Entire Training Dataset & Predict on Test Set
+
+> after using cross-validation to tune, we'll take the highest ranked models, retrain the models (with the final tuning parameters) on the entire training set, and predict using the test set.
 
 ```{r model_definitions, echo=FALSE, fig.height=5, fig.width=8}
 model_plots <- function(model, testing_set, prediction_threshold = 0.5){
@@ -457,10 +574,10 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 
 	### Create the confusion matrix from the test set.
 	confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
-	confusion_ls <- confusion_list(true_pos = confusion_matrix['yes', 'yes'],
-									true_neg = confusion_matrix['no', 'no'],
-									false_pos = confusion_matrix['no', 'yes'],
-									false_neg = confusion_matrix['yes', 'no'])
+	confusion_ls <- confusion_list(true_pos = confusion_matrix[target_positive_class, target_positive_class],
+									true_neg = confusion_matrix[target_negative_class, target_negative_class],
+									false_pos = confusion_matrix[target_negative_class, target_positive_class],
+									false_neg = confusion_matrix[target_positive_class, target_negative_class])
 	observation_rates <- confusion_matrix / sum(confusion_matrix)
 
 	average_profit <- 5
@@ -471,7 +588,7 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
 	gain_cost_matrix <- matrix(c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
 
-	print(expected_value_chart(predicted_probabilities_positive = predicted_probabilities_positive, actual_outcomes = actual_observations == 'yes', gain_cost_matrix = gain_cost_matrix))
+	print(expected_value_chart(predicted_probabilities_positive = predicted_probabilities_positive, actual_outcomes = actual_observations == target_positive_class, gain_cost_matrix = gain_cost_matrix))
 
 	print(visualize_quality_of_model(confusion_ls))
 	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)

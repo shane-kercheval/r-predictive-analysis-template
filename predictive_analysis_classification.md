@@ -4,6 +4,7 @@
     -   [Skewness](#skewness)
     -   [Outliers](#outliers)
     -   [Correlation & Collinearity](#correlation-collinearity)
+        -   [Correlation](#correlation)
         -   [Collinearity Removal](#collinearity-removal)
     -   [Graphs](#graphs)
         -   [checking\_balance](#checking_balance)
@@ -23,11 +24,17 @@
         -   [dependents](#dependents)
         -   [phone](#phone)
 -   [Spot-Check](#spot-check)
-    -   [Logistic Regression - no pre processing](#logistic-regression---no-pre-processing)
-    -   [Logistic Regression - basic processing](#logistic-regression---basic-processing)
+    -   [Class Balance](#class-balance)
+        -   [Training Data](#training-data)
+        -   [Test](#test)
+        -   [Logistic Regression - no pre processing](#logistic-regression---no-pre-processing)
+        -   [Logistic Regression - basic pre-processing](#logistic-regression---basic-pre-processing)
+        -   [Logistic Regression - remove collinear data - based on caret's recommendation](#logistic-regression---remove-collinear-data---based-on-carets-recommendation)
+        -   [Logistic Regression - remove collinear data - based on calculation](#logistic-regression---remove-collinear-data---based-on-calculation)
+        -   [Logistic Regression - remove collinear data - based on calculation](#logistic-regression---remove-collinear-data---based-on-calculation-1)
     -   [Resamples & Top Models](#resamples-top-models)
         -   [Resamples](#resamples)
--   [Train Top Models on Entire Dataset & Predict on Test Set](#train-top-models-on-entire-dataset-predict-on-test-set)
+-   [Train Top Models on Entire Training Dataset & Predict on Test Set](#train-top-models-on-entire-training-dataset-predict-on-test-set)
 
 Tuning Parameters
 =================
@@ -116,6 +123,8 @@ Outliers
 
 Correlation & Collinearity
 --------------------------
+
+### Correlation
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/correlation-1.png" width="750px" />
 
@@ -278,24 +287,37 @@ statistically different means (Wilcoxon-Matt-Whitney): FALSE
 Spot-Check
 ==========
 
-    ## 
-    ## yes  no 
-    ## 0.3 0.7
+Class Balance
+-------------
+
+Make sure class balance is even amount training/test datasets.
+
+### Training Data
 
     ## 
     ## yes  no 
     ## 0.3 0.7
 
--   Note: e.g. if there are rare values at the target extremes (lows/highs), the train and especially the test set might not be training/testing on them. Is the test set representative? If the test set doesn't have as extreme values, it can even predict better (e.g. lower RMSE higher Rsquared) than the average Cross Validation given on training because it's not using those extreme values.
+### Test
+
+    ## 
+    ## yes  no 
+    ## 0.3 0.7
+
+> Using `10`-fold cross-validation with `3` repeats, using the `ROC` statistic to evaluate each model.
 
 > used `90%` of data for `training` set (`900`), and `10%` for `test` set (`100`).
 
 ### Logistic Regression - no pre processing
 
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
+
 ``` r
 if(refresh_models)
 {
+    check_data(classification_train, validate_n_p = TRUE)
     set.seed(custom_seed)
+    #model_glm_no_pre_processing <- train(target ~ ., data=classification_train %>% mutate(target = factor(target, levels = c('no', 'yes'))), method='glm', metric=metric, trControl=train_control)
     model_glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
     saveRDS(model_glm_no_pre_processing, file = './classification_data/model_glm_no_pre_processing.RDS')
 } else{
@@ -361,17 +383,18 @@ summary(model_glm_no_pre_processing)
     ## 
     ## Number of Fisher Scoring iterations: 5
 
-``` r
-#plot(model_glm_no_pre_processing$finalModel)
-```
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
 
-### Logistic Regression - basic processing
+### Logistic Regression - basic pre-processing
+
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
 ``` r
 if(refresh_models)
 {
+    check_data(classification_train, validate_n_p = TRUE)
     set.seed(custom_seed)
-    model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('knnImpute', 'nzv', 'center', 'scale'), trControl=train_control)
+    model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl=train_control)
     saveRDS(model_glm_basic_processing, file = './classification_data/model_glm_basic_processing.RDS')
 } else{
     model_glm_basic_processing <- readRDS('./classification_data/model_glm_basic_processing.RDS')
@@ -430,11 +453,219 @@ summary(model_glm_basic_processing)
     ## 
     ## Number of Fisher Scoring iterations: 5
 
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+### Logistic Regression - remove collinear data - based on caret's recommendation
+
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
+
 ``` r
-plot(model_glm_basic_processing$finalModel)
+if(refresh_models)
+{
+    check_data(classification_train[, recommended_columns_caret], validate_n_p = TRUE)
+    set.seed(custom_seed)
+    glm_remove_collinearity_caret <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
+    saveRDS(glm_remove_collinearity_caret, file = './classification_data/glm_remove_collinearity_caret.RDS')
+} else{
+    glm_remove_collinearity_caret <- readRDS('./classification_data/glm_remove_collinearity_caret.RDS')
+}
+summary(glm_remove_collinearity_caret)
 ```
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/classification_basic_processing-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/classification_basic_processing-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/classification_basic_processing-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/classification_basic_processing-4.png" width="750px" />
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error z value             Pr(>|z|)    
+    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    ## purposecar                        0.034689   0.130295   0.266             0.790058    
+    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
+    ## age                               0.128240   0.104123   1.232             0.218093    
+    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    ## housingown                        0.151433   0.135406   1.118             0.263413    
+    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
+    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
+    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  872.53  on 870  degrees of freedom
+    ## AIC: 932.53
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+### Logistic Regression - remove collinear data - based on calculation
+
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
+
+``` r
+if(refresh_models)
+{
+    check_data(classification_train[, recommended_columns_custom], validate_n_p = TRUE)
+    set.seed(custom_seed)
+    glm_remove_collinearity_custom <- train(target ~ ., data = classification_train[, recommended_columns_custom], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
+    saveRDS(glm_remove_collinearity_custom, file = './classification_data/glm_remove_collinearity_custom.RDS')
+} else{
+    glm_remove_collinearity_custom <- readRDS('./classification_data/glm_remove_collinearity_custom.RDS')
+}
+summary(glm_remove_collinearity_custom)
+```
+
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error z value             Pr(>|z|)    
+    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
+    ## age                               0.128240   0.104123   1.232             0.218093    
+    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
+    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    ## purposecar                        0.034689   0.130295   0.266             0.790058    
+    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    ## housingown                        0.151433   0.135406   1.118             0.263413    
+    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
+    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  872.53  on 870  degrees of freedom
+    ## AIC: 932.53
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+### Logistic Regression - remove collinear data - based on calculation
+
+> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
+
+``` r
+if(refresh_models)
+{
+    check_data(classification_train, validate_n_p = TRUE)
+    set.seed(custom_seed)
+    
+    set.seed(custom_seed)
+    pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
+    columns_not_in_preprocessed_data <- colnames(classification_train)[!(colnames(classification_train) %in% colnames(pre_processed_numeric_data$data))] # figure out which columns we need to add back in (i.e. all (non-numeric) that are in classification_train but are NOT in pre_processed_numeric_data
+    pre_processed_classification_train <- cbind(classification_train[, columns_not_in_preprocessed_data], pre_processed_numeric_data$data)
+
+    set.seed(custom_seed)
+    stepwise_glm_model <- step(glm(family = binomial, formula = target ~ ., data = pre_processed_classification_train), direction="backward", trace=0) # do stepwise regression (glm doesn't like factor target variables), then use the formula in train in order to take advantage of k-fold Cross Validation
+    # stepwise_glm_model$formula gives the `optimal` formula (need to do this because coefficients will have factor variable names, not original columns. The formula will exclude columns not statistically significant)
+    # now feed this back into training to do cross validation
+    logistic_regression_stepwise_backward <- train(stepwise_glm_model$formula, data = classification_train, method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
+    saveRDS(logistic_regression_stepwise_backward, file = './classification_data/logistic_regression_stepwise_backward.RDS')
+} else{
+    logistic_regression_stepwise_backward <- readRDS('./classification_data/logistic_regression_stepwise_backward.RDS')
+}
+summary(logistic_regression_stepwise_backward)
+```
+
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.5554  -0.8800   0.4347   0.7691   2.0064  
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error z value             Pr(>|z|)    
+    ## (Intercept)                       1.131640   0.092838  12.189 < 0.0000000000000002 ***
+    ## `checking_balance> 200 DM`        0.245993   0.089350   2.753             0.005903 ** 
+    ## `checking_balance1 - 200 DM`      0.165115   0.091617   1.802             0.071508 .  
+    ## checking_balanceunknown           0.859391   0.111245   7.725   0.0000000000000112 ***
+    ## credit_historygood               -0.283603   0.117919  -2.405             0.016169 *  
+    ## credit_historypoor               -0.120046   0.088977  -1.349             0.177278    
+    ## `credit_historyvery good`        -0.246000   0.088881  -2.768             0.005645 ** 
+    ## `savings_balance100 - 500 DM`     0.001352   0.084900   0.016             0.987294    
+    ## `savings_balance500 - 1000 DM`    0.070428   0.098308   0.716             0.473743    
+    ## savings_balanceunknown            0.312059   0.098696   3.162             0.001568 ** 
+    ## `employment_duration> 7 years`    0.295568   0.116962   2.527             0.011502 *  
+    ## `employment_duration1 - 4 years`  0.103760   0.109846   0.945             0.344866    
+    ## `employment_duration4 - 7 years`  0.372998   0.111061   3.359             0.000784 ***
+    ## employment_durationunemployed     0.059406   0.089472   0.664             0.506715    
+    ## other_creditnone                  0.183429   0.082681   2.219             0.026519 *  
+    ## housingown                        0.178234   0.123668   1.441             0.149520    
+    ## housingrent                      -0.081868   0.122738  -0.667             0.504761    
+    ## phoneTRUE                         0.210035   0.091554   2.294             0.021785 *  
+    ## months_loan_duration             -0.251555   0.107446  -2.341             0.019221 *  
+    ## amount                           -0.409812   0.117708  -3.482             0.000498 ***
+    ## percent_of_income                -0.372375   0.096322  -3.866             0.000111 ***
+    ## existing_loans_count             -0.180763   0.106837  -1.692             0.090654 .  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  879.81  on 878  degrees of freedom
+    ## AIC: 923.81
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
 
 Resamples & Top Models
 ----------------------
@@ -445,36 +676,47 @@ Resamples & Top Models
     ## Call:
     ## summary.resamples(object = resamples)
     ## 
-    ## Models: model_glm_no_pre_processing, model_glm_basic_processing 
+    ## Models: model_glm_no_pre_processing, model_glm_basic_processing, glm_remove_collinearity_caret, glm_remove_collinearity_custom, logistic_regression_stepwise_backward 
     ## Number of resamples: 30 
     ## 
     ## ROC 
-    ##                                  Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
-    ## model_glm_no_pre_processing 0.6748971 0.7308936 0.7598471 0.7628258 0.7839506 0.8536155    0
-    ## model_glm_basic_processing  0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
+    ##                                            Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+    ## model_glm_no_pre_processing           0.6748971 0.7308936 0.7598471 0.7628258 0.7839506 0.8536155    0
+    ## model_glm_basic_processing            0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
+    ## glm_remove_collinearity_caret         0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
+    ## glm_remove_collinearity_custom        0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
+    ## logistic_regression_stepwise_backward 0.6878307 0.7264844 0.7757202 0.7644523 0.7962963 0.8641975    0
     ## 
     ## Sens 
-    ##                                  Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
-    ## model_glm_no_pre_processing 0.2592593 0.4074074 0.4814815 0.4530864 0.5185185 0.5555556    0
-    ## model_glm_basic_processing  0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
+    ##                                            Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+    ## model_glm_no_pre_processing           0.2592593 0.4074074 0.4814815 0.4530864 0.5185185 0.5555556    0
+    ## model_glm_basic_processing            0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
+    ## glm_remove_collinearity_caret         0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
+    ## glm_remove_collinearity_custom        0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
+    ## logistic_regression_stepwise_backward 0.2222222 0.3796296 0.4259259 0.4111111 0.4444444 0.5555556    0
     ## 
     ## Spec 
-    ##                                  Min.   1st Qu.    Median      Mean   3rd Qu.     Max. NA's
-    ## model_glm_no_pre_processing 0.7460317 0.8253968 0.8730159 0.8592593 0.8888889 0.952381    0
-    ## model_glm_basic_processing  0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.952381    0
+    ##                                            Min.   1st Qu.    Median      Mean   3rd Qu.     Max. NA's
+    ## model_glm_no_pre_processing           0.7460317 0.8253968 0.8730159 0.8592593 0.8888889 0.952381    0
+    ## model_glm_basic_processing            0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.952381    0
+    ## glm_remove_collinearity_caret         0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.952381    0
+    ## glm_remove_collinearity_custom        0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.952381    0
+    ## logistic_regression_stepwise_backward 0.7936508 0.8571429 0.8730159 0.8772487 0.9047619 0.952381    0
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-4.png" width="750px" />
 
-Train Top Models on Entire Dataset & Predict on Test Set
-========================================================
+Train Top Models on Entire Training Dataset & Predict on Test Set
+=================================================================
+
+> after using cross-validation to tune, we'll take the highest ranked models, retrain the models (with the final tuning parameters) on the entire training set, and predict using the test set.
 
     ## 
     ## 
-    ## ### Generalized Linear Model (model_glm_basic_processing)
+    ## ### Generalized Linear Model (glm_remove_collinearity_custom)
     ## 
     ## 
     ## 
-    ## Pre-Processing: `knnImpute, nzv, center, scale`
+    ## Pre-Processing: `nzv, center, scale, knnImpute`
     ## 
     ## 
     ## Call:
@@ -566,6 +808,198 @@ Train Top Models on Entire Dataset & Predict on Test Set
 
     ## 
     ## 
+    ## ### Generalized Linear Model (glm_remove_collinearity_caret)
+    ## 
+    ## 
+    ## 
+    ## Pre-Processing: `nzv, center, scale, knnImpute`
+    ## 
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error z value             Pr(>|z|)    
+    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    ## purposecar                        0.034689   0.130295   0.266             0.790058    
+    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
+    ## age                               0.128240   0.104123   1.232             0.218093    
+    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    ## housingown                        0.151433   0.135406   1.118             0.263413    
+    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
+    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
+    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  872.53  on 870  degrees of freedom
+    ## AIC: 932.53
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-11.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-12.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-14.png" width="750px" />
+
+    ## ```
+    ## Confusion Matrix and Statistics
+    ## 
+    ##           Reference
+    ## Prediction yes no
+    ##        yes  14  8
+    ##        no   16 62
+    ##                                           
+    ##                Accuracy : 0.76            
+    ##                  95% CI : (0.6643, 0.8398)
+    ##     No Information Rate : 0.7             
+    ##     P-Value [Acc > NIR] : 0.1136          
+    ##                                           
+    ##                   Kappa : 0.3814          
+    ##  Mcnemar's Test P-Value : 0.1530          
+    ##                                           
+    ##             Sensitivity : 0.4667          
+    ##             Specificity : 0.8857          
+    ##          Pos Pred Value : 0.6364          
+    ##          Neg Pred Value : 0.7949          
+    ##              Prevalence : 0.3000          
+    ##          Detection Rate : 0.1400          
+    ##    Detection Prevalence : 0.2200          
+    ##       Balanced Accuracy : 0.6762          
+    ##                                           
+    ##        'Positive' Class : yes             
+    ##                                           
+    ## ```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" />
+
+    ## NULL
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" />
+
+    ## 
+    ## 
+    ## ### Generalized Linear Model (model_glm_basic_processing)
+    ## 
+    ## 
+    ## 
+    ## Pre-Processing: `nzv, center, scale, knnImpute`
+    ## 
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error z value             Pr(>|z|)    
+    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    ## purposecar                        0.034689   0.130295   0.266             0.790058    
+    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
+    ## age                               0.128240   0.104123   1.232             0.218093    
+    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    ## housingown                        0.151433   0.135406   1.118             0.263413    
+    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
+    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
+    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  872.53  on 870  degrees of freedom
+    ## AIC: 932.53
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-22.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-23.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-24.png" width="750px" />
+
+    ## ```
+    ## Confusion Matrix and Statistics
+    ## 
+    ##           Reference
+    ## Prediction yes no
+    ##        yes  14  8
+    ##        no   16 62
+    ##                                           
+    ##                Accuracy : 0.76            
+    ##                  95% CI : (0.6643, 0.8398)
+    ##     No Information Rate : 0.7             
+    ##     P-Value [Acc > NIR] : 0.1136          
+    ##                                           
+    ##                   Kappa : 0.3814          
+    ##  Mcnemar's Test P-Value : 0.1530          
+    ##                                           
+    ##             Sensitivity : 0.4667          
+    ##             Specificity : 0.8857          
+    ##          Pos Pred Value : 0.6364          
+    ##          Neg Pred Value : 0.7949          
+    ##              Prevalence : 0.3000          
+    ##          Detection Rate : 0.1400          
+    ##    Detection Prevalence : 0.2200          
+    ##       Balanced Accuracy : 0.6762          
+    ##                                           
+    ##        'Positive' Class : yes             
+    ##                                           
+    ## ```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-25.png" width="750px" />
+
+    ## NULL
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-26.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-27.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-28.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-29.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-30.png" width="750px" />
+
+    ## 
+    ## 
     ## ### Generalized Linear Model (model_glm_no_pre_processing)
     ## 
     ## 
@@ -625,7 +1059,7 @@ Train Top Models on Entire Dataset & Predict on Test Set
     ## 
     ## Number of Fisher Scoring iterations: 5
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-11.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-12.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-14.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-34.png" width="750px" />
 
     ## ```
     ## Confusion Matrix and Statistics
@@ -656,8 +1090,104 @@ Train Top Models on Entire Dataset & Predict on Test Set
     ##                                           
     ## ```
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-35.png" width="750px" />
 
     ## NULL
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-21.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-37.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-39.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-40.png" width="750px" />
+
+    ## 
+    ## 
+    ## ### Generalized Linear Model (logistic_regression_stepwise_backward)
+    ## 
+    ## 
+    ## 
+    ## Pre-Processing: `nzv, center, scale, knnImpute`
+    ## 
+    ## 
+    ## Call:
+    ## NULL
+    ## 
+    ## Deviance Residuals: 
+    ##     Min       1Q   Median       3Q      Max  
+    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
+    ## 
+    ## Coefficients:
+    ##                                   Estimate Std. Error z value             Pr(>|z|)    
+    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    ## purposecar                        0.034689   0.130295   0.266             0.790058    
+    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
+    ## age                               0.128240   0.104123   1.232             0.218093    
+    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    ## housingown                        0.151433   0.135406   1.118             0.263413    
+    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
+    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
+    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## (Dispersion parameter for binomial family taken to be 1)
+    ## 
+    ##     Null deviance: 1099.56  on 899  degrees of freedom
+    ## Residual deviance:  872.53  on 870  degrees of freedom
+    ## AIC: 932.53
+    ## 
+    ## Number of Fisher Scoring iterations: 5
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-41.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-42.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-44.png" width="750px" />
+
+    ## ```
+    ## Confusion Matrix and Statistics
+    ## 
+    ##           Reference
+    ## Prediction yes no
+    ##        yes  14  8
+    ##        no   16 62
+    ##                                           
+    ##                Accuracy : 0.76            
+    ##                  95% CI : (0.6643, 0.8398)
+    ##     No Information Rate : 0.7             
+    ##     P-Value [Acc > NIR] : 0.1136          
+    ##                                           
+    ##                   Kappa : 0.3814          
+    ##  Mcnemar's Test P-Value : 0.1530          
+    ##                                           
+    ##             Sensitivity : 0.4667          
+    ##             Specificity : 0.8857          
+    ##          Pos Pred Value : 0.6364          
+    ##          Neg Pred Value : 0.7949          
+    ##              Prevalence : 0.3000          
+    ##          Detection Rate : 0.1400          
+    ##    Detection Prevalence : 0.2200          
+    ##       Balanced Accuracy : 0.6762          
+    ##                                           
+    ##        'Positive' Class : yes             
+    ##                                           
+    ## ```
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-45.png" width="750px" />
+
+    ## NULL
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-46.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-47.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-48.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-49.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-50.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-51.png" width="750px" />
