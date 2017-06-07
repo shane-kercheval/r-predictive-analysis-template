@@ -91,6 +91,14 @@ training_percentage <- 0.90
 # cross validation
 cross_validation_num_folds <- 10
 cross_validation_num_repeats <- 3
+
+# tuning parameters
+tuning_number_of_latent_variables_to_retain <- 1:10
+
+tuning_glmnet_alpha <- seq(from = 0, to = 1, length = 5) # alpha = 0 is pure ridge regression, and alpha = 1 is pure lasso regression.
+tuning_glmnet_lambda <- seq(from = 0.0001, to = 1, length = 50) # lambda values control the amount of penalization in the model.
+
+tuning_nearest_shrunken_centroids_shrinkage_threshold <- data.frame(.threshold = 0:25)
 ```
 
 # Dataset
@@ -489,21 +497,153 @@ summary(logistic_regression_stepwise_backward)
 
 > NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
 
+### Linear Discriminant Analysis
+
+```{r linear_discriminant_analsysis}
+if(refresh_models)
+{
+	check_data(classification_train, validate_n_p = TRUE)
+	set.seed(custom_seed)
+	linear_discriminant_analsysis <- train(target ~ ., data = classification_train, method = 'lda', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control)
+	saveRDS(linear_discriminant_analsysis, file = './classification_data/linear_discriminant_analsysis.RDS')
+} else{
+	linear_discriminant_analsysis <- readRDS('./classification_data/linear_discriminant_analsysis.RDS')
+}
+summary(linear_discriminant_analsysis)
+varImp(linear_discriminant_analsysis, scale = FALSE)
+```
+
+### Linear Discriminant Analysis - Remove Collinear Data Based on Caret's Recommendation
+
+```{r linear_discriminant_analsysis_remove_collinear}
+if(refresh_models)
+{
+	check_data(classification_train[, recommended_columns_caret], validate_n_p = TRUE)
+	set.seed(custom_seed)
+	linear_discriminant_analsysis_remove_collinear <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'lda', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control)
+	saveRDS(linear_discriminant_analsysis_remove_collinear, file = './classification_data/linear_discriminant_analsysis_remove_collinear.RDS')
+} else{
+	linear_discriminant_analsysis_remove_collinear <- readRDS('./classification_data/linear_discriminant_analsysis_remove_collinear.RDS')
+}
+summary(linear_discriminant_analsysis_remove_collinear)
+varImp(linear_discriminant_analsysis_remove_collinear, scale = FALSE)
+```
+
+### Partial Least Squares Discriminant Analysis (PLSDA)
+
+```{r partial_least_squares_discriminant_analysis}
+if(refresh_models)
+{
+	check_data(classification_train, validate_n_p = TRUE)
+	set.seed(custom_seed)
+	partial_least_squares_discriminant_analysis <- train(target ~ ., data = classification_train, method = 'pls', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control, # "performance of PLS is affected when including predictors that contain little or no predictive information" i.e. remove NZV
+														tuneGrid = expand.grid(.ncomp = tuning_number_of_latent_variables_to_retain))
+	saveRDS(partial_least_squares_discriminant_analysis, file = './classification_data/partial_least_squares_discriminant_analysis.RDS')
+} else{
+	partial_least_squares_discriminant_analysis <- readRDS('./classification_data/partial_least_squares_discriminant_analysis.RDS')
+}
+partial_least_squares_discriminant_analysis
+#summary(partial_least_squares_discriminant_analysis)
+plot(partial_least_squares_discriminant_analysis, top = 20, scales = list(y = list(cex = 0.95)))
+varImp(partial_least_squares_discriminant_analysis, scale = FALSE)
+```
+
+### glmnet (LASSO and RIDGE)
+
+```{r glmnet_lasso_ridge}
+if(refresh_models)
+{
+	check_data(classification_train, validate_n_p = TRUE)
+	set.seed(custom_seed)
+	glmnet_lasso_ridge <- train(target ~ ., data = classification_train, method = 'glmnet', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
+														tuneGrid = expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda))
+	saveRDS(glmnet_lasso_ridge, file = './classification_data/glmnet_lasso_ridge.RDS')
+} else{
+	glmnet_lasso_ridge <- readRDS('./classification_data/glmnet_lasso_ridge.RDS')
+}
+#glmnet_lasso_ridge
+summary(glmnet_lasso_ridge)
+plot(glmnet_lasso_ridge, top = 20, scales = list(y = list(cex = 0.95)))
+plot(glmnet_lasso_ridge, plotType = 'level')
+varImp(glmnet_lasso_ridge, scale = FALSE)
+```
+
+### Sparse LDA
+
+```{r sparse_lda}
+if(refresh_models)
+{
+	check_data(classification_train, validate_n_p = FALSE)
+	set.seed(custom_seed)
+	sparse_lda <- train(target ~ ., data = classification_train, method = 'sparseLDA', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
+														tuneLength = 5)
+	saveRDS(sparse_lda, file = './classification_data/sparse_lda.RDS')
+} else{
+	sparse_lda <- readRDS('./classification_data/sparse_lda.RDS')
+}
+#sparse_lda
+summary(sparse_lda)
+plot(sparse_lda, top = 20, scales = list(y = list(cex = 0.95)))
+plot(sparse_lda, plotType = 'level')
+varImp(sparse_lda, scale = FALSE)
+```
+
+### Nearest Shrunken Centroids
+
+> Poor performance and varImp() gives error
+
+```{r nearest_shrunken_centroids, eval=FALSE, include=FALSE}
+if(refresh_models)
+{
+	check_data(classification_train, validate_n_p = FALSE)
+	set.seed(custom_seed)
+	nearest_shrunken_centroids <- train(target ~ ., data = classification_train, method = 'pam', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
+														tuneGrid = tuning_nearest_shrunken_centroids_shrinkage_threshold)
+
+	saveRDS(nearest_shrunken_centroids, file = './classification_data/nearest_shrunken_centroids.RDS')
+} else{
+	nearest_shrunken_centroids <- readRDS('./classification_data/nearest_shrunken_centroids.RDS')
+}
+#nearest_shrunken_centroids
+summary(nearest_shrunken_centroids)
+predictors(nearest_shrunken_centroids)
+plot(nearest_shrunken_centroids, top = 20, scales = list(y = list(cex = 0.95)))
+varImp(nearest_shrunken_centroids, scale = FALSE)
+```
+
+### Random Forest
+
+
+### Neural Network
+
+
+### Ada Boost
+
+### All Models on Page 550 that are classification or both regression and classification
+
+### Models used for spot-check.Rmd 
+
 
 ## Resamples & Top Models
 
 ### Resamples
 
 ```{r resamples_regression, echo=FALSE, fig.height=6, fig.width=9}
-numeric_models <- list(
+classification_models <- list(
 		model_glm_no_pre_processing = model_glm_no_pre_processing,
 		model_glm_basic_processing = model_glm_basic_processing,
 		glm_remove_collinearity_caret = glm_remove_collinearity_caret,
 		glm_remove_collinearity_custom = glm_remove_collinearity_custom,
-		logistic_regression_stepwise_backward = logistic_regression_stepwise_backward
+		logistic_regression_stepwise_backward = logistic_regression_stepwise_backward,
+		linear_discriminant_analsysis = linear_discriminant_analsysis,
+		linear_discriminant_analsysis_remove_collinear = linear_discriminant_analsysis_remove_collinear,
+		partial_least_squares_discriminant_analysis = partial_least_squares_discriminant_analysis,
+		glmnet_lasso_ridge = glmnet_lasso_ridge,
+		sparse_lda = sparse_lda#,
+		#nearest_shrunken_centroids = nearest_shrunken_centroids
 		)
 
-resamples <- resamples(numeric_models)
+resamples <- resamples(classification_models)
 
 # Table comparison
 (resamples_summary <- summary(resamples))
@@ -531,7 +671,7 @@ ggplot(data = resamples_long, mapping = aes(x = model, y = value)) +
 	facet_grid(. ~ metric, scales = "free", space = "free_y") +
 	coord_flip()
 
-resamples$values %>% select(contains('~ROC')) %>%
+resamples$values %>% dplyr::select(contains('~ROC')) %>%
 	gather(model, ROC) %>%
 	mutate(model = factor(model)) %>%
 ggplot() + 
@@ -633,7 +773,7 @@ top_models <- resamples_means %>%
 	arrange(rank) %>% 
 	dplyr::select(model, average) %>%
 	dplyr::rename(cross_validation_auc = average) %>%
-	mutate(model_object = map(model, ~ { numeric_models[names(numeric_models) == .][[1]] })) # add models to data.frame so when we choose the top models later we will 
+	mutate(model_object = map(model, ~ { classification_models[names(classification_models) == .][[1]] })) # add models to data.frame so when we choose the top models later we will 
 
 final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE, savePredictions = 'all') # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
 
