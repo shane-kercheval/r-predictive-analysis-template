@@ -40,19 +40,6 @@ custom_seed <- 123
 refresh_models <- TRUE
 ```
 
-```{r function_definition, echo = FALSE}
-check_data <- function(dataset, validate_n_p = TRUE)
-{
-	if(validate_n_p) {
-		number_of_samples <- nrow(dataset)
-		number_of_dimensions <- ncol(dataset)
-		sample_to_dimension_ratio <- number_of_samples / number_of_dimensions
-
-		stopifnot(sample_to_dimension_ratio >= 5)
-	}
-}
-```
-
 ```{r dataset_definition, echo = FALSE}
 df_credit <- fread('./classification_data/credit.csv')
 classification_dataset <- df_credit %>%
@@ -99,6 +86,11 @@ tuning_glmnet_alpha <- seq(from = 0, to = 1, length = 5) # alpha = 0 is pure rid
 tuning_glmnet_lambda <- seq(from = 0.0001, to = 1, length = 50) # lambda values control the amount of penalization in the model.
 
 tuning_nearest_shrunken_centroids_shrinkage_threshold <- data.frame(.threshold = 0:25)
+
+tuning_mda_subclasses <- 1:8
+
+tuning_rda_lambda <- seq(from = 0, to = 1, by = 0.2)
+tuning_rda_gamma <- seq(from = 0, to = 1, by = 0.2)
 ```
 
 # Dataset
@@ -398,7 +390,7 @@ metric <- 'ROC'
 ```{r classification_no_pre_processing}
 if(refresh_models)
 {
-	check_data(classification_train, validate_n_p = TRUE)
+	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	#model_glm_no_pre_processing <- train(target ~ ., data=classification_train %>% mutate(target = factor(target, levels = c('no', 'yes'))), method='glm', metric=metric, trControl=train_control)
 	model_glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
@@ -418,7 +410,7 @@ summary(model_glm_no_pre_processing)
 ```{r classification_basic_processing}
 if(refresh_models)
 {
-	check_data(classification_train, validate_n_p = TRUE)
+	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl=train_control)
 	saveRDS(model_glm_basic_processing, file = './classification_data/model_glm_basic_processing.RDS')
@@ -437,7 +429,7 @@ summary(model_glm_basic_processing)
 ```{r logistic_regression_collinear_caret}
 if(refresh_models)
 {
-	check_data(classification_train[, recommended_columns_caret], validate_n_p = TRUE)
+	check_data(classification_train[, recommended_columns_caret], sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	glm_remove_collinearity_caret <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
 	saveRDS(glm_remove_collinearity_caret, file = './classification_data/glm_remove_collinearity_caret.RDS')
@@ -456,7 +448,7 @@ summary(glm_remove_collinearity_caret)
 ```{r logistic_regression_collinear_calc}
 if(refresh_models)
 {
-	check_data(classification_train[, recommended_columns_custom], validate_n_p = TRUE)
+	check_data(classification_train[, recommended_columns_custom], sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	glm_remove_collinearity_custom <- train(target ~ ., data = classification_train[, recommended_columns_custom], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
 	saveRDS(glm_remove_collinearity_custom, file = './classification_data/glm_remove_collinearity_custom.RDS')
@@ -475,7 +467,7 @@ summary(glm_remove_collinearity_custom)
 ```{r logistic_regression_stepwise_backward}
 if(refresh_models)
 {
-	check_data(classification_train, validate_n_p = TRUE)
+	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	
 	set.seed(custom_seed)
@@ -502,7 +494,7 @@ summary(logistic_regression_stepwise_backward)
 ```{r linear_discriminant_analsysis}
 if(refresh_models)
 {
-	check_data(classification_train, validate_n_p = TRUE)
+	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	linear_discriminant_analsysis <- train(target ~ ., data = classification_train, method = 'lda', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control)
 	saveRDS(linear_discriminant_analsysis, file = './classification_data/linear_discriminant_analsysis.RDS')
@@ -518,7 +510,7 @@ varImp(linear_discriminant_analsysis, scale = FALSE)
 ```{r linear_discriminant_analsysis_remove_collinear}
 if(refresh_models)
 {
-	check_data(classification_train[, recommended_columns_caret], validate_n_p = TRUE)
+	check_data(classification_train[, recommended_columns_caret], sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	linear_discriminant_analsysis_remove_collinear <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'lda', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control)
 	saveRDS(linear_discriminant_analsysis_remove_collinear, file = './classification_data/linear_discriminant_analsysis_remove_collinear.RDS')
@@ -534,7 +526,7 @@ varImp(linear_discriminant_analsysis_remove_collinear, scale = FALSE)
 ```{r partial_least_squares_discriminant_analysis}
 if(refresh_models)
 {
-	check_data(classification_train, validate_n_p = TRUE)
+	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	partial_least_squares_discriminant_analysis <- train(target ~ ., data = classification_train, method = 'pls', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control, # "performance of PLS is affected when including predictors that contain little or no predictive information" i.e. remove NZV
 														tuneGrid = expand.grid(.ncomp = tuning_number_of_latent_variables_to_retain))
@@ -553,7 +545,7 @@ varImp(partial_least_squares_discriminant_analysis, scale = FALSE)
 ```{r glmnet_lasso_ridge}
 if(refresh_models)
 {
-	check_data(classification_train, validate_n_p = TRUE)
+	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
 	set.seed(custom_seed)
 	glmnet_lasso_ridge <- train(target ~ ., data = classification_train, method = 'glmnet', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
 														tuneGrid = expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda))
@@ -611,6 +603,58 @@ plot(nearest_shrunken_centroids, top = 20, scales = list(y = list(cex = 0.95)))
 varImp(nearest_shrunken_centroids, scale = FALSE)
 ```
 
+### Regularized Discriminant Analysis
+
+```{r regularized_discriminant_analysis, eval=FALSE, include=FALSE}
+if(refresh_models)
+{
+	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
+	set.seed(custom_seed)
+	regularized_discriminant_analysis <- train(	target ~ .,
+											data = classification_train,
+											method = 'rda',
+											metric=metric,
+											preProc=c('nzv', 'center', 'scale'),
+											trControl = train_control,
+											tuneGrid = expand.grid(	lambda = tuning_rda_lambda,
+																	gamma = tuning_rda_gamma))
+	saveRDS(regularized_discriminant_analysis, file = './classification_data/regularized_discriminant_analysis.RDS')
+} else{
+	regularized_discriminant_analysis <- readRDS('./classification_data/regularized_discriminant_analysis.RDS')
+}
+#regularized_discriminant_analysis
+summary(regularized_discriminant_analysis)
+predictors(regularized_discriminant_analysis)
+plot(regularized_discriminant_analysis, top = 20, scales = list(y = list(cex = 0.95)))
+varImp(regularized_discriminant_analysis, scale = FALSE)
+```
+
+### Mixture Discriminant Analysis
+
+```{r mixture_discriminant_analysis, eval=FALSE, include=FALSE}
+if(refresh_models)
+{
+	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
+	set.seed(custom_seed)
+	mixture_discriminant_analysis <- train(	target ~ .,
+											data = classification_train,
+											method = 'mda',
+											metric=metric,
+											preProc=c('nzv', 'center', 'scale'),
+											trControl = train_control,
+											tuneGrid = expand.grid(subclasses = tuning_mda_subclasses))
+
+	saveRDS(mixture_discriminant_analysis, file = './classification_data/mixture_discriminant_analysis.RDS')
+} else{
+	mixture_discriminant_analysis <- readRDS('./classification_data/mixture_discriminant_analysis.RDS')
+}
+#mixture_discriminant_analysis
+summary(mixture_discriminant_analysis)
+predictors(mixture_discriminant_analysis)
+plot(mixture_discriminant_analysis, top = 20, scales = list(y = list(cex = 0.95)))
+varImp(mixture_discriminant_analysis, scale = FALSE)
+```
+
 ### Random Forest
 
 
@@ -639,8 +683,10 @@ classification_models <- list(
 		linear_discriminant_analsysis_remove_collinear = linear_discriminant_analsysis_remove_collinear,
 		partial_least_squares_discriminant_analysis = partial_least_squares_discriminant_analysis,
 		glmnet_lasso_ridge = glmnet_lasso_ridge,
-		sparse_lda = sparse_lda#,
-		#nearest_shrunken_centroids = nearest_shrunken_centroids
+		sparse_lda = sparse_lda,
+		#nearest_shrunken_centroids = nearest_shrunken_centroids,
+		regularized_discriminant_analysis = regularized_discriminant_analysis,
+		mixture_discriminant_analysis = mixture_discriminant_analysis
 		)
 
 resamples <- resamples(classification_models)
