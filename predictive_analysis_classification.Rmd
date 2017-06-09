@@ -37,7 +37,7 @@ require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
 custom_seed <- 123
-refresh_models <- TRUE
+refresh_models <- FALSE
 ```
 
 ```{r dataset_definition, echo = FALSE}
@@ -387,7 +387,7 @@ metric <- 'ROC'
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-```{r classification_no_pre_processing}
+```{r classification_no_pre_processing, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
@@ -407,7 +407,7 @@ summary(model_glm_no_pre_processing)
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-```{r classification_basic_processing}
+```{r classification_basic_processing, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
@@ -426,7 +426,7 @@ summary(model_glm_basic_processing)
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-```{r logistic_regression_collinear_caret}
+```{r logistic_regression_collinear_caret, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train[, recommended_columns_caret], sample_to_predictor_ratio_threshold = 5)
@@ -445,7 +445,7 @@ summary(glm_remove_collinearity_caret)
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-```{r logistic_regression_collinear_calc}
+```{r logistic_regression_collinear_calc, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train[, recommended_columns_custom], sample_to_predictor_ratio_threshold = 5)
@@ -464,7 +464,7 @@ summary(glm_remove_collinearity_custom)
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-```{r logistic_regression_stepwise_backward}
+```{r logistic_regression_stepwise_backward, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
@@ -491,7 +491,7 @@ summary(logistic_regression_stepwise_backward)
 
 ### Linear Discriminant Analysis
 
-```{r linear_discriminant_analsysis}
+```{r linear_discriminant_analsysis, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
@@ -507,7 +507,7 @@ varImp(linear_discriminant_analsysis, scale = FALSE)
 
 ### Linear Discriminant Analysis - Remove Collinear Data Based on Caret's Recommendation
 
-```{r linear_discriminant_analsysis_remove_collinear}
+```{r linear_discriminant_analsysis_remove_collinear, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train[, recommended_columns_caret], sample_to_predictor_ratio_threshold = 5)
@@ -523,7 +523,7 @@ varImp(linear_discriminant_analsysis_remove_collinear, scale = FALSE)
 
 ### Partial Least Squares Discriminant Analysis (PLSDA)
 
-```{r partial_least_squares_discriminant_analysis}
+```{r partial_least_squares_discriminant_analysis, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
@@ -542,7 +542,7 @@ varImp(partial_least_squares_discriminant_analysis, scale = FALSE)
 
 ### glmnet (LASSO and RIDGE)
 
-```{r glmnet_lasso_ridge}
+```{r glmnet_lasso_ridge, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
@@ -562,7 +562,7 @@ varImp(glmnet_lasso_ridge, scale = FALSE)
 
 ### Sparse LDA
 
-```{r sparse_lda}
+```{r sparse_lda, echo = FALSE}
 if(refresh_models)
 {
 	check_data(classification_train, validate_n_p = FALSE)
@@ -605,7 +605,7 @@ varImp(nearest_shrunken_centroids, scale = FALSE)
 
 ### Regularized Discriminant Analysis
 
-```{r regularized_discriminant_analysis, eval=FALSE, include=FALSE}
+```{r regularized_discriminant_analysis, echo = FALSE}
 if(refresh_models)
 {
 	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
@@ -629,9 +629,35 @@ plot(regularized_discriminant_analysis, top = 20, scales = list(y = list(cex = 0
 varImp(regularized_discriminant_analysis, scale = FALSE)
 ```
 
+### Regularized Discriminant Analysis - Removed Correlated Predictors
+
+```{r regularized_discriminant_analysis_rc, echo = FALSE}
+if(refresh_models)
+{
+	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
+	set.seed(custom_seed)
+	regularized_discriminant_analysis_rc <- train(	target ~ .,
+											data = classification_train[, recommended_columns_caret],
+											method = 'rda',
+											metric=metric,
+											preProc=c('nzv', 'center', 'scale'),
+											trControl = train_control,
+											tuneGrid = expand.grid(	lambda = tuning_rda_lambda,
+																	gamma = tuning_rda_gamma))
+	saveRDS(regularized_discriminant_analysis_rc, file = './classification_data/regularized_discriminant_analysis_rc.RDS')
+} else{
+	regularized_discriminant_analysis_rc <- readRDS('./classification_data/regularized_discriminant_analysis_rc.RDS')
+}
+#regularized_discriminant_analysis_rc
+summary(regularized_discriminant_analysis_rc)
+predictors(regularized_discriminant_analysis_rc)
+plot(regularized_discriminant_analysis_rc, top = 20, scales = list(y = list(cex = 0.95)))
+varImp(regularized_discriminant_analysis_rc, scale = FALSE)
+```
+
 ### Mixture Discriminant Analysis
 
-```{r mixture_discriminant_analysis, eval=FALSE, include=FALSE}
+```{r mixture_discriminant_analysis, echo = FALSE}
 if(refresh_models)
 {
 	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
@@ -654,6 +680,34 @@ predictors(mixture_discriminant_analysis)
 plot(mixture_discriminant_analysis, top = 20, scales = list(y = list(cex = 0.95)))
 varImp(mixture_discriminant_analysis, scale = FALSE)
 ```
+
+### Mixture Discriminant Analysis - Removed Correlated Predictors
+
+```{r mixture_discriminant_analysis_rc, echo = FALSE}
+if(refresh_models)
+{
+	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
+	set.seed(custom_seed)
+	mixture_discriminant_analysis_rc <- train(	target ~ .,
+											data = classification_train[, recommended_columns_caret],
+											method = 'mda',
+											metric=metric,
+											preProc=c('nzv', 'center', 'scale'),
+											trControl = train_control,
+											tuneGrid = expand.grid(subclasses = tuning_mda_subclasses))
+
+	saveRDS(mixture_discriminant_analysis_rc, file = './classification_data/mixture_discriminant_analysis_rc.RDS')
+} else{
+	mixture_discriminant_analysis_rc <- readRDS('./classification_data/mixture_discriminant_analysis_rc.RDS')
+}
+#mixture_discriminant_analysis_rc
+summary(mixture_discriminant_analysis_rc)
+predictors(mixture_discriminant_analysis_rc)
+plot(mixture_discriminant_analysis_rc, top = 20, scales = list(y = list(cex = 0.95)))
+varImp(mixture_discriminant_analysis_rc, scale = FALSE)
+```
+
+
 
 ### Random Forest
 
@@ -686,7 +740,9 @@ classification_models <- list(
 		sparse_lda = sparse_lda,
 		#nearest_shrunken_centroids = nearest_shrunken_centroids,
 		regularized_discriminant_analysis = regularized_discriminant_analysis,
-		mixture_discriminant_analysis = mixture_discriminant_analysis
+		regularized_discriminant_analysis_rc = regularized_discriminant_analysis_rc,
+		mixture_discriminant_analysis = mixture_discriminant_analysis,
+		mixture_discriminant_analysis_rc = mixture_discriminant_analysis_rc
 		)
 
 resamples <- resamples(classification_models)

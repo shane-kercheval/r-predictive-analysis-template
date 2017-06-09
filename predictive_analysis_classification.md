@@ -38,6 +38,10 @@
         -   [glmnet (LASSO and RIDGE)](#glmnet-lasso-and-ridge)
         -   [Sparse LDA](#sparse-lda)
         -   [Nearest Shrunken Centroids](#nearest-shrunken-centroids)
+        -   [Regularized Discriminant Analysis](#regularized-discriminant-analysis)
+        -   [Regularized Discriminant Analysis - Removed Correlated Predictors](#regularized-discriminant-analysis---removed-correlated-predictors)
+        -   [Mixture Discriminant Analysis](#mixture-discriminant-analysis)
+        -   [Mixture Discriminant Analysis - Removed Correlated Predictors](#mixture-discriminant-analysis---removed-correlated-predictors)
         -   [Random Forest](#random-forest)
         -   [Neural Network](#neural-network)
         -   [Ada Boost](#ada-boost)
@@ -65,6 +69,11 @@ tuning_glmnet_alpha <- seq(from = 0, to = 1, length = 5) # alpha = 0 is pure rid
 tuning_glmnet_lambda <- seq(from = 0.0001, to = 1, length = 50) # lambda values control the amount of penalization in the model.
 
 tuning_nearest_shrunken_centroids_shrinkage_threshold <- data.frame(.threshold = 0:25)
+
+tuning_mda_subclasses <- 1:8
+
+tuning_rda_lambda <- seq(from = 0, to = 1, by = 0.2)
+tuning_rda_gamma <- seq(from = 0, to = 1, by = 0.2)
 ```
 
 Dataset
@@ -331,20 +340,6 @@ Make sure class balance is even amount training/test datasets.
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-``` r
-if(refresh_models)
-{
-    check_data(classification_train, validate_n_p = TRUE)
-    set.seed(custom_seed)
-    #model_glm_no_pre_processing <- train(target ~ ., data=classification_train %>% mutate(target = factor(target, levels = c('no', 'yes'))), method='glm', metric=metric, trControl=train_control)
-    model_glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
-    saveRDS(model_glm_no_pre_processing, file = './classification_data/model_glm_no_pre_processing.RDS')
-} else{
-    model_glm_no_pre_processing <- readRDS('./classification_data/model_glm_no_pre_processing.RDS')
-}
-summary(model_glm_no_pre_processing)
-```
-
     ## 
     ## Call:
     ## NULL
@@ -408,19 +403,6 @@ summary(model_glm_no_pre_processing)
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-``` r
-if(refresh_models)
-{
-    check_data(classification_train, validate_n_p = TRUE)
-    set.seed(custom_seed)
-    model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl=train_control)
-    saveRDS(model_glm_basic_processing, file = './classification_data/model_glm_basic_processing.RDS')
-} else{
-    model_glm_basic_processing <- readRDS('./classification_data/model_glm_basic_processing.RDS')
-}
-summary(model_glm_basic_processing)
-```
-
     ## 
     ## Call:
     ## NULL
@@ -478,19 +460,6 @@ summary(model_glm_basic_processing)
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-``` r
-if(refresh_models)
-{
-    check_data(classification_train[, recommended_columns_caret], validate_n_p = TRUE)
-    set.seed(custom_seed)
-    glm_remove_collinearity_caret <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
-    saveRDS(glm_remove_collinearity_caret, file = './classification_data/glm_remove_collinearity_caret.RDS')
-} else{
-    glm_remove_collinearity_caret <- readRDS('./classification_data/glm_remove_collinearity_caret.RDS')
-}
-summary(glm_remove_collinearity_caret)
-```
-
     ## 
     ## Call:
     ## NULL
@@ -548,19 +517,6 @@ summary(glm_remove_collinearity_caret)
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-``` r
-if(refresh_models)
-{
-    check_data(classification_train[, recommended_columns_custom], validate_n_p = TRUE)
-    set.seed(custom_seed)
-    glm_remove_collinearity_custom <- train(target ~ ., data = classification_train[, recommended_columns_custom], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
-    saveRDS(glm_remove_collinearity_custom, file = './classification_data/glm_remove_collinearity_custom.RDS')
-} else{
-    glm_remove_collinearity_custom <- readRDS('./classification_data/glm_remove_collinearity_custom.RDS')
-}
-summary(glm_remove_collinearity_custom)
-```
-
     ## 
     ## Call:
     ## NULL
@@ -617,29 +573,6 @@ summary(glm_remove_collinearity_custom)
 ### Logistic Regression - remove collinear data - based on calculation
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-``` r
-if(refresh_models)
-{
-    check_data(classification_train, validate_n_p = TRUE)
-    set.seed(custom_seed)
-    
-    set.seed(custom_seed)
-    pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
-    columns_not_in_preprocessed_data <- colnames(classification_train)[!(colnames(classification_train) %in% colnames(pre_processed_numeric_data$data))] # figure out which columns we need to add back in (i.e. all (non-numeric) that are in classification_train but are NOT in pre_processed_numeric_data
-    pre_processed_classification_train <- cbind(classification_train[, columns_not_in_preprocessed_data], pre_processed_numeric_data$data)
-
-    set.seed(custom_seed)
-    stepwise_glm_model <- step(glm(family = binomial, formula = target ~ ., data = pre_processed_classification_train), direction="backward", trace=0) # do stepwise regression (glm doesn't like factor target variables), then use the formula in train in order to take advantage of k-fold Cross Validation
-    # stepwise_glm_model$formula gives the `optimal` formula (need to do this because coefficients will have factor variable names, not original columns. The formula will exclude columns not statistically significant)
-    # now feed this back into training to do cross validation
-    logistic_regression_stepwise_backward <- train(stepwise_glm_model$formula, data = classification_train, method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
-    saveRDS(logistic_regression_stepwise_backward, file = './classification_data/logistic_regression_stepwise_backward.RDS')
-} else{
-    logistic_regression_stepwise_backward <- readRDS('./classification_data/logistic_regression_stepwise_backward.RDS')
-}
-summary(logistic_regression_stepwise_backward)
-```
 
     ## 
     ## Call:
@@ -688,31 +621,6 @@ summary(logistic_regression_stepwise_backward)
 
 ### Linear Discriminant Analysis
 
-``` r
-if(refresh_models)
-{
-    check_data(classification_train, validate_n_p = TRUE)
-    set.seed(custom_seed)
-    linear_discriminant_analsysis <- train(target ~ ., data = classification_train, method = 'lda', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control)
-    saveRDS(linear_discriminant_analsysis, file = './classification_data/linear_discriminant_analsysis.RDS')
-} else{
-    linear_discriminant_analsysis <- readRDS('./classification_data/linear_discriminant_analsysis.RDS')
-}
-```
-
-    ## Loading required package: MASS
-
-    ## 
-    ## Attaching package: 'MASS'
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     select
-
-``` r
-summary(linear_discriminant_analsysis)
-```
-
     ##             Length Class      Mode     
     ## prior        2     -none-     numeric  
     ## counts       2     -none-     numeric  
@@ -727,10 +635,6 @@ summary(linear_discriminant_analsysis)
     ## tuneValue    1     data.frame list     
     ## obsLevels    2     -none-     character
     ## param        0     -none-     list
-
-``` r
-varImp(linear_discriminant_analsysis, scale = FALSE)
-```
 
     ## ROC curve variable importance
     ## 
@@ -754,19 +658,6 @@ varImp(linear_discriminant_analsysis, scale = FALSE)
 
 ### Linear Discriminant Analysis - Remove Collinear Data Based on Caret's Recommendation
 
-``` r
-if(refresh_models)
-{
-    check_data(classification_train[, recommended_columns_caret], validate_n_p = TRUE)
-    set.seed(custom_seed)
-    linear_discriminant_analsysis_remove_collinear <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'lda', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control)
-    saveRDS(linear_discriminant_analsysis_remove_collinear, file = './classification_data/linear_discriminant_analsysis_remove_collinear.RDS')
-} else{
-    linear_discriminant_analsysis_remove_collinear <- readRDS('./classification_data/linear_discriminant_analsysis_remove_collinear.RDS')
-}
-summary(linear_discriminant_analsysis_remove_collinear)
-```
-
     ##             Length Class      Mode     
     ## prior        2     -none-     numeric  
     ## counts       2     -none-     numeric  
@@ -781,10 +672,6 @@ summary(linear_discriminant_analsysis_remove_collinear)
     ## tuneValue    1     data.frame list     
     ## obsLevels    2     -none-     character
     ## param        0     -none-     list
-
-``` r
-varImp(linear_discriminant_analsysis_remove_collinear, scale = FALSE)
-```
 
     ## ROC curve variable importance
     ## 
@@ -807,40 +694,6 @@ varImp(linear_discriminant_analsysis_remove_collinear, scale = FALSE)
     ## dependents               0.5063
 
 ### Partial Least Squares Discriminant Analysis (PLSDA)
-
-``` r
-if(refresh_models)
-{
-    check_data(classification_train, validate_n_p = TRUE)
-    set.seed(custom_seed)
-    partial_least_squares_discriminant_analysis <- train(target ~ ., data = classification_train, method = 'pls', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control, # "performance of PLS is affected when including predictors that contain little or no predictive information" i.e. remove NZV
-                                                        tuneGrid = expand.grid(.ncomp = tuning_number_of_latent_variables_to_retain))
-    saveRDS(partial_least_squares_discriminant_analysis, file = './classification_data/partial_least_squares_discriminant_analysis.RDS')
-} else{
-    partial_least_squares_discriminant_analysis <- readRDS('./classification_data/partial_least_squares_discriminant_analysis.RDS')
-}
-```
-
-    ## Loading required package: pls
-
-    ## 
-    ## Attaching package: 'pls'
-
-    ## The following object is masked from 'package:caret':
-    ## 
-    ##     R2
-
-    ## The following object is masked from 'package:corrplot':
-    ## 
-    ##     corrplot
-
-    ## The following object is masked from 'package:stats':
-    ## 
-    ##     loadings
-
-``` r
-partial_least_squares_discriminant_analysis
-```
 
     ## Partial Least Squares 
     ## 
@@ -868,16 +721,24 @@ partial_least_squares_discriminant_analysis
     ## ROC was used to select the optimal model using  the largest value.
     ## The final value used for the model was ncomp = 4.
 
-``` r
-#summary(partial_least_squares_discriminant_analysis)
-plot(partial_least_squares_discriminant_analysis, top = 20, scales = list(y = list(cex = 0.95)))
-```
-
 <img src="predictive_analysis_classification_files/figure-markdown_github/partial_least_squares_discriminant_analysis-1.png" width="750px" />
 
-``` r
-varImp(partial_least_squares_discriminant_analysis, scale = FALSE)
-```
+    ## Loading required package: pls
+
+    ## 
+    ## Attaching package: 'pls'
+
+    ## The following object is masked from 'package:caret':
+    ## 
+    ##     R2
+
+    ## The following object is masked from 'package:corrplot':
+    ## 
+    ##     corrplot
+
+    ## The following object is masked from 'package:stats':
+    ## 
+    ##     loadings
 
     ## pls variable importance
     ## 
@@ -907,37 +768,6 @@ varImp(partial_least_squares_discriminant_analysis, scale = FALSE)
 
 ### glmnet (LASSO and RIDGE)
 
-``` r
-if(refresh_models)
-{
-    check_data(classification_train, validate_n_p = TRUE)
-    set.seed(custom_seed)
-    glmnet_lasso_ridge <- train(target ~ ., data = classification_train, method = 'glmnet', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
-                                                        tuneGrid = expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda))
-    saveRDS(glmnet_lasso_ridge, file = './classification_data/glmnet_lasso_ridge.RDS')
-} else{
-    glmnet_lasso_ridge <- readRDS('./classification_data/glmnet_lasso_ridge.RDS')
-}
-```
-
-    ## Loading required package: glmnet
-
-    ## Loading required package: Matrix
-
-    ## 
-    ## Attaching package: 'Matrix'
-
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     expand
-
-    ## Loaded glmnet 2.0-10
-
-``` r
-#glmnet_lasso_ridge
-summary(glmnet_lasso_ridge)
-```
-
     ##             Length Class      Mode     
     ## a0            66   -none-     numeric  
     ## beta        1914   dgCMatrix  S4       
@@ -959,21 +789,20 @@ summary(glmnet_lasso_ridge)
     ## obsLevels      2   -none-     character
     ## param          0   -none-     list
 
-``` r
-plot(glmnet_lasso_ridge, top = 20, scales = list(y = list(cex = 0.95)))
-```
+<img src="predictive_analysis_classification_files/figure-markdown_github/glmnet_lasso_ridge-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/glmnet_lasso_ridge-2.png" width="750px" />
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/glmnet_lasso_ridge-1.png" width="750px" />
+    ## Loading required package: glmnet
 
-``` r
-plot(glmnet_lasso_ridge, plotType = 'level')
-```
+    ## Loading required package: Matrix
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/glmnet_lasso_ridge-2.png" width="750px" />
+    ## 
+    ## Attaching package: 'Matrix'
 
-``` r
-varImp(glmnet_lasso_ridge, scale = FALSE)
-```
+    ## The following object is masked from 'package:tidyr':
+    ## 
+    ##     expand
+
+    ## Loaded glmnet 2.0-10
 
     ## glmnet variable importance
     ## 
@@ -999,29 +828,9 @@ varImp(glmnet_lasso_ridge, scale = FALSE)
     ## housingrent                    0.03713
     ## savings_balance500 - 1000 DM   0.01972
     ## checking_balance1 - 200 DM     0.01924
-    ## jobskilled                     0.00000
+    ## savings_balance100 - 500 DM    0.00000
 
 ### Sparse LDA
-
-``` r
-if(refresh_models)
-{
-    check_data(classification_train, validate_n_p = FALSE)
-    set.seed(custom_seed)
-    sparse_lda <- train(target ~ ., data = classification_train, method = 'sparseLDA', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
-                                                        tuneLength = 5)
-    saveRDS(sparse_lda, file = './classification_data/sparse_lda.RDS')
-} else{
-    sparse_lda <- readRDS('./classification_data/sparse_lda.RDS')
-}
-```
-
-    ## Loading required package: sparseLDA
-
-``` r
-#sparse_lda
-summary(sparse_lda)
-```
 
     ##             Length Class      Mode     
     ## call         5     -none-     call     
@@ -1041,21 +850,7 @@ summary(sparse_lda)
     ## obsLevels    2     -none-     character
     ## param        0     -none-     list
 
-``` r
-plot(sparse_lda, top = 20, scales = list(y = list(cex = 0.95)))
-```
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/sparse_lda-1.png" width="750px" />
-
-``` r
-plot(sparse_lda, plotType = 'level')
-```
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/sparse_lda-2.png" width="750px" />
-
-``` r
-varImp(sparse_lda, scale = FALSE)
-```
+<img src="predictive_analysis_classification_files/figure-markdown_github/sparse_lda-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/sparse_lda-2.png" width="750px" />
 
     ## ROC curve variable importance
     ## 
@@ -1081,6 +876,225 @@ varImp(sparse_lda, scale = FALSE)
 
 > Poor performance and varImp() gives error
 
+### Regularized Discriminant Analysis
+
+    ##                Length Class      Mode     
+    ## call              5   -none-     call     
+    ## regularization    2   -none-     numeric  
+    ## classes           2   -none-     character
+    ## prior             2   -none-     numeric  
+    ## error.rate        1   -none-     numeric  
+    ## varnames         29   -none-     character
+    ## means            58   -none-     numeric  
+    ## covariances    1682   -none-     numeric  
+    ## covpooled       841   -none-     numeric  
+    ## converged         1   -none-     logical  
+    ## iter              1   -none-     numeric  
+    ## xNames           29   -none-     character
+    ## problemType       1   -none-     character
+    ## tuneValue         2   data.frame list     
+    ## obsLevels         2   -none-     character
+    ## param             0   -none-     list
+
+    ## Loading required package: klaR
+
+    ## Loading required package: MASS
+
+    ## 
+    ## Attaching package: 'MASS'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     select
+
+    ##  [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+    ##  [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    ## [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    ## [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    ## [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    ## [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/regularized_discriminant_analysis-1.png" width="750px" />
+
+    ## ROC curve variable importance
+    ## 
+    ##                      Importance
+    ## checking_balance         0.6906
+    ## credit_history           0.6195
+    ## months_loan_duration     0.6146
+    ## savings_balance          0.5906
+    ## age                      0.5700
+    ## amount                   0.5533
+    ## percent_of_income        0.5470
+    ## employment_duration      0.5279
+    ## phone                    0.5275
+    ## purpose                  0.5258
+    ## other_credit             0.5252
+    ## existing_loans_count     0.5204
+    ## job                      0.5193
+    ## housing                  0.5105
+    ## years_at_residence       0.5065
+    ## dependents               0.5063
+
+### Regularized Discriminant Analysis - Removed Correlated Predictors
+
+    ##                Length Class      Mode     
+    ## call              5   -none-     call     
+    ## regularization    2   -none-     numeric  
+    ## classes           2   -none-     character
+    ## prior             2   -none-     numeric  
+    ## error.rate        1   -none-     numeric  
+    ## varnames         29   -none-     character
+    ## means            58   -none-     numeric  
+    ## covariances    1682   -none-     numeric  
+    ## covpooled       841   -none-     numeric  
+    ## converged         1   -none-     logical  
+    ## iter              1   -none-     numeric  
+    ## xNames           29   -none-     character
+    ## problemType       1   -none-     character
+    ## tuneValue         2   data.frame list     
+    ## obsLevels         2   -none-     character
+    ## param             0   -none-     list
+
+    ##  [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+    ##  [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    ## [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    ## [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    ## [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    ## [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/regularized_discriminant_analysis_rc-1.png" width="750px" />
+
+    ## ROC curve variable importance
+    ## 
+    ##                      Importance
+    ## checking_balance         0.6906
+    ## credit_history           0.6195
+    ## months_loan_duration     0.6146
+    ## savings_balance          0.5906
+    ## age                      0.5700
+    ## amount                   0.5533
+    ## percent_of_income        0.5470
+    ## employment_duration      0.5279
+    ## phone                    0.5275
+    ## purpose                  0.5258
+    ## other_credit             0.5252
+    ## existing_loans_count     0.5204
+    ## job                      0.5193
+    ## housing                  0.5105
+    ## years_at_residence       0.5065
+    ## dependents               0.5063
+
+### Mixture Discriminant Analysis
+
+    ##                   Length Class      Mode     
+    ## percent.explained  1     -none-     numeric  
+    ## values             1     -none-     numeric  
+    ## means              2     -none-     numeric  
+    ## theta.mod          1     -none-     numeric  
+    ## dimension          1     -none-     numeric  
+    ## sub.prior          2     -none-     list     
+    ## fit                5     polyreg    list     
+    ## call               4     -none-     call     
+    ## weights            2     -none-     list     
+    ## prior              2     table      numeric  
+    ## assign.theta       2     -none-     list     
+    ## deviance           1     -none-     numeric  
+    ## confusion          4     table      numeric  
+    ## terms              3     terms      call     
+    ## xNames            29     -none-     character
+    ## problemType        1     -none-     character
+    ## tuneValue          1     data.frame list     
+    ## obsLevels          2     -none-     character
+    ## param              0     -none-     list
+
+    ## Loading required package: mda
+
+    ## Loading required package: class
+
+    ## Loaded mda 0.4-9
+
+    ##  [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+    ##  [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    ## [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    ## [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    ## [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    ## [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/mixture_discriminant_analysis-1.png" width="750px" />
+
+    ## ROC curve variable importance
+    ## 
+    ##                      Importance
+    ## checking_balance         0.6906
+    ## credit_history           0.6195
+    ## months_loan_duration     0.6146
+    ## savings_balance          0.5906
+    ## age                      0.5700
+    ## amount                   0.5533
+    ## percent_of_income        0.5470
+    ## employment_duration      0.5279
+    ## phone                    0.5275
+    ## purpose                  0.5258
+    ## other_credit             0.5252
+    ## existing_loans_count     0.5204
+    ## job                      0.5193
+    ## housing                  0.5105
+    ## years_at_residence       0.5065
+    ## dependents               0.5063
+
+### Mixture Discriminant Analysis - Removed Correlated Predictors
+
+    ##                   Length Class      Mode     
+    ## percent.explained  1     -none-     numeric  
+    ## values             1     -none-     numeric  
+    ## means              2     -none-     numeric  
+    ## theta.mod          1     -none-     numeric  
+    ## dimension          1     -none-     numeric  
+    ## sub.prior          2     -none-     list     
+    ## fit                5     polyreg    list     
+    ## call               4     -none-     call     
+    ## weights            2     -none-     list     
+    ## prior              2     table      numeric  
+    ## assign.theta       2     -none-     list     
+    ## deviance           1     -none-     numeric  
+    ## confusion          4     table      numeric  
+    ## terms              3     terms      call     
+    ## xNames            29     -none-     character
+    ## problemType        1     -none-     character
+    ## tuneValue          1     data.frame list     
+    ## obsLevels          2     -none-     character
+    ## param              0     -none-     list
+
+    ##  [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+    ##  [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    ## [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    ## [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    ## [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    ## [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/mixture_discriminant_analysis_rc-1.png" width="750px" />
+
+    ## ROC curve variable importance
+    ## 
+    ##                      Importance
+    ## checking_balance         0.6906
+    ## credit_history           0.6195
+    ## months_loan_duration     0.6146
+    ## savings_balance          0.5906
+    ## age                      0.5700
+    ## amount                   0.5533
+    ## percent_of_income        0.5470
+    ## employment_duration      0.5279
+    ## phone                    0.5275
+    ## purpose                  0.5258
+    ## other_credit             0.5252
+    ## existing_loans_count     0.5204
+    ## job                      0.5193
+    ## housing                  0.5105
+    ## years_at_residence       0.5065
+    ## dependents               0.5063
+
 ### Random Forest
 
 ### Neural Network
@@ -1100,7 +1114,7 @@ Resamples & Top Models
     ## Call:
     ## summary.resamples(object = resamples)
     ## 
-    ## Models: model_glm_no_pre_processing, model_glm_basic_processing, glm_remove_collinearity_caret, glm_remove_collinearity_custom, logistic_regression_stepwise_backward, linear_discriminant_analsysis, linear_discriminant_analsysis_remove_collinear, partial_least_squares_discriminant_analysis, glmnet_lasso_ridge, sparse_lda 
+    ## Models: model_glm_no_pre_processing, model_glm_basic_processing, glm_remove_collinearity_caret, glm_remove_collinearity_custom, logistic_regression_stepwise_backward, linear_discriminant_analsysis, linear_discriminant_analsysis_remove_collinear, partial_least_squares_discriminant_analysis, glmnet_lasso_ridge, sparse_lda, regularized_discriminant_analysis, regularized_discriminant_analysis_rc, mixture_discriminant_analysis, mixture_discriminant_analysis_rc 
     ## Number of resamples: 30 
     ## 
     ## ROC 
@@ -1115,6 +1129,10 @@ Resamples & Top Models
     ## partial_least_squares_discriminant_analysis    0.6978248 0.7260435 0.7592593 0.7627670 0.7979130 0.8689006    0
     ## glmnet_lasso_ridge                             0.6760729 0.7244268 0.7583774 0.7628258 0.7974721 0.8589065    0
     ## sparse_lda                                     0.6931217 0.7273663 0.7589653 0.7644327 0.7992357 0.8689006    0
+    ## regularized_discriminant_analysis              0.6737213 0.7341270 0.7604350 0.7652361 0.7943857 0.8424456    0
+    ## regularized_discriminant_analysis_rc           0.6737213 0.7341270 0.7604350 0.7652361 0.7943857 0.8424456    0
+    ## mixture_discriminant_analysis                  0.6937096 0.7182540 0.7645503 0.7610817 0.7948266 0.8665491    0
+    ## mixture_discriminant_analysis_rc               0.6937096 0.7182540 0.7645503 0.7610817 0.7948266 0.8665491    0
     ## 
     ## Sens 
     ##                                                     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
@@ -1128,19 +1146,27 @@ Resamples & Top Models
     ## partial_least_squares_discriminant_analysis    0.2222222 0.3333333 0.4074074 0.3888889 0.4722222 0.5185185    0
     ## glmnet_lasso_ridge                             0.1851852 0.2222222 0.2777778 0.2876543 0.3333333 0.4814815    0
     ## sparse_lda                                     0.2592593 0.3425926 0.4444444 0.4222222 0.4814815 0.6296296    0
+    ## regularized_discriminant_analysis              0.3333333 0.4444444 0.5000000 0.4962963 0.5555556 0.6296296    0
+    ## regularized_discriminant_analysis_rc           0.3333333 0.4444444 0.5000000 0.4962963 0.5555556 0.6296296    0
+    ## mixture_discriminant_analysis                  0.2592593 0.3703704 0.4444444 0.4259259 0.4814815 0.5925926    0
+    ## mixture_discriminant_analysis_rc               0.2592593 0.3703704 0.4444444 0.4259259 0.4814815 0.5925926    0
     ## 
     ## Spec 
-    ##                                                     Min.   1st Qu.    Median      Mean   3rd Qu.     Max. NA's
-    ## model_glm_no_pre_processing                    0.7460317 0.8253968 0.8730159 0.8592593 0.8888889 0.952381    0
-    ## model_glm_basic_processing                     0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.952381    0
-    ## glm_remove_collinearity_caret                  0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.952381    0
-    ## glm_remove_collinearity_custom                 0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.952381    0
-    ## logistic_regression_stepwise_backward          0.7936508 0.8571429 0.8730159 0.8772487 0.9047619 0.952381    0
-    ## linear_discriminant_analsysis                  0.7619048 0.8293651 0.8571429 0.8576720 0.8888889 0.952381    0
-    ## linear_discriminant_analsysis_remove_collinear 0.7619048 0.8293651 0.8571429 0.8576720 0.8888889 0.952381    0
-    ## partial_least_squares_discriminant_analysis    0.7936508 0.8412698 0.8730159 0.8756614 0.9047619 0.952381    0
-    ## glmnet_lasso_ridge                             0.8412698 0.8928571 0.9206349 0.9137566 0.9365079 0.968254    0
-    ## sparse_lda                                     0.7619048 0.8253968 0.8571429 0.8592593 0.8849206 0.952381    0
+    ##                                                     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
+    ## model_glm_no_pre_processing                    0.7460317 0.8253968 0.8730159 0.8592593 0.8888889 0.9523810    0
+    ## model_glm_basic_processing                     0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.9523810    0
+    ## glm_remove_collinearity_caret                  0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.9523810    0
+    ## glm_remove_collinearity_custom                 0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.9523810    0
+    ## logistic_regression_stepwise_backward          0.7936508 0.8571429 0.8730159 0.8772487 0.9047619 0.9523810    0
+    ## linear_discriminant_analsysis                  0.7619048 0.8293651 0.8571429 0.8576720 0.8888889 0.9523810    0
+    ## linear_discriminant_analsysis_remove_collinear 0.7619048 0.8293651 0.8571429 0.8576720 0.8888889 0.9523810    0
+    ## partial_least_squares_discriminant_analysis    0.7936508 0.8412698 0.8730159 0.8756614 0.9047619 0.9523810    0
+    ## glmnet_lasso_ridge                             0.8412698 0.8928571 0.9206349 0.9137566 0.9365079 0.9682540    0
+    ## sparse_lda                                     0.7619048 0.8253968 0.8571429 0.8592593 0.8849206 0.9523810    0
+    ## regularized_discriminant_analysis              0.7301587 0.8095238 0.8492063 0.8375661 0.8690476 0.9206349    0
+    ## regularized_discriminant_analysis_rc           0.7301587 0.8095238 0.8492063 0.8375661 0.8690476 0.9206349    0
+    ## mixture_discriminant_analysis                  0.7619048 0.8293651 0.8571429 0.8576720 0.8888889 0.9523810    0
+    ## mixture_discriminant_analysis_rc               0.7619048 0.8293651 0.8571429 0.8576720 0.8888889 0.9523810    0
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-4.png" width="750px" />
 
@@ -1439,26 +1465,32 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
     ## 
     ## 
-    ## ### Linear Discriminant Analysis (linear_discriminant_analsysis_remove_collinear)
+    ## ### Mixture Discriminant Analysis (mixture_discriminant_analysis_rc)
     ## 
     ## 
     ## 
     ## Pre-Processing: `nzv, center, scale`
     ## 
-    ##             Length Class      Mode     
-    ## prior        2     -none-     numeric  
-    ## counts       2     -none-     numeric  
-    ## means       58     -none-     numeric  
-    ## scaling     29     -none-     numeric  
-    ## lev          2     -none-     character
-    ## svd          1     -none-     numeric  
-    ## N            1     -none-     numeric  
-    ## call         3     -none-     call     
-    ## xNames      29     -none-     character
-    ## problemType  1     -none-     character
-    ## tuneValue    1     data.frame list     
-    ## obsLevels    2     -none-     character
-    ## param        0     -none-     list
+    ##                   Length Class      Mode     
+    ## percent.explained  1     -none-     numeric  
+    ## values             1     -none-     numeric  
+    ## means              2     -none-     numeric  
+    ## theta.mod          1     -none-     numeric  
+    ## dimension          1     -none-     numeric  
+    ## sub.prior          2     -none-     list     
+    ## fit                5     polyreg    list     
+    ## call               4     -none-     call     
+    ## weights            2     -none-     list     
+    ## prior              2     table      numeric  
+    ## assign.theta       2     -none-     list     
+    ## deviance           1     -none-     numeric  
+    ## confusion          4     table      numeric  
+    ## terms              3     terms      call     
+    ## xNames            29     -none-     character
+    ## problemType        1     -none-     character
+    ## tuneValue          1     data.frame list     
+    ## obsLevels          2     -none-     character
+    ## param              0     -none-     list
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-34.png" width="750px" />
 
@@ -1467,25 +1499,25 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
     ## 
     ##           Reference
     ## Prediction yes no
-    ##        yes  13  8
-    ##        no   17 62
+    ##        yes  14  8
+    ##        no   16 62
     ##                                           
-    ##                Accuracy : 0.75            
-    ##                  95% CI : (0.6534, 0.8312)
+    ##                Accuracy : 0.76            
+    ##                  95% CI : (0.6643, 0.8398)
     ##     No Information Rate : 0.7             
-    ##     P-Value [Acc > NIR] : 0.1631          
+    ##     P-Value [Acc > NIR] : 0.1136          
     ##                                           
-    ##                   Kappa : 0.349           
-    ##  Mcnemar's Test P-Value : 0.1096          
+    ##                   Kappa : 0.3814          
+    ##  Mcnemar's Test P-Value : 0.1530          
     ##                                           
-    ##             Sensitivity : 0.4333          
+    ##             Sensitivity : 0.4667          
     ##             Specificity : 0.8857          
-    ##          Pos Pred Value : 0.6190          
-    ##          Neg Pred Value : 0.7848          
+    ##          Pos Pred Value : 0.6364          
+    ##          Neg Pred Value : 0.7949          
     ##              Prevalence : 0.3000          
-    ##          Detection Rate : 0.1300          
-    ##    Detection Prevalence : 0.2100          
-    ##       Balanced Accuracy : 0.6595          
+    ##          Detection Rate : 0.1400          
+    ##    Detection Prevalence : 0.2200          
+    ##       Balanced Accuracy : 0.6762          
     ##                                           
     ##        'Positive' Class : yes             
     ##                                           
@@ -1499,26 +1531,32 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
     ## 
     ## 
-    ## ### Linear Discriminant Analysis (linear_discriminant_analsysis)
+    ## ### Mixture Discriminant Analysis (mixture_discriminant_analysis)
     ## 
     ## 
     ## 
     ## Pre-Processing: `nzv, center, scale`
     ## 
-    ##             Length Class      Mode     
-    ## prior        2     -none-     numeric  
-    ## counts       2     -none-     numeric  
-    ## means       58     -none-     numeric  
-    ## scaling     29     -none-     numeric  
-    ## lev          2     -none-     character
-    ## svd          1     -none-     numeric  
-    ## N            1     -none-     numeric  
-    ## call         3     -none-     call     
-    ## xNames      29     -none-     character
-    ## problemType  1     -none-     character
-    ## tuneValue    1     data.frame list     
-    ## obsLevels    2     -none-     character
-    ## param        0     -none-     list
+    ##                   Length Class      Mode     
+    ## percent.explained  1     -none-     numeric  
+    ## values             1     -none-     numeric  
+    ## means              2     -none-     numeric  
+    ## theta.mod          1     -none-     numeric  
+    ## dimension          1     -none-     numeric  
+    ## sub.prior          2     -none-     list     
+    ## fit                5     polyreg    list     
+    ## call               4     -none-     call     
+    ## weights            2     -none-     list     
+    ## prior              2     table      numeric  
+    ## assign.theta       2     -none-     list     
+    ## deviance           1     -none-     numeric  
+    ## confusion          4     table      numeric  
+    ## terms              3     terms      call     
+    ## xNames            29     -none-     character
+    ## problemType        1     -none-     character
+    ## tuneValue          1     data.frame list     
+    ## obsLevels          2     -none-     character
+    ## param              0     -none-     list
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-41.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-42.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-44.png" width="750px" />
 
@@ -1527,25 +1565,25 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
     ## 
     ##           Reference
     ## Prediction yes no
-    ##        yes  13  8
-    ##        no   17 62
+    ##        yes  14  8
+    ##        no   16 62
     ##                                           
-    ##                Accuracy : 0.75            
-    ##                  95% CI : (0.6534, 0.8312)
+    ##                Accuracy : 0.76            
+    ##                  95% CI : (0.6643, 0.8398)
     ##     No Information Rate : 0.7             
-    ##     P-Value [Acc > NIR] : 0.1631          
+    ##     P-Value [Acc > NIR] : 0.1136          
     ##                                           
-    ##                   Kappa : 0.349           
-    ##  Mcnemar's Test P-Value : 0.1096          
+    ##                   Kappa : 0.3814          
+    ##  Mcnemar's Test P-Value : 0.1530          
     ##                                           
-    ##             Sensitivity : 0.4333          
+    ##             Sensitivity : 0.4667          
     ##             Specificity : 0.8857          
-    ##          Pos Pred Value : 0.6190          
-    ##          Neg Pred Value : 0.7848          
+    ##          Pos Pred Value : 0.6364          
+    ##          Neg Pred Value : 0.7949          
     ##              Prevalence : 0.3000          
-    ##          Detection Rate : 0.1300          
-    ##    Detection Prevalence : 0.2100          
-    ##       Balanced Accuracy : 0.6595          
+    ##          Detection Rate : 0.1400          
+    ##    Detection Prevalence : 0.2200          
+    ##       Balanced Accuracy : 0.6762          
     ##                                           
     ##        'Positive' Class : yes             
     ##                                           
