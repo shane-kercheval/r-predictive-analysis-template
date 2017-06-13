@@ -85,12 +85,15 @@ tuning_number_of_latent_variables_to_retain <- 1:10
 tuning_glmnet_alpha <- seq(from = 0, to = 1, length = 5) # alpha = 0 is pure ridge regression, and alpha = 1 is pure lasso regression.
 tuning_glmnet_lambda <- seq(from = 0.0001, to = 1, length = 50) # lambda values control the amount of penalization in the model.
 
-tuning_nearest_shrunken_centroids_shrinkage_threshold <- data.frame(.threshold = 0:25)
+tuning_nearest_shrunken_centroids_shrinkage_threshold <- data.frame(threshold = 0:25)
 
 tuning_mda_subclasses <- 1:8
 
 tuning_rda_lambda <- seq(from = 0, to = 1, by = 0.2)
 tuning_rda_gamma <- seq(from = 0, to = 1, by = 0.2)
+
+tuning_nnet_size <- 1:10
+tuning_nnet_decay <- c(0, 0.1, 1, 2)
 ```
 
 # Dataset
@@ -383,92 +386,21 @@ metric <- 'ROC'
 
 > used ``r percent(training_percentage)`` of data for `training` set (``r nrow(classification_train)``), and ``r percent(1 - training_percentage)`` for `test` set (``r nrow(classification_test)``).
 
-### Logistic Regression - no pre processing
+
+### Testing train_classification
+
+# Spot-Check
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-```{r classification_no_pre_processing, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
-	#model_glm_no_pre_processing <- train(target ~ ., data=classification_train %>% mutate(target = factor(target, levels = c('no', 'yes'))), method='glm', metric=metric, trControl=train_control)
-	model_glm_no_pre_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, trControl=train_control)
-	saveRDS(model_glm_no_pre_processing, file = './classification_data/model_glm_no_pre_processing.RDS')
-} else{
-	model_glm_no_pre_processing <- readRDS('./classification_data/model_glm_no_pre_processing.RDS')
-}
-summary(model_glm_no_pre_processing)
-```
 
 > NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
 
-### Logistic Regression - basic pre-processing
 
-> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-```{r classification_basic_processing, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
-	model_glm_basic_processing <- train(target ~ ., data=classification_train, method='glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl=train_control)
-	saveRDS(model_glm_basic_processing, file = './classification_data/model_glm_basic_processing.RDS')
-} else{
-	model_glm_basic_processing <- readRDS('./classification_data/model_glm_basic_processing.RDS')
-}
-summary(model_glm_basic_processing)
-```
-
-> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
-
-### Logistic Regression - remove collinear data - based on caret's recommendation
-
-> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-```{r logistic_regression_collinear_caret, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train[, recommended_columns_caret], sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
-	glm_remove_collinearity_caret <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
-	saveRDS(glm_remove_collinearity_caret, file = './classification_data/glm_remove_collinearity_caret.RDS')
-} else{
-	glm_remove_collinearity_caret <- readRDS('./classification_data/glm_remove_collinearity_caret.RDS')
-}
-summary(glm_remove_collinearity_caret)
-```
-
-> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
-
-### Logistic Regression - remove collinear data - based on calculation
-
-> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-```{r logistic_regression_collinear_calc, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train[, recommended_columns_custom], sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
-	glm_remove_collinearity_custom <- train(target ~ ., data = classification_train[, recommended_columns_custom], method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
-	saveRDS(glm_remove_collinearity_custom, file = './classification_data/glm_remove_collinearity_custom.RDS')
-} else{
-	glm_remove_collinearity_custom <- readRDS('./classification_data/glm_remove_collinearity_custom.RDS')
-}
-summary(glm_remove_collinearity_custom)
-```
-
-> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
-
-### Logistic Regression - remove collinear data - based on calculation
-
-> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
 ```{r logistic_regression_stepwise_backward, echo = FALSE}
-if(refresh_models)
-{
+stepwise_logistic_columns <- NULL
+if(refresh_models) {
 	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
 	
 	set.seed(custom_seed)
 	pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
@@ -479,234 +411,218 @@ if(refresh_models)
 	stepwise_glm_model <- step(glm(family = binomial, formula = target ~ ., data = pre_processed_classification_train), direction="backward", trace=0) # do stepwise regression (glm doesn't like factor target variables), then use the formula in train in order to take advantage of k-fold Cross Validation
 	# stepwise_glm_model$formula gives the `optimal` formula (need to do this because coefficients will have factor variable names, not original columns. The formula will exclude columns not statistically significant)
 	# now feed this back into training to do cross validation
-	logistic_regression_stepwise_backward <- train(stepwise_glm_model$formula, data = classification_train, method = 'glm', metric=metric, preProc=c('nzv', 'center', 'scale', 'knnImpute'), trControl = train_control)
-	saveRDS(logistic_regression_stepwise_backward, file = './classification_data/logistic_regression_stepwise_backward.RDS')
-} else{
-	logistic_regression_stepwise_backward <- readRDS('./classification_data/logistic_regression_stepwise_backward.RDS')
+	
+	stepwise_glm_model$formula
+	
+	stepwise_logistic_columns <- str_split(stepwise_glm_model$formula, pattern = ' ')[[3]]
+	stepwise_logistic_columns <- c('target', stepwise_logistic_columns[stepwise_logistic_columns != '+'])
 }
-summary(logistic_regression_stepwise_backward)
 ```
 
-> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
 
-### Linear Discriminant Analysis
+```{r run_spot_check, echo = FALSE, comment = '', results = 'asis'}
+train_classification <- function(	model_name,
+									dataset,
+									custom_seed,
+									training_method,
+									training_metric,
+									training_preProcess,
+									training_control,
+									training_tune_grid = NULL,
+									training_tune_length = NULL,
+									refresh_models = TRUE,
+									sample_to_predictor_ratio_threshold = NULL,
+									class_to_predictor_ratio_threshold = NULL,
+									class_names = NULL) {
+	caret_model <- NULL
+	
+	if(!is.null(training_tune_grid)) {
 
-```{r linear_discriminant_analsysis, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
-	linear_discriminant_analsysis <- train(target ~ ., data = classification_train, method = 'lda', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control)
-	saveRDS(linear_discriminant_analsysis, file = './classification_data/linear_discriminant_analsysis.RDS')
-} else{
-	linear_discriminant_analsysis <- readRDS('./classification_data/linear_discriminant_analsysis.RDS')
+		model_tuning_parameters <- as.character(modelLookup(training_method)$parameter)
+		model_tuning_parameters <- model_tuning_parameters[model_tuning_parameters != 'parameter']
+		stopifnot(colnames(training_tune_grid) %in% model_tuning_parameters) # make sure all the parameters passed in exist in the tuning parameters
+		stopifnot(model_tuning_parameters %in% colnames(training_tune_grid)) # make sure all the tuning parameters exist in the grid
+	}
+
+	if(refresh_models) {
+
+		check_data(	dataset = dataset,
+					sample_to_predictor_ratio_threshold = sample_to_predictor_ratio_threshold,
+					class_to_predictor_ratio_threshold = class_to_predictor_ratio_threshold,
+					class_names = class_names)
+
+		if(training_method == 'nnet') {
+
+		}
+
+
+		set.seed(custom_seed)
+		caret_model <- train(	target ~ .,
+												data = dataset,
+												method = training_method,
+												metric = training_metric,
+												preProc = training_preProcess,
+												trControl = training_control,
+												tuneGrid = training_tune_grid,
+							  					tuneLength = training_tune_length)
+
+		saveRDS(caret_model, file = paste0('./classification_data/', model_name,'.RDS'))
+
+	} else{
+
+		caret_model <- readRDS(paste0('./classification_data/', model_name,'.RDS'))
+	}
+
+	summary_caret_model <- NULL
+	expected_error = tryCatch(
+		summary_caret_model <- summary(caret_model),# this causes an error with some models
+		error=function(e) e)
+	
+	if(!is.null(summary_caret_model)) {
+		
+		cat(codebc(summary_caret_model, postfix='\n\n'))
+	}
+	
+	cat(codebc(predictors(caret_model), postfix='\n\n'))
+	
+	if(!is.null(training_tune_grid)) { # if there are tuning parameters, we can plot them.
+		
+		cat(paste('\n\n####', model_name), '\n\n')
+		print(plot(caret_model, top = 20, scales = list(y = list(cex = 0.95))))
+		print(plot.new())
+		cat('\n\n')
+		cat(caret_model$method)
+		cat('\n\n')
+	}
+	
+	cat(codebc(varImp(caret_model, scale = FALSE), postfix='\n\n'))
+	
+	return (caret_model)
 }
-summary(linear_discriminant_analsysis)
-varImp(linear_discriminant_analsysis, scale = FALSE)
+
+#############################
+## TEST train_classification
+#############################
+test_model_glm <- train_classification(	model_name = 'test',
+						dataset = classification_train,
+						custom_seed = custom_seed,
+						training_method = 'glm',
+						training_metric = metric,
+						training_preProcess = c('nzv', 'center', 'scale'),
+						training_control = train_control,
+						training_tune_grid = NULL,
+						training_tune_length = NULL,
+						refresh_models = TRUE,
+						sample_to_predictor_ratio_threshold = NULL,
+						class_to_predictor_ratio_threshold = NULL,
+						class_names = NULL)
+
+stopifnot(file.exists('./classification_data/test.RDS'))
+# expected_model_glm <- test_model_glm
+# saveRDS(expected_model_glm, file = './classification_data/expected_model_glm.RDS')
+expected_model_glm <- readRDS(file = './classification_data/expected_model_glm.RDS')
+
+stopifnot(varImp(expected_model_glm)$importance$Overall == varImp(test_model_glm)$importance$Overall)
+stopifnot(expected_model_glm$resample == test_model_glm$resample)
+
+expected_error = tryCatch(
+	train_classification(	model_name = 'test',
+							dataset = classification_train,
+							custom_seed = custom_seed,
+							training_method = 'rda',
+							training_metric = metric,
+							training_preProcess = c('nzv', 'center', 'scale'),
+							training_control = train_control,
+							training_tune_grid = expand.grid(	#lambda = tuning_rda_lambda,
+																gamma = tuning_rda_gamma),
+							training_tune_length = NULL,
+							refresh_models = TRUE,
+							sample_to_predictor_ratio_threshold = NULL,
+							class_to_predictor_ratio_threshold = NULL,
+							class_names = NULL),
+	error=function(e) e)
+stopifnot(inherits(expected_error, 'error'))
+stopifnot(expected_error$message == 'model_tuning_parameters %in% colnames(training_tune_grid) are not all TRUE')
+
+expected_error = tryCatch(
+	train_classification(	model_name = 'test',
+							dataset = classification_train,
+							custom_seed = custom_seed,
+							training_method = 'rda',
+							training_metric = metric,
+							training_preProcess = c('nzv', 'center', 'scale'),
+							training_control = train_control,
+							training_tune_grid = expand.grid(	lambda = tuning_rda_lambda),
+																#gamma = tuning_rda_gamma),
+							training_tune_length = NULL,
+							refresh_models = TRUE,
+							sample_to_predictor_ratio_threshold = NULL,
+							class_to_predictor_ratio_threshold = NULL,
+							class_names = NULL),
+	error=function(e) e)
+stopifnot(inherits(expected_error, 'error'))
+stopifnot(expected_error$message == 'model_tuning_parameters %in% colnames(training_tune_grid) are not all TRUE')
+
+spot_check_models <- tribble(
+	~training_method, ~model_name, ~training_dataset_columns, ~training_preProcess, ~training_tune_grid, ~training_tune_length, ~sample_to_predictor_ratio_threshold, ~class_to_predictor_ratio_threshold, ~class_names, ~function_post_train, ~trained_model,
+	'glm', 'glm_no_pre_process', classification_column_names, NULL, NULL, NULL, 5, NULL, NULL, NULL, NULL,
+	'glm', 'glm_basic_processing', classification_column_names, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
+	'glm', 'glm_remove_collinearity_caret', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
+	'glm', 'glm_remove_collinearity_custom', recommended_columns_custom, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
+	'glm', 'logistic_regression_stepwise_backward', stepwise_logistic_columns, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
+	'lda', 'linear_discriminant_analsysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
+	'lda', 'linear_discriminant_analsysis_remove_collinear', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
+	'pls', 'partial_least_squares_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(ncomp = tuning_number_of_latent_variables_to_retain), NULL, 5, NULL, NULL, NULL, NULL,
+	'glmnet', 'glmnet_lasso_ridge', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda), NULL, 5, NULL, NULL, NULL, NULL,
+	'sparseLDA', 'sparse_lda', classification_column_names, preProc=c('nzv', 'center', 'scale'), NULL, 5, 5, NULL, NULL, NULL, NULL,
+	#'pam', 'nearest_shrunken_centroids', classification_column_names, preProc=c('nzv', 'center', 'scale'), tuning_nearest_shrunken_centroids_shrinkage_threshold, NULL, 5, NULL, NULL, NULL, NULL,
+	'rda', 'regularized_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
+	'rda', 'regularized_discriminant_analysis_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
+	'mda', 'mixture_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(subclasses = tuning_mda_subclasses), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
+	'mda', 'mixture_discriminant_analysis_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(subclasses = tuning_mda_subclasses), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL
+	#'nnet', 'neural_network', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(size = tuning_nnet_size, decay = tuning_nnet_decay), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
+	)
+
+stopifnot(!duplicated(spot_check_models$model_name))
+
+walk(1:nrow(spot_check_models), ~ {
+	spot_check_model <- spot_check_models[., ]
+	
+	cat(paste('###', spot_check_model$model_name), '\n\n')
+	
+	trained_model <- train_classification(	model_name = spot_check_model$model_name,
+						dataset = classification_train[, spot_check_model$training_dataset_columns[[1]]],
+						custom_seed = custom_seed,
+						training_method = spot_check_model$training_method,
+						training_metric = metric,
+						training_preProcess = spot_check_model$training_preProcess[[1]],
+						training_control = train_control,
+						training_tune_grid = spot_check_model$training_tune_grid[[1]],
+						training_tune_length = spot_check_model$training_tune_length[[1]],
+						refresh_models = refresh_models,
+						sample_to_predictor_ratio_threshold = spot_check_model$sample_to_predictor_ratio_threshold[[1]],
+						class_to_predictor_ratio_threshold = spot_check_model$class_to_predictor_ratio_threshold[[1]],
+						class_names = spot_check_model$class_names[[1]])
+
+	spot_check_models[., ]$trained_model[[1]] <<- trained_model
+	if(!is.null(spot_check_model$function_post_train[[1]])) {
+		spot_check_model$function_post_train[[1]]()
+	}
+})
 ```
 
-### Linear Discriminant Analysis - Remove Collinear Data Based on Caret's Recommendation
+### GLM 
 
-```{r linear_discriminant_analsysis_remove_collinear, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train[, recommended_columns_caret], sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
-	linear_discriminant_analsysis_remove_collinear <- train(target ~ ., data = classification_train[, recommended_columns_caret], method = 'lda', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control)
-	saveRDS(linear_discriminant_analsysis_remove_collinear, file = './classification_data/linear_discriminant_analsysis_remove_collinear.RDS')
-} else{
-	linear_discriminant_analsysis_remove_collinear <- readRDS('./classification_data/linear_discriminant_analsysis_remove_collinear.RDS')
-}
-summary(linear_discriminant_analsysis_remove_collinear)
-varImp(linear_discriminant_analsysis_remove_collinear, scale = FALSE)
+'pls', 'partial_least_squares_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(ncomp = tuning_number_of_latent_variables_to_retain), NULL, 5, NULL, NULL, NULL, NULL,
+	'glmnet', 'glmnet_lasso_ridge', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda), NULL, 5, NULL, NULL, NULL, NULL,
+	
+
+
+```{r neural_network, echo = FALSE}
+
+#neural_network <- train_classification()
+
 ```
-
-### Partial Least Squares Discriminant Analysis (PLSDA)
-
-```{r partial_least_squares_discriminant_analysis, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
-	partial_least_squares_discriminant_analysis <- train(target ~ ., data = classification_train, method = 'pls', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control, # "performance of PLS is affected when including predictors that contain little or no predictive information" i.e. remove NZV
-														tuneGrid = expand.grid(.ncomp = tuning_number_of_latent_variables_to_retain))
-	saveRDS(partial_least_squares_discriminant_analysis, file = './classification_data/partial_least_squares_discriminant_analysis.RDS')
-} else{
-	partial_least_squares_discriminant_analysis <- readRDS('./classification_data/partial_least_squares_discriminant_analysis.RDS')
-}
-partial_least_squares_discriminant_analysis
-#summary(partial_least_squares_discriminant_analysis)
-plot(partial_least_squares_discriminant_analysis, top = 20, scales = list(y = list(cex = 0.95)))
-varImp(partial_least_squares_discriminant_analysis, scale = FALSE)
-```
-
-### glmnet (LASSO and RIDGE)
-
-```{r glmnet_lasso_ridge, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
-	set.seed(custom_seed)
-	glmnet_lasso_ridge <- train(target ~ ., data = classification_train, method = 'glmnet', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
-														tuneGrid = expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda))
-	saveRDS(glmnet_lasso_ridge, file = './classification_data/glmnet_lasso_ridge.RDS')
-} else{
-	glmnet_lasso_ridge <- readRDS('./classification_data/glmnet_lasso_ridge.RDS')
-}
-#glmnet_lasso_ridge
-summary(glmnet_lasso_ridge)
-plot(glmnet_lasso_ridge, top = 20, scales = list(y = list(cex = 0.95)))
-plot(glmnet_lasso_ridge, plotType = 'level')
-varImp(glmnet_lasso_ridge, scale = FALSE)
-```
-
-### Sparse LDA
-
-```{r sparse_lda, echo = FALSE}
-if(refresh_models)
-{
-	check_data(classification_train, validate_n_p = FALSE)
-	set.seed(custom_seed)
-	sparse_lda <- train(target ~ ., data = classification_train, method = 'sparseLDA', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
-														tuneLength = 5)
-	saveRDS(sparse_lda, file = './classification_data/sparse_lda.RDS')
-} else{
-	sparse_lda <- readRDS('./classification_data/sparse_lda.RDS')
-}
-#sparse_lda
-summary(sparse_lda)
-plot(sparse_lda, top = 20, scales = list(y = list(cex = 0.95)))
-plot(sparse_lda, plotType = 'level')
-varImp(sparse_lda, scale = FALSE)
-```
-
-### Nearest Shrunken Centroids
-
-> Poor performance and varImp() gives error
-
-```{r nearest_shrunken_centroids, eval=FALSE, include=FALSE}
-if(refresh_models)
-{
-	check_data(classification_train, validate_n_p = FALSE)
-	set.seed(custom_seed)
-	nearest_shrunken_centroids <- train(target ~ ., data = classification_train, method = 'pam', metric=metric, preProc=c('nzv', 'center', 'scale'), trControl = train_control,
-														tuneGrid = tuning_nearest_shrunken_centroids_shrinkage_threshold)
-
-	saveRDS(nearest_shrunken_centroids, file = './classification_data/nearest_shrunken_centroids.RDS')
-} else{
-	nearest_shrunken_centroids <- readRDS('./classification_data/nearest_shrunken_centroids.RDS')
-}
-#nearest_shrunken_centroids
-summary(nearest_shrunken_centroids)
-predictors(nearest_shrunken_centroids)
-plot(nearest_shrunken_centroids, top = 20, scales = list(y = list(cex = 0.95)))
-varImp(nearest_shrunken_centroids, scale = FALSE)
-```
-
-### Regularized Discriminant Analysis
-
-```{r regularized_discriminant_analysis, echo = FALSE}
-if(refresh_models)
-{
-	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
-	set.seed(custom_seed)
-	regularized_discriminant_analysis <- train(	target ~ .,
-											data = classification_train,
-											method = 'rda',
-											metric=metric,
-											preProc=c('nzv', 'center', 'scale'),
-											trControl = train_control,
-											tuneGrid = expand.grid(	lambda = tuning_rda_lambda,
-																	gamma = tuning_rda_gamma))
-	saveRDS(regularized_discriminant_analysis, file = './classification_data/regularized_discriminant_analysis.RDS')
-} else{
-	regularized_discriminant_analysis <- readRDS('./classification_data/regularized_discriminant_analysis.RDS')
-}
-#regularized_discriminant_analysis
-summary(regularized_discriminant_analysis)
-predictors(regularized_discriminant_analysis)
-plot(regularized_discriminant_analysis, top = 20, scales = list(y = list(cex = 0.95)))
-varImp(regularized_discriminant_analysis, scale = FALSE)
-```
-
-### Regularized Discriminant Analysis - Removed Correlated Predictors
-
-```{r regularized_discriminant_analysis_rc, echo = FALSE}
-if(refresh_models)
-{
-	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
-	set.seed(custom_seed)
-	regularized_discriminant_analysis_rc <- train(	target ~ .,
-											data = classification_train[, recommended_columns_caret],
-											method = 'rda',
-											metric=metric,
-											preProc=c('nzv', 'center', 'scale'),
-											trControl = train_control,
-											tuneGrid = expand.grid(	lambda = tuning_rda_lambda,
-																	gamma = tuning_rda_gamma))
-	saveRDS(regularized_discriminant_analysis_rc, file = './classification_data/regularized_discriminant_analysis_rc.RDS')
-} else{
-	regularized_discriminant_analysis_rc <- readRDS('./classification_data/regularized_discriminant_analysis_rc.RDS')
-}
-#regularized_discriminant_analysis_rc
-summary(regularized_discriminant_analysis_rc)
-predictors(regularized_discriminant_analysis_rc)
-plot(regularized_discriminant_analysis_rc, top = 20, scales = list(y = list(cex = 0.95)))
-varImp(regularized_discriminant_analysis_rc, scale = FALSE)
-```
-
-### Mixture Discriminant Analysis
-
-```{r mixture_discriminant_analysis, echo = FALSE}
-if(refresh_models)
-{
-	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
-	set.seed(custom_seed)
-	mixture_discriminant_analysis <- train(	target ~ .,
-											data = classification_train,
-											method = 'mda',
-											metric=metric,
-											preProc=c('nzv', 'center', 'scale'),
-											trControl = train_control,
-											tuneGrid = expand.grid(subclasses = tuning_mda_subclasses))
-
-	saveRDS(mixture_discriminant_analysis, file = './classification_data/mixture_discriminant_analysis.RDS')
-} else{
-	mixture_discriminant_analysis <- readRDS('./classification_data/mixture_discriminant_analysis.RDS')
-}
-#mixture_discriminant_analysis
-summary(mixture_discriminant_analysis)
-predictors(mixture_discriminant_analysis)
-plot(mixture_discriminant_analysis, top = 20, scales = list(y = list(cex = 0.95)))
-varImp(mixture_discriminant_analysis, scale = FALSE)
-```
-
-### Mixture Discriminant Analysis - Removed Correlated Predictors
-
-```{r mixture_discriminant_analysis_rc, echo = FALSE}
-if(refresh_models)
-{
-	check_data(dataset = classification_train, class_to_predictor_ratio_threshold = 5, class_names = c(target_positive_class, target_negative_class))
-	set.seed(custom_seed)
-	mixture_discriminant_analysis_rc <- train(	target ~ .,
-											data = classification_train[, recommended_columns_caret],
-											method = 'mda',
-											metric=metric,
-											preProc=c('nzv', 'center', 'scale'),
-											trControl = train_control,
-											tuneGrid = expand.grid(subclasses = tuning_mda_subclasses))
-
-	saveRDS(mixture_discriminant_analysis_rc, file = './classification_data/mixture_discriminant_analysis_rc.RDS')
-} else{
-	mixture_discriminant_analysis_rc <- readRDS('./classification_data/mixture_discriminant_analysis_rc.RDS')
-}
-#mixture_discriminant_analysis_rc
-summary(mixture_discriminant_analysis_rc)
-predictors(mixture_discriminant_analysis_rc)
-plot(mixture_discriminant_analysis_rc, top = 20, scales = list(y = list(cex = 0.95)))
-varImp(mixture_discriminant_analysis_rc, scale = FALSE)
-```
-
 
 
 ### Random Forest
@@ -727,23 +643,12 @@ varImp(mixture_discriminant_analysis_rc, scale = FALSE)
 ### Resamples
 
 ```{r resamples_regression, echo=FALSE, fig.height=6, fig.width=9}
-classification_models <- list(
-		model_glm_no_pre_processing = model_glm_no_pre_processing,
-		model_glm_basic_processing = model_glm_basic_processing,
-		glm_remove_collinearity_caret = glm_remove_collinearity_caret,
-		glm_remove_collinearity_custom = glm_remove_collinearity_custom,
-		logistic_regression_stepwise_backward = logistic_regression_stepwise_backward,
-		linear_discriminant_analsysis = linear_discriminant_analsysis,
-		linear_discriminant_analsysis_remove_collinear = linear_discriminant_analsysis_remove_collinear,
-		partial_least_squares_discriminant_analysis = partial_least_squares_discriminant_analysis,
-		glmnet_lasso_ridge = glmnet_lasso_ridge,
-		sparse_lda = sparse_lda,
-		#nearest_shrunken_centroids = nearest_shrunken_centroids,
-		regularized_discriminant_analysis = regularized_discriminant_analysis,
-		regularized_discriminant_analysis_rc = regularized_discriminant_analysis_rc,
-		mixture_discriminant_analysis = mixture_discriminant_analysis,
-		mixture_discriminant_analysis_rc = mixture_discriminant_analysis_rc
-		)
+classification_models <- list()
+for(index in 1:nrow(spot_check_models)) {
+	
+	classification_models <- c(classification_models, spot_check_models[index,]$trained_model)
+}
+names(classification_models) <- map_chr(1:nrow(spot_check_models), ~ spot_check_models[., ]$model_name)
 
 resamples <- resamples(classification_models)
 
@@ -877,28 +782,23 @@ top_models <- resamples_means %>%
 	dplyr::rename(cross_validation_auc = average) %>%
 	mutate(model_object = map(model, ~ { classification_models[names(classification_models) == .][[1]] })) # add models to data.frame so when we choose the top models later we will 
 
+top_models <- inner_join(top_models, spot_check_models %>% dplyr::select(model_name, training_preProcess) %>% rename(model = model_name), by = c('model'))
+
 final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE, savePredictions = 'all') # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
 
-model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
+model_stats <- pmap(list(as.character(top_models$model), top_models$model_object, top_models$training_preProcess), function(.x, .y, .z){
+	# model_name <- as.character(top_models$model[1])
+	model_object <- top_models$model_object[[1]]
 	model_name <- .x
 	model_object <- .y
+	pre_process <- .z
 
 	cat(paste0('\n\n### ', model_object$modelInfo$label, ' (', model_name,')\n\n'))
 	
 	# get method, tuning grid, pre-processing steps.
 	model_method <- model_object$method
 	tune_grid <- model_object$bestTune
-	
-	if(is.null(model_object$preProcess$method))
-	{
-		pre_process <- NULL
-	}else{
-		pre_process_call <- as.character(model_object$call$preProc)
-		pre_process <- pre_process_call[!(pre_process_call %in% c('c'))]
-		
-		cat(paste0('\n\nPre-Processing: `', paste(pre_process, collapse = ', '), '`\n\n'))
-	}
-	
+
 	if(refresh_models)
 	{
 		set.seed(custom_seed)

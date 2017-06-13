@@ -27,26 +27,28 @@
     -   [Class Balance](#class-balance)
         -   [Training Data](#training-data)
         -   [Test](#test)
-        -   [Logistic Regression - no pre processing](#logistic-regression---no-pre-processing)
-        -   [Logistic Regression - basic pre-processing](#logistic-regression---basic-pre-processing)
-        -   [Logistic Regression - remove collinear data - based on caret's recommendation](#logistic-regression---remove-collinear-data---based-on-carets-recommendation)
-        -   [Logistic Regression - remove collinear data - based on calculation](#logistic-regression---remove-collinear-data---based-on-calculation)
-        -   [Logistic Regression - remove collinear data - based on calculation](#logistic-regression---remove-collinear-data---based-on-calculation-1)
-        -   [Linear Discriminant Analysis](#linear-discriminant-analysis)
-        -   [Linear Discriminant Analysis - Remove Collinear Data Based on Caret's Recommendation](#linear-discriminant-analysis---remove-collinear-data-based-on-carets-recommendation)
-        -   [Partial Least Squares Discriminant Analysis (PLSDA)](#partial-least-squares-discriminant-analysis-plsda)
-        -   [glmnet (LASSO and RIDGE)](#glmnet-lasso-and-ridge)
-        -   [Sparse LDA](#sparse-lda)
-        -   [Nearest Shrunken Centroids](#nearest-shrunken-centroids)
-        -   [Regularized Discriminant Analysis](#regularized-discriminant-analysis)
-        -   [Regularized Discriminant Analysis - Removed Correlated Predictors](#regularized-discriminant-analysis---removed-correlated-predictors)
-        -   [Mixture Discriminant Analysis](#mixture-discriminant-analysis)
-        -   [Mixture Discriminant Analysis - Removed Correlated Predictors](#mixture-discriminant-analysis---removed-correlated-predictors)
-        -   [Random Forest](#random-forest)
-        -   [Neural Network](#neural-network)
-        -   [Ada Boost](#ada-boost)
-        -   [All Models on Page 550 that are classification or both regression and classification](#all-models-on-page-550-that-are-classification-or-both-regression-and-classification)
-        -   [Models used for spot-check.Rmd](#models-used-for-spot-check.rmd)
+        -   [Testing train\_classification](#testing-train_classification)
+-   [Spot-Check](#spot-check-1)
+    -   [glm\_no\_pre\_process](#glm_no_pre_process)
+    -   [glm\_basic\_processing](#glm_basic_processing)
+    -   [glm\_remove\_collinearity\_caret](#glm_remove_collinearity_caret)
+    -   [glm\_remove\_collinearity\_custom](#glm_remove_collinearity_custom)
+    -   [logistic\_regression\_stepwise\_backward](#logistic_regression_stepwise_backward)
+    -   [linear\_discriminant\_analsysis](#linear_discriminant_analsysis)
+    -   [linear\_discriminant\_analsysis\_remove\_collinear](#linear_discriminant_analsysis_remove_collinear)
+    -   [partial\_least\_squares\_discriminant\_analysis](#partial_least_squares_discriminant_analysis)
+    -   [glmnet\_lasso\_ridge](#glmnet_lasso_ridge)
+    -   [sparse\_lda](#sparse_lda)
+    -   [regularized\_discriminant\_analysis](#regularized_discriminant_analysis)
+    -   [regularized\_discriminant\_analysis\_rc](#regularized_discriminant_analysis_rc)
+    -   [mixture\_discriminant\_analysis](#mixture_discriminant_analysis)
+    -   [mixture\_discriminant\_analysis\_rc](#mixture_discriminant_analysis_rc)
+    -   [GLM](#glm)
+    -   [Random Forest](#random-forest)
+    -   [Neural Network](#neural-network)
+    -   [Ada Boost](#ada-boost)
+    -   [All Models on Page 550 that are classification or both regression and classification](#all-models-on-page-550-that-are-classification-or-both-regression-and-classification)
+    -   [Models used for spot-check.Rmd](#models-used-for-spot-check.rmd)
     -   [Resamples & Top Models](#resamples-top-models)
         -   [Resamples](#resamples)
 -   [Train Top Models on Entire Training Dataset & Predict on Test Set](#train-top-models-on-entire-training-dataset-predict-on-test-set)
@@ -68,12 +70,15 @@ tuning_number_of_latent_variables_to_retain <- 1:10
 tuning_glmnet_alpha <- seq(from = 0, to = 1, length = 5) # alpha = 0 is pure ridge regression, and alpha = 1 is pure lasso regression.
 tuning_glmnet_lambda <- seq(from = 0.0001, to = 1, length = 50) # lambda values control the amount of penalization in the model.
 
-tuning_nearest_shrunken_centroids_shrinkage_threshold <- data.frame(.threshold = 0:25)
+tuning_nearest_shrunken_centroids_shrinkage_threshold <- data.frame(threshold = 0:25)
 
 tuning_mda_subclasses <- 1:8
 
 tuning_rda_lambda <- seq(from = 0, to = 1, by = 0.2)
 tuning_rda_gamma <- seq(from = 0, to = 1, by = 0.2)
+
+tuning_nnet_size <- 1:10
+tuning_nnet_decay <- c(0, 0.1, 1, 2)
 ```
 
 Dataset
@@ -336,764 +341,1047 @@ Make sure class balance is even amount training/test datasets.
 
 > used `90%` of data for `training` set (`900`), and `10%` for `test` set (`100`).
 
-### Logistic Regression - no pre processing
+### Testing train\_classification
+
+Spot-Check
+==========
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
-    ## 
-    ## Call:
-    ## NULL
-    ## 
-    ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.6364  -0.7956   0.4122   0.7664   1.8864  
-    ## 
-    ## Coefficients:
-    ##                                     Estimate  Std. Error z value          Pr(>|z|)    
-    ## (Intercept)                       1.67233497  0.93888105   1.781          0.074880 .  
-    ## `checking_balance> 200 DM`        0.91202032  0.36959975   2.468          0.013603 *  
-    ## `checking_balance1 - 200 DM`      0.36146669  0.21675128   1.668          0.095384 .  
-    ## checking_balanceunknown           1.69919542  0.23318347   7.287 0.000000000000317 ***
-    ## months_loan_duration             -0.01909034  0.00930934  -2.051          0.040300 *  
-    ## credit_historygood               -0.83854132  0.26057700  -3.218          0.001291 ** 
-    ## credit_historyperfect            -1.18300647  0.42783664  -2.765          0.005691 ** 
-    ## credit_historypoor               -0.70792254  0.34560901  -2.048          0.040527 *  
-    ## `credit_historyvery good`        -1.43539610  0.42810208  -3.353          0.000800 ***
-    ## purposecar                       -0.14052327  0.32598325  -0.431          0.666414    
-    ## purposecar0                       0.63233919  0.81457907   0.776          0.437585    
-    ## purposeeducation                 -0.58632030  0.43971583  -1.333          0.182398    
-    ## `purposefurniture/appliances`     0.16610147  0.31881865   0.521          0.602373    
-    ## purposerenovations               -0.68269967  0.60731250  -1.124          0.260957    
-    ## amount                           -0.00013829  0.00004389  -3.151          0.001627 ** 
-    ## `savings_balance> 1000 DM`        1.03432320  0.51321912   2.015          0.043867 *  
-    ## `savings_balance100 - 500 DM`     0.13185558  0.28429005   0.464          0.642786    
-    ## `savings_balance500 - 1000 DM`    0.27415120  0.41264732   0.664          0.506452    
-    ## savings_balanceunknown            0.90758459  0.26502755   3.424          0.000616 ***
-    ## `employment_duration> 7 years`    0.51216659  0.29605002   1.730          0.083630 .  
-    ## `employment_duration1 - 4 years`  0.16207344  0.23846600   0.680          0.496726    
-    ## `employment_duration4 - 7 years`  0.92790647  0.30112909   3.081          0.002060 ** 
-    ## employment_durationunemployed     0.14840842  0.43655991   0.340          0.733894    
-    ## percent_of_income                -0.34774866  0.08869354  -3.921 0.000088259512881 ***
-    ## years_at_residence               -0.00385951  0.08729784  -0.044          0.964736    
-    ## age                               0.01108220  0.00927862   1.194          0.232329    
-    ## other_creditnone                  0.52544326  0.24108458   2.179          0.029295 *  
-    ## other_creditstore                 0.12816587  0.42389741   0.302          0.762384    
-    ## housingown                        0.27205220  0.30231677   0.900          0.368178    
-    ## housingrent                      -0.25445634  0.34509987  -0.737          0.460915    
-    ## existing_loans_count             -0.33507655  0.19199533  -1.745          0.080944 .  
-    ## jobskilled                        0.04584693  0.28901415   0.159          0.873959    
-    ## jobunemployed                     0.09476193  0.65453976   0.145          0.884887    
-    ## jobunskilled                      0.14669504  0.35145618   0.417          0.676392    
-    ## dependents                       -0.11052559  0.24712936  -0.447          0.654703    
-    ## phoneTRUE                         0.41866313  0.20925782   2.001          0.045424 *  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## (Dispersion parameter for binomial family taken to be 1)
-    ## 
-    ##     Null deviance: 1099.56  on 899  degrees of freedom
-    ## Residual deviance:  857.01  on 864  degrees of freedom
-    ## AIC: 929.01
-    ## 
-    ## Number of Fisher Scoring iterations: 5
-
 > NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
 
-### Logistic Regression - basic pre-processing
-
-> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-    ## 
-    ## Call:
-    ## NULL
-    ## 
-    ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
-    ## 
-    ## Coefficients:
-    ##                                   Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
-    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
-    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
-    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
-    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
-    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
-    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
-    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
-    ## purposecar                        0.034689   0.130295   0.266             0.790058    
-    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
-    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
-    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
-    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
-    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
-    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
-    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
-    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
-    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
-    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
-    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
-    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
-    ## age                               0.128240   0.104123   1.232             0.218093    
-    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
-    ## housingown                        0.151433   0.135406   1.118             0.263413    
-    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
-    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
-    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
-    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
-    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
-    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## (Dispersion parameter for binomial family taken to be 1)
-    ## 
-    ##     Null deviance: 1099.56  on 899  degrees of freedom
-    ## Residual deviance:  872.53  on 870  degrees of freedom
-    ## AIC: 932.53
-    ## 
-    ## Number of Fisher Scoring iterations: 5
-
-> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
-
-### Logistic Regression - remove collinear data - based on caret's recommendation
-
-> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-    ## 
-    ## Call:
-    ## NULL
-    ## 
-    ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
-    ## 
-    ## Coefficients:
-    ##                                   Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
-    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
-    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
-    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
-    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
-    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
-    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
-    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
-    ## purposecar                        0.034689   0.130295   0.266             0.790058    
-    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
-    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
-    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
-    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
-    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
-    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
-    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
-    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
-    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
-    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
-    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
-    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
-    ## age                               0.128240   0.104123   1.232             0.218093    
-    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
-    ## housingown                        0.151433   0.135406   1.118             0.263413    
-    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
-    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
-    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
-    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
-    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
-    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## (Dispersion parameter for binomial family taken to be 1)
-    ## 
-    ##     Null deviance: 1099.56  on 899  degrees of freedom
-    ## Residual deviance:  872.53  on 870  degrees of freedom
-    ## AIC: 932.53
-    ## 
-    ## Number of Fisher Scoring iterations: 5
-
-> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
-
-### Logistic Regression - remove collinear data - based on calculation
-
-> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-    ## 
-    ## Call:
-    ## NULL
-    ## 
-    ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
-    ## 
-    ## Coefficients:
-    ##                                   Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
-    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
-    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
-    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
-    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
-    ## age                               0.128240   0.104123   1.232             0.218093    
-    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
-    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
-    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
-    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
-    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
-    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
-    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
-    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
-    ## purposecar                        0.034689   0.130295   0.266             0.790058    
-    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
-    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
-    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
-    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
-    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
-    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
-    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
-    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
-    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
-    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
-    ## housingown                        0.151433   0.135406   1.118             0.263413    
-    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
-    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
-    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
-    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## (Dispersion parameter for binomial family taken to be 1)
-    ## 
-    ##     Null deviance: 1099.56  on 899  degrees of freedom
-    ## Residual deviance:  872.53  on 870  degrees of freedom
-    ## AIC: 932.53
-    ## 
-    ## Number of Fisher Scoring iterations: 5
-
-> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
-
-### Logistic Regression - remove collinear data - based on calculation
-
-> NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
-
-    ## 
-    ## Call:
-    ## NULL
-    ## 
-    ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.5554  -0.8800   0.4347   0.7691   2.0064  
-    ## 
-    ## Coefficients:
-    ##                                   Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)                       1.131640   0.092838  12.189 < 0.0000000000000002 ***
-    ## `checking_balance> 200 DM`        0.245993   0.089350   2.753             0.005903 ** 
-    ## `checking_balance1 - 200 DM`      0.165115   0.091617   1.802             0.071508 .  
-    ## checking_balanceunknown           0.859391   0.111245   7.725   0.0000000000000112 ***
-    ## credit_historygood               -0.283603   0.117919  -2.405             0.016169 *  
-    ## credit_historypoor               -0.120046   0.088977  -1.349             0.177278    
-    ## `credit_historyvery good`        -0.246000   0.088881  -2.768             0.005645 ** 
-    ## `savings_balance100 - 500 DM`     0.001352   0.084900   0.016             0.987294    
-    ## `savings_balance500 - 1000 DM`    0.070428   0.098308   0.716             0.473743    
-    ## savings_balanceunknown            0.312059   0.098696   3.162             0.001568 ** 
-    ## `employment_duration> 7 years`    0.295568   0.116962   2.527             0.011502 *  
-    ## `employment_duration1 - 4 years`  0.103760   0.109846   0.945             0.344866    
-    ## `employment_duration4 - 7 years`  0.372998   0.111061   3.359             0.000784 ***
-    ## employment_durationunemployed     0.059406   0.089472   0.664             0.506715    
-    ## other_creditnone                  0.183429   0.082681   2.219             0.026519 *  
-    ## housingown                        0.178234   0.123668   1.441             0.149520    
-    ## housingrent                      -0.081868   0.122738  -0.667             0.504761    
-    ## phoneTRUE                         0.210035   0.091554   2.294             0.021785 *  
-    ## months_loan_duration             -0.251555   0.107446  -2.341             0.019221 *  
-    ## amount                           -0.409812   0.117708  -3.482             0.000498 ***
-    ## percent_of_income                -0.372375   0.096322  -3.866             0.000111 ***
-    ## existing_loans_count             -0.180763   0.106837  -1.692             0.090654 .  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## (Dispersion parameter for binomial family taken to be 1)
-    ## 
-    ##     Null deviance: 1099.56  on 899  degrees of freedom
-    ## Residual deviance:  879.81  on 878  degrees of freedom
-    ## AIC: 923.81
-    ## 
-    ## Number of Fisher Scoring iterations: 5
-
-> NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
-
-### Linear Discriminant Analysis
-
-    ##             Length Class      Mode     
-    ## prior        2     -none-     numeric  
-    ## counts       2     -none-     numeric  
-    ## means       58     -none-     numeric  
-    ## scaling     29     -none-     numeric  
-    ## lev          2     -none-     character
-    ## svd          1     -none-     numeric  
-    ## N            1     -none-     numeric  
-    ## call         3     -none-     call     
-    ## xNames      29     -none-     character
-    ## problemType  1     -none-     character
-    ## tuneValue    1     data.frame list     
-    ## obsLevels    2     -none-     character
-    ## param        0     -none-     list
-
-    ## ROC curve variable importance
-    ## 
-    ##                      Importance
-    ## checking_balance         0.6906
-    ## credit_history           0.6195
-    ## months_loan_duration     0.6146
-    ## savings_balance          0.5906
-    ## age                      0.5700
-    ## amount                   0.5533
-    ## percent_of_income        0.5470
-    ## employment_duration      0.5279
-    ## phone                    0.5275
-    ## purpose                  0.5258
-    ## other_credit             0.5252
-    ## existing_loans_count     0.5204
-    ## job                      0.5193
-    ## housing                  0.5105
-    ## years_at_residence       0.5065
-    ## dependents               0.5063
-
-### Linear Discriminant Analysis - Remove Collinear Data Based on Caret's Recommendation
-
-    ##             Length Class      Mode     
-    ## prior        2     -none-     numeric  
-    ## counts       2     -none-     numeric  
-    ## means       58     -none-     numeric  
-    ## scaling     29     -none-     numeric  
-    ## lev          2     -none-     character
-    ## svd          1     -none-     numeric  
-    ## N            1     -none-     numeric  
-    ## call         3     -none-     call     
-    ## xNames      29     -none-     character
-    ## problemType  1     -none-     character
-    ## tuneValue    1     data.frame list     
-    ## obsLevels    2     -none-     character
-    ## param        0     -none-     list
-
-    ## ROC curve variable importance
-    ## 
-    ##                      Importance
-    ## checking_balance         0.6906
-    ## credit_history           0.6195
-    ## months_loan_duration     0.6146
-    ## savings_balance          0.5906
-    ## age                      0.5700
-    ## amount                   0.5533
-    ## percent_of_income        0.5470
-    ## employment_duration      0.5279
-    ## phone                    0.5275
-    ## purpose                  0.5258
-    ## other_credit             0.5252
-    ## existing_loans_count     0.5204
-    ## job                      0.5193
-    ## housing                  0.5105
-    ## years_at_residence       0.5065
-    ## dependents               0.5063
-
-### Partial Least Squares Discriminant Analysis (PLSDA)
-
-    ## Partial Least Squares 
-    ## 
-    ## 900 samples
-    ##  16 predictor
-    ##   2 classes: 'yes', 'no' 
-    ## 
-    ## Pre-processing: centered (29), scaled (29), remove (6) 
-    ## Resampling: Cross-Validated (10 fold, repeated 3 times) 
-    ## Summary of sample sizes: 810, 810, 810, 810, 810, 810, ... 
-    ## Resampling results across tuning parameters:
-    ## 
-    ##   ncomp  ROC        Sens       Spec     
-    ##    1     0.7442485  0.2888889  0.9068783
-    ##    2     0.7555752  0.3493827  0.8941799
-    ##    3     0.7583578  0.3777778  0.8846561
-    ##    4     0.7627670  0.3888889  0.8756614
-    ##    5     0.7619048  0.3962963  0.8798942
-    ##    6     0.7611405  0.3888889  0.8777778
-    ##    7     0.7612777  0.3864198  0.8777778
-    ##    8     0.7611797  0.3851852  0.8783069
-    ##    9     0.7610425  0.3839506  0.8777778
-    ##   10     0.7610817  0.3851852  0.8783069
-    ## 
-    ## ROC was used to select the optimal model using  the largest value.
-    ## The final value used for the model was ncomp = 4.
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/partial_least_squares_discriminant_analysis-1.png" width="750px" />
-
-    ## Loading required package: pls
-
-    ## 
-    ## Attaching package: 'pls'
-
-    ## The following object is masked from 'package:caret':
-    ## 
-    ##     R2
-
-    ## The following object is masked from 'package:corrplot':
-    ## 
-    ##     corrplot
-
-    ## The following object is masked from 'package:stats':
-    ## 
-    ##     loadings
-
-    ## pls variable importance
-    ## 
-    ##   only 20 most important variables shown (out of 29)
-    ## 
-    ##                                Overall
-    ## checking_balanceunknown        0.07640
-    ## months_loan_duration           0.04441
-    ## amount                         0.03569
-    ## checking_balance1 - 200 DM     0.03420
-    ## housingown                     0.03307
-    ## savings_balanceunknown         0.03221
-    ## credit_historyvery good        0.02983
-    ## other_creditnone               0.02795
-    ## housingrent                    0.02299
-    ## percent_of_income              0.02299
-    ## age                            0.02162
-    ## employment_duration4 - 7 years 0.02091
-    ## employment_duration> 7 years   0.01912
-    ## purposefurniture/appliances    0.01669
-    ## savings_balance500 - 1000 DM   0.01606
-    ## phoneTRUE                      0.01457
-    ## checking_balance> 200 DM       0.01339
-    ## purposeeducation               0.01202
-    ## employment_durationunemployed  0.01105
-    ## credit_historygood             0.01049
-
-### glmnet (LASSO and RIDGE)
-
-    ##             Length Class      Mode     
-    ## a0            66   -none-     numeric  
-    ## beta        1914   dgCMatrix  S4       
-    ## df            66   -none-     numeric  
-    ## dim            2   -none-     numeric  
-    ## lambda        66   -none-     numeric  
-    ## dev.ratio     66   -none-     numeric  
-    ## nulldev        1   -none-     numeric  
-    ## npasses        1   -none-     numeric  
-    ## jerr           1   -none-     numeric  
-    ## offset         1   -none-     logical  
-    ## classnames     2   -none-     character
-    ## call           5   -none-     call     
-    ## nobs           1   -none-     numeric  
-    ## lambdaOpt      1   -none-     numeric  
-    ## xNames        29   -none-     character
-    ## problemType    1   -none-     character
-    ## tuneValue      2   data.frame list     
-    ## obsLevels      2   -none-     character
-    ## param          0   -none-     list
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/glmnet_lasso_ridge-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/glmnet_lasso_ridge-2.png" width="750px" />
-
-    ## Loading required package: glmnet
-
-    ## Loading required package: Matrix
-
-    ## 
-    ## Attaching package: 'Matrix'
-
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     expand
-
-    ## Loaded glmnet 2.0-10
-
-    ## glmnet variable importance
-    ## 
-    ##   only 20 most important variables shown (out of 29)
-    ## 
-    ##                                Overall
-    ## checking_balanceunknown        0.65776
-    ## amount                         0.22805
-    ## percent_of_income              0.22683
-    ## months_loan_duration           0.21889
-    ## savings_balanceunknown         0.21305
-    ## employment_duration4 - 7 years 0.17986
-    ## housingown                     0.14292
-    ## other_creditnone               0.13728
-    ## checking_balance> 200 DM       0.13057
-    ## credit_historyvery good        0.12062
-    ## phoneTRUE                      0.10410
-    ## employment_duration> 7 years   0.10060
-    ## age                            0.08770
-    ## purposefurniture/appliances    0.07662
-    ## credit_historygood             0.05505
-    ## purposeeducation               0.04112
-    ## housingrent                    0.03713
-    ## savings_balance500 - 1000 DM   0.01972
-    ## checking_balance1 - 200 DM     0.01924
-    ## savings_balance100 - 500 DM    0.00000
-
-### Sparse LDA
-
-    ##             Length Class      Mode     
-    ## call         5     -none-     call     
-    ## beta        22     -none-     numeric  
-    ## theta        2     -none-     numeric  
-    ## varNames    22     -none-     character
-    ## varIndex    22     -none-     numeric  
-    ## origP        1     -none-     numeric  
-    ## rss          1     -none-     numeric  
-    ## fit          8     lda        list     
-    ## classes      2     -none-     character
-    ## lambda       1     -none-     numeric  
-    ## stop         1     -none-     numeric  
-    ## xNames      29     -none-     character
-    ## problemType  1     -none-     character
-    ## tuneValue    2     data.frame list     
-    ## obsLevels    2     -none-     character
-    ## param        0     -none-     list
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/sparse_lda-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/sparse_lda-2.png" width="750px" />
-
-    ## ROC curve variable importance
-    ## 
-    ##                      Importance
-    ## checking_balance         0.6906
-    ## credit_history           0.6195
-    ## months_loan_duration     0.6146
-    ## savings_balance          0.5906
-    ## age                      0.5700
-    ## amount                   0.5533
-    ## percent_of_income        0.5470
-    ## employment_duration      0.5279
-    ## phone                    0.5275
-    ## purpose                  0.5258
-    ## other_credit             0.5252
-    ## existing_loans_count     0.5204
-    ## job                      0.5193
-    ## housing                  0.5105
-    ## years_at_residence       0.5065
-    ## dependents               0.5063
-
-### Nearest Shrunken Centroids
-
-> Poor performance and varImp() gives error
-
-### Regularized Discriminant Analysis
-
-    ##                Length Class      Mode     
-    ## call              5   -none-     call     
-    ## regularization    2   -none-     numeric  
-    ## classes           2   -none-     character
-    ## prior             2   -none-     numeric  
-    ## error.rate        1   -none-     numeric  
-    ## varnames         29   -none-     character
-    ## means            58   -none-     numeric  
-    ## covariances    1682   -none-     numeric  
-    ## covpooled       841   -none-     numeric  
-    ## converged         1   -none-     logical  
-    ## iter              1   -none-     numeric  
-    ## xNames           29   -none-     character
-    ## problemType       1   -none-     character
-    ## tuneValue         2   data.frame list     
-    ## obsLevels         2   -none-     character
-    ## param             0   -none-     list
-
-    ## Loading required package: klaR
-
-    ## Loading required package: MASS
-
-    ## 
-    ## Attaching package: 'MASS'
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     select
-
-    ##  [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
-    ##  [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
-    ## [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
-    ## [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
-    ## [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
-    ## [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/regularized_discriminant_analysis-1.png" width="750px" />
-
-    ## ROC curve variable importance
-    ## 
-    ##                      Importance
-    ## checking_balance         0.6906
-    ## credit_history           0.6195
-    ## months_loan_duration     0.6146
-    ## savings_balance          0.5906
-    ## age                      0.5700
-    ## amount                   0.5533
-    ## percent_of_income        0.5470
-    ## employment_duration      0.5279
-    ## phone                    0.5275
-    ## purpose                  0.5258
-    ## other_credit             0.5252
-    ## existing_loans_count     0.5204
-    ## job                      0.5193
-    ## housing                  0.5105
-    ## years_at_residence       0.5065
-    ## dependents               0.5063
-
-### Regularized Discriminant Analysis - Removed Correlated Predictors
-
-    ##                Length Class      Mode     
-    ## call              5   -none-     call     
-    ## regularization    2   -none-     numeric  
-    ## classes           2   -none-     character
-    ## prior             2   -none-     numeric  
-    ## error.rate        1   -none-     numeric  
-    ## varnames         29   -none-     character
-    ## means            58   -none-     numeric  
-    ## covariances    1682   -none-     numeric  
-    ## covpooled       841   -none-     numeric  
-    ## converged         1   -none-     logical  
-    ## iter              1   -none-     numeric  
-    ## xNames           29   -none-     character
-    ## problemType       1   -none-     character
-    ## tuneValue         2   data.frame list     
-    ## obsLevels         2   -none-     character
-    ## param             0   -none-     list
-
-    ##  [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
-    ##  [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
-    ## [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
-    ## [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
-    ## [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
-    ## [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/regularized_discriminant_analysis_rc-1.png" width="750px" />
-
-    ## ROC curve variable importance
-    ## 
-    ##                      Importance
-    ## checking_balance         0.6906
-    ## credit_history           0.6195
-    ## months_loan_duration     0.6146
-    ## savings_balance          0.5906
-    ## age                      0.5700
-    ## amount                   0.5533
-    ## percent_of_income        0.5470
-    ## employment_duration      0.5279
-    ## phone                    0.5275
-    ## purpose                  0.5258
-    ## other_credit             0.5252
-    ## existing_loans_count     0.5204
-    ## job                      0.5193
-    ## housing                  0.5105
-    ## years_at_residence       0.5065
-    ## dependents               0.5063
-
-### Mixture Discriminant Analysis
-
-    ##                   Length Class      Mode     
-    ## percent.explained  1     -none-     numeric  
-    ## values             1     -none-     numeric  
-    ## means              2     -none-     numeric  
-    ## theta.mod          1     -none-     numeric  
-    ## dimension          1     -none-     numeric  
-    ## sub.prior          2     -none-     list     
-    ## fit                5     polyreg    list     
-    ## call               4     -none-     call     
-    ## weights            2     -none-     list     
-    ## prior              2     table      numeric  
-    ## assign.theta       2     -none-     list     
-    ## deviance           1     -none-     numeric  
-    ## confusion          4     table      numeric  
-    ## terms              3     terms      call     
-    ## xNames            29     -none-     character
-    ## problemType        1     -none-     character
-    ## tuneValue          1     data.frame list     
-    ## obsLevels          2     -none-     character
-    ## param              0     -none-     list
-
-    ## Loading required package: mda
-
-    ## Loading required package: class
-
-    ## Loaded mda 0.4-9
-
-    ##  [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
-    ##  [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
-    ## [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
-    ## [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
-    ## [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
-    ## [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/mixture_discriminant_analysis-1.png" width="750px" />
-
-    ## ROC curve variable importance
-    ## 
-    ##                      Importance
-    ## checking_balance         0.6906
-    ## credit_history           0.6195
-    ## months_loan_duration     0.6146
-    ## savings_balance          0.5906
-    ## age                      0.5700
-    ## amount                   0.5533
-    ## percent_of_income        0.5470
-    ## employment_duration      0.5279
-    ## phone                    0.5275
-    ## purpose                  0.5258
-    ## other_credit             0.5252
-    ## existing_loans_count     0.5204
-    ## job                      0.5193
-    ## housing                  0.5105
-    ## years_at_residence       0.5065
-    ## dependents               0.5063
-
-### Mixture Discriminant Analysis - Removed Correlated Predictors
-
-    ##                   Length Class      Mode     
-    ## percent.explained  1     -none-     numeric  
-    ## values             1     -none-     numeric  
-    ## means              2     -none-     numeric  
-    ## theta.mod          1     -none-     numeric  
-    ## dimension          1     -none-     numeric  
-    ## sub.prior          2     -none-     list     
-    ## fit                5     polyreg    list     
-    ## call               4     -none-     call     
-    ## weights            2     -none-     list     
-    ## prior              2     table      numeric  
-    ## assign.theta       2     -none-     list     
-    ## deviance           1     -none-     numeric  
-    ## confusion          4     table      numeric  
-    ## terms              3     terms      call     
-    ## xNames            29     -none-     character
-    ## problemType        1     -none-     character
-    ## tuneValue          1     data.frame list     
-    ## obsLevels          2     -none-     character
-    ## param              0     -none-     list
-
-    ##  [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
-    ##  [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
-    ## [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
-    ## [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
-    ## [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
-    ## [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/mixture_discriminant_analysis_rc-1.png" width="750px" />
-
-    ## ROC curve variable importance
-    ## 
-    ##                      Importance
-    ## checking_balance         0.6906
-    ## credit_history           0.6195
-    ## months_loan_duration     0.6146
-    ## savings_balance          0.5906
-    ## age                      0.5700
-    ## amount                   0.5533
-    ## percent_of_income        0.5470
-    ## employment_duration      0.5279
-    ## phone                    0.5275
-    ## purpose                  0.5258
-    ## other_credit             0.5252
-    ## existing_loans_count     0.5204
-    ## job                      0.5193
-    ## housing                  0.5105
-    ## years_at_residence       0.5065
-    ## dependents               0.5063
+
+    Call:
+    NULL
+
+    Deviance Residuals: 
+        Min       1Q   Median       3Q      Max  
+    -2.5895  -0.8436   0.4207   0.7751   2.0452  
+
+    Coefficients:
+                                      Estimate Std. Error z value             Pr(>|z|)    
+    (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    purposecar                        0.034689   0.130295   0.266             0.790058    
+    purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    years_at_residence                0.005518   0.095818   0.058             0.954075    
+    age                               0.128240   0.104123   1.232             0.218093    
+    other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    housingown                        0.151433   0.135406   1.118             0.263413    
+    housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    jobskilled                        0.007380   0.130238   0.057             0.954813    
+    jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    dependents                       -0.041299   0.086738  -0.476             0.633977    
+    phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1099.56  on 899  degrees of freedom
+    Residual deviance:  872.53  on 870  degrees of freedom
+    AIC: 932.53
+
+    Number of Fisher Scoring iterations: 5
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+    glm variable importance
+
+      only 20 most important variables shown (out of 29)
+
+     Overall
+      7.7017
+      3.9211
+      3.3085
+      3.2896
+      3.2791
+      2.7042
+      2.6212
+      2.4752
+      2.2446
+      2.2415
+      2.2166
+      2.0165
+      1.8151
+      1.6410
+      1.3352
+      1.2316
+      1.2124
+      1.1184
+      0.8977
+      0.8893
+
+### glm\_no\_pre\_process
+
+
+    Call:
+    NULL
+
+    Deviance Residuals: 
+        Min       1Q   Median       3Q      Max  
+    -2.6364  -0.7956   0.4122   0.7664   1.8864  
+
+    Coefficients:
+                                        Estimate  Std. Error z value          Pr(>|z|)    
+    (Intercept)                       1.67233497  0.93888105   1.781          0.074880 .  
+    `checking_balance> 200 DM`        0.91202032  0.36959975   2.468          0.013603 *  
+    `checking_balance1 - 200 DM`      0.36146669  0.21675128   1.668          0.095384 .  
+    checking_balanceunknown           1.69919542  0.23318347   7.287 0.000000000000317 ***
+    months_loan_duration             -0.01909034  0.00930934  -2.051          0.040300 *  
+    credit_historygood               -0.83854132  0.26057700  -3.218          0.001291 ** 
+    credit_historyperfect            -1.18300647  0.42783664  -2.765          0.005691 ** 
+    credit_historypoor               -0.70792254  0.34560901  -2.048          0.040527 *  
+    `credit_historyvery good`        -1.43539610  0.42810208  -3.353          0.000800 ***
+    purposecar                       -0.14052327  0.32598325  -0.431          0.666414    
+    purposecar0                       0.63233919  0.81457907   0.776          0.437585    
+    purposeeducation                 -0.58632030  0.43971583  -1.333          0.182398    
+    `purposefurniture/appliances`     0.16610147  0.31881865   0.521          0.602373    
+    purposerenovations               -0.68269967  0.60731250  -1.124          0.260957    
+    amount                           -0.00013829  0.00004389  -3.151          0.001627 ** 
+    `savings_balance> 1000 DM`        1.03432320  0.51321912   2.015          0.043867 *  
+    `savings_balance100 - 500 DM`     0.13185558  0.28429005   0.464          0.642786    
+    `savings_balance500 - 1000 DM`    0.27415120  0.41264732   0.664          0.506452    
+    savings_balanceunknown            0.90758459  0.26502755   3.424          0.000616 ***
+    `employment_duration> 7 years`    0.51216659  0.29605002   1.730          0.083630 .  
+    `employment_duration1 - 4 years`  0.16207344  0.23846600   0.680          0.496726    
+    `employment_duration4 - 7 years`  0.92790647  0.30112909   3.081          0.002060 ** 
+    employment_durationunemployed     0.14840842  0.43655991   0.340          0.733894    
+    percent_of_income                -0.34774866  0.08869354  -3.921 0.000088259512881 ***
+    years_at_residence               -0.00385951  0.08729784  -0.044          0.964736    
+    age                               0.01108220  0.00927862   1.194          0.232329    
+    other_creditnone                  0.52544326  0.24108458   2.179          0.029295 *  
+    other_creditstore                 0.12816587  0.42389741   0.302          0.762384    
+    housingown                        0.27205220  0.30231677   0.900          0.368178    
+    housingrent                      -0.25445634  0.34509987  -0.737          0.460915    
+    existing_loans_count             -0.33507655  0.19199533  -1.745          0.080944 .  
+    jobskilled                        0.04584693  0.28901415   0.159          0.873959    
+    jobunemployed                     0.09476193  0.65453976   0.145          0.884887    
+    jobunskilled                      0.14669504  0.35145618   0.417          0.676392    
+    dependents                       -0.11052559  0.24712936  -0.447          0.654703    
+    phoneTRUE                         0.41866313  0.20925782   2.001          0.045424 *  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1099.56  on 899  degrees of freedom
+    Residual deviance:  857.01  on 864  degrees of freedom
+    AIC: 929.01
+
+    Number of Fisher Scoring iterations: 5
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historyperfect"          "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposecar0"                   
+    [11] "purposeeducation"               "purposefurniture/appliances"    "purposerenovations"             "amount"                         "savings_balance> 1000 DM"      
+    [16] "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"   "employment_duration1 - 4 years"
+    [21] "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"             "age"                           
+    [26] "other_creditnone"               "other_creditstore"              "housingown"                     "housingrent"                    "existing_loans_count"          
+    [31] "jobskilled"                     "jobunemployed"                  "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+    glm variable importance
+
+      only 20 most important variables shown (out of 35)
+
+     Overall
+       7.287
+       3.921
+       3.424
+       3.353
+       3.218
+       3.151
+       3.081
+       2.765
+       2.468
+       2.179
+       2.051
+       2.048
+       2.015
+       2.001
+       1.745
+       1.730
+       1.668
+       1.333
+       1.194
+       1.124
+
+### glm\_basic\_processing
+
+
+    Call:
+    NULL
+
+    Deviance Residuals: 
+        Min       1Q   Median       3Q      Max  
+    -2.5895  -0.8436   0.4207   0.7751   2.0452  
+
+    Coefficients:
+                                      Estimate Std. Error z value             Pr(>|z|)    
+    (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    purposecar                        0.034689   0.130295   0.266             0.790058    
+    purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    years_at_residence                0.005518   0.095818   0.058             0.954075    
+    age                               0.128240   0.104123   1.232             0.218093    
+    other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    housingown                        0.151433   0.135406   1.118             0.263413    
+    housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    jobskilled                        0.007380   0.130238   0.057             0.954813    
+    jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    dependents                       -0.041299   0.086738  -0.476             0.633977    
+    phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1099.56  on 899  degrees of freedom
+    Residual deviance:  872.53  on 870  degrees of freedom
+    AIC: 932.53
+
+    Number of Fisher Scoring iterations: 5
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+    glm variable importance
+
+      only 20 most important variables shown (out of 29)
+
+     Overall
+      7.7017
+      3.9211
+      3.3085
+      3.2896
+      3.2791
+      2.7042
+      2.6212
+      2.4752
+      2.2446
+      2.2415
+      2.2166
+      2.0165
+      1.8151
+      1.6410
+      1.3352
+      1.2316
+      1.2124
+      1.1184
+      0.8977
+      0.8893
+
+### glm\_remove\_collinearity\_caret
+
+
+    Call:
+    NULL
+
+    Deviance Residuals: 
+        Min       1Q   Median       3Q      Max  
+    -2.5895  -0.8436   0.4207   0.7751   2.0452  
+
+    Coefficients:
+                                      Estimate Std. Error z value             Pr(>|z|)    
+    (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    purposecar                        0.034689   0.130295   0.266             0.790058    
+    purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    years_at_residence                0.005518   0.095818   0.058             0.954075    
+    age                               0.128240   0.104123   1.232             0.218093    
+    other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    housingown                        0.151433   0.135406   1.118             0.263413    
+    housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    jobskilled                        0.007380   0.130238   0.057             0.954813    
+    jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    dependents                       -0.041299   0.086738  -0.476             0.633977    
+    phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1099.56  on 899  degrees of freedom
+    Residual deviance:  872.53  on 870  degrees of freedom
+    AIC: 932.53
+
+    Number of Fisher Scoring iterations: 5
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+    glm variable importance
+
+      only 20 most important variables shown (out of 29)
+
+     Overall
+      7.7017
+      3.9211
+      3.3085
+      3.2896
+      3.2791
+      2.7042
+      2.6212
+      2.4752
+      2.2446
+      2.2415
+      2.2166
+      2.0165
+      1.8151
+      1.6410
+      1.3352
+      1.2316
+      1.2124
+      1.1184
+      0.8977
+      0.8893
+
+### glm\_remove\_collinearity\_custom
+
+
+    Call:
+    NULL
+
+    Deviance Residuals: 
+        Min       1Q   Median       3Q      Max  
+    -2.5895  -0.8436   0.4207   0.7751   2.0452  
+
+    Coefficients:
+                                      Estimate Std. Error z value             Pr(>|z|)    
+    (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
+    months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
+    amount                           -0.400086   0.120926  -3.309             0.000938 ***
+    percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
+    years_at_residence                0.005518   0.095818   0.058             0.954075    
+    age                               0.128240   0.104123   1.232             0.218093    
+    existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
+    dependents                       -0.041299   0.086738  -0.476             0.633977    
+    `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
+    `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
+    checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
+    credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
+    credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
+    `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
+    purposecar                        0.034689   0.130295   0.266             0.790058    
+    purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
+    `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
+    `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
+    `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
+    savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
+    `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
+    `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
+    `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
+    employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
+    other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
+    housingown                        0.151433   0.135406   1.118             0.263413    
+    housingrent                      -0.084313   0.130666  -0.645             0.518761    
+    jobskilled                        0.007380   0.130238   0.057             0.954813    
+    jobunskilled                      0.044701   0.131371   0.340             0.733655    
+    phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1099.56  on 899  degrees of freedom
+    Residual deviance:  872.53  on 870  degrees of freedom
+    AIC: 932.53
+
+    Number of Fisher Scoring iterations: 5
+
+     [1] "months_loan_duration"           "amount"                         "percent_of_income"              "years_at_residence"             "age"                           
+     [6] "existing_loans_count"           "dependents"                     "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"       
+    [11] "credit_historygood"             "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"              
+    [16] "purposefurniture/appliances"    "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [21] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "other_creditnone"               "housingown"                    
+    [26] "housingrent"                    "jobskilled"                     "jobunskilled"                   "phoneTRUE"                     
+
+    glm variable importance
+
+      only 20 most important variables shown (out of 29)
+
+     Overall
+      7.7017
+      3.9211
+      3.3085
+      3.2896
+      3.2791
+      2.7042
+      2.6212
+      2.4752
+      2.2446
+      2.2415
+      2.2166
+      2.0165
+      1.8151
+      1.6410
+      1.3352
+      1.2316
+      1.2124
+      1.1184
+      0.8977
+      0.8893
+
+### logistic\_regression\_stepwise\_backward
+
+
+    Call:
+    NULL
+
+    Deviance Residuals: 
+        Min       1Q   Median       3Q      Max  
+    -2.5554  -0.8800   0.4347   0.7691   2.0064  
+
+    Coefficients:
+                                      Estimate Std. Error z value             Pr(>|z|)    
+    (Intercept)                       1.131640   0.092838  12.189 < 0.0000000000000002 ***
+    `checking_balance> 200 DM`        0.245993   0.089350   2.753             0.005903 ** 
+    `checking_balance1 - 200 DM`      0.165115   0.091617   1.802             0.071508 .  
+    checking_balanceunknown           0.859391   0.111245   7.725   0.0000000000000112 ***
+    credit_historygood               -0.283603   0.117919  -2.405             0.016169 *  
+    credit_historypoor               -0.120046   0.088977  -1.349             0.177278    
+    `credit_historyvery good`        -0.246000   0.088881  -2.768             0.005645 ** 
+    `savings_balance100 - 500 DM`     0.001352   0.084900   0.016             0.987294    
+    `savings_balance500 - 1000 DM`    0.070428   0.098308   0.716             0.473743    
+    savings_balanceunknown            0.312059   0.098696   3.162             0.001568 ** 
+    `employment_duration> 7 years`    0.295568   0.116962   2.527             0.011502 *  
+    `employment_duration1 - 4 years`  0.103760   0.109846   0.945             0.344866    
+    `employment_duration4 - 7 years`  0.372998   0.111061   3.359             0.000784 ***
+    employment_durationunemployed     0.059406   0.089472   0.664             0.506715    
+    other_creditnone                  0.183429   0.082681   2.219             0.026519 *  
+    housingown                        0.178234   0.123668   1.441             0.149520    
+    housingrent                      -0.081868   0.122738  -0.667             0.504761    
+    phoneTRUE                         0.210035   0.091554   2.294             0.021785 *  
+    months_loan_duration             -0.251555   0.107446  -2.341             0.019221 *  
+    amount                           -0.409812   0.117708  -3.482             0.000498 ***
+    percent_of_income                -0.372375   0.096322  -3.866             0.000111 ***
+    existing_loans_count             -0.180763   0.106837  -1.692             0.090654 .  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1099.56  on 899  degrees of freedom
+    Residual deviance:  879.81  on 878  degrees of freedom
+    AIC: 923.81
+
+    Number of Fisher Scoring iterations: 5
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "credit_historygood"             "credit_historypoor"            
+     [6] "credit_historyvery good"        "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [11] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "other_creditnone"               "housingown"                    
+    [16] "housingrent"                    "phoneTRUE"                      "months_loan_duration"           "amount"                         "percent_of_income"             
+    [21] "existing_loans_count"          
+
+    glm variable importance
+
+      only 20 most important variables shown (out of 21)
+
+     Overall
+      7.7252
+      3.8659
+      3.4816
+      3.3585
+      3.1618
+      2.7677
+      2.7531
+      2.5271
+      2.4051
+      2.3412
+      2.2941
+      2.2185
+      1.8022
+      1.6920
+      1.4412
+      1.3492
+      0.9446
+      0.7164
+      0.6670
+      0.6640
+
+### linear\_discriminant\_analsysis
+
+                Length Class      Mode     
+    prior        2     -none-     numeric  
+    counts       2     -none-     numeric  
+    means       58     -none-     numeric  
+    scaling     29     -none-     numeric  
+    lev          2     -none-     character
+    svd          1     -none-     numeric  
+    N            1     -none-     numeric  
+    call         3     -none-     call     
+    xNames      29     -none-     character
+    problemType  1     -none-     character
+    tuneValue    1     data.frame list     
+    obsLevels    2     -none-     character
+    param        0     -none-     list     
+
+    Loading required package: MASS
+
+
+    Attaching package: 'MASS'
+
+    The following object is masked from 'package:dplyr':
+
+        select
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### linear\_discriminant\_analsysis\_remove\_collinear
+
+                Length Class      Mode     
+    prior        2     -none-     numeric  
+    counts       2     -none-     numeric  
+    means       58     -none-     numeric  
+    scaling     29     -none-     numeric  
+    lev          2     -none-     character
+    svd          1     -none-     numeric  
+    N            1     -none-     numeric  
+    call         3     -none-     call     
+    xNames      29     -none-     character
+    problemType  1     -none-     character
+    tuneValue    1     data.frame list     
+    obsLevels    2     -none-     character
+    param        0     -none-     list     
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### partial\_least\_squares\_discriminant\_analysis
+
+                    Length Class      Mode     
+    coefficients     232   -none-     numeric  
+    scores          3600   scores     numeric  
+    loadings         116   loadings   numeric  
+    loading.weights  116   loadings   numeric  
+    Yscores         3600   scores     numeric  
+    Yloadings          8   loadings   numeric  
+    projection       116   -none-     numeric  
+    Xmeans            29   -none-     numeric  
+    Ymeans             2   -none-     numeric  
+    fitted.values   7200   -none-     numeric  
+    residuals       7200   -none-     numeric  
+    Xvar               4   -none-     numeric  
+    Xtotvar            1   -none-     numeric  
+    fit.time           1   -none-     numeric  
+    ncomp              1   -none-     numeric  
+    method             1   -none-     character
+    call               5   -none-     call     
+    terms              3   terms      call     
+    model              2   data.frame list     
+    obsLevels          2   -none-     character
+    probMethod         1   -none-     character
+    xNames            29   -none-     character
+    problemType        1   -none-     character
+    tuneValue          1   data.frame list     
+    param              0   -none-     list     
+    bestIter           1   data.frame list     
+
+    Loading required package: pls
+
+
+    Attaching package: 'pls'
+
+    The following object is masked from 'package:caret':
+
+        R2
+
+    The following object is masked from 'package:corrplot':
+
+        corrplot
+
+    The following object is masked from 'package:stats':
+
+        loadings
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### partial\_least\_squares\_discriminant\_analysis
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-1.png" width="750px" />NULL
+
+pls
+
+    pls variable importance
+
+      only 20 most important variables shown (out of 29)
+
+     Overall
+     0.07640
+     0.04441
+     0.03569
+     0.03420
+     0.03307
+     0.03221
+     0.02983
+     0.02795
+     0.02299
+     0.02299
+     0.02162
+     0.02091
+     0.01912
+     0.01669
+     0.01606
+     0.01457
+     0.01339
+     0.01202
+     0.01105
+     0.01049
+
+### glmnet\_lasso\_ridge
+
+                Length Class      Mode     
+    a0            66   -none-     numeric  
+    beta        1914   dgCMatrix  S4       
+    df            66   -none-     numeric  
+    dim            2   -none-     numeric  
+    lambda        66   -none-     numeric  
+    dev.ratio     66   -none-     numeric  
+    nulldev        1   -none-     numeric  
+    npasses        1   -none-     numeric  
+    jerr           1   -none-     numeric  
+    offset         1   -none-     logical  
+    classnames     2   -none-     character
+    call           5   -none-     call     
+    nobs           1   -none-     numeric  
+    lambdaOpt      1   -none-     numeric  
+    xNames        29   -none-     character
+    problemType    1   -none-     character
+    tuneValue      2   data.frame list     
+    obsLevels      2   -none-     character
+    param          0   -none-     list     
+
+    Loading required package: glmnet
+
+    Loading required package: Matrix
+
+
+    Attaching package: 'Matrix'
+
+    The following object is masked from 'package:tidyr':
+
+        expand
+
+    Loaded glmnet 2.0-10
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-2.png" width="750px" />`[1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"              [6] "credit_historyvery good"        "purposeeducation"               "purposefurniture/appliances"    "amount"                         "savings_balance500 - 1000 DM"   [11] "savings_balanceunknown"         "employment_duration> 7 years"   "employment_duration4 - 7 years" "percent_of_income"              "age"                            [16] "other_creditnone"               "housingown"                     "housingrent"                    "phoneTRUE"`
+
+#### glmnet\_lasso\_ridge
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-3.png" width="750px" />NULL
+
+glmnet
+
+    glmnet variable importance
+
+      only 20 most important variables shown (out of 29)
+
+     Overall
+     0.65776
+     0.22805
+     0.22683
+     0.21889
+     0.21305
+     0.17986
+     0.14292
+     0.13728
+     0.13057
+     0.12062
+     0.10410
+     0.10060
+     0.08770
+     0.07662
+     0.05505
+     0.04112
+     0.03713
+     0.01972
+     0.01924
+     0.00000
+
+### sparse\_lda
+
+                Length Class      Mode     
+    call         5     -none-     call     
+    beta        22     -none-     numeric  
+    theta        2     -none-     numeric  
+    varNames    22     -none-     character
+    varIndex    22     -none-     numeric  
+    origP        1     -none-     numeric  
+    rss          1     -none-     numeric  
+    fit          8     lda        list     
+    classes      2     -none-     character
+    lambda       1     -none-     numeric  
+    stop         1     -none-     numeric  
+    xNames      29     -none-     character
+    problemType  1     -none-     character
+    tuneValue    2     data.frame list     
+    obsLevels    2     -none-     character
+    param        0     -none-     list     
+
+    Loading required package: sparseLDA
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposeeducation"               "purposefurniture/appliances"    "amount"                        
+    [11] "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"   "employment_duration4 - 7 years" "percent_of_income"             
+    [16] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [21] "dependents"                     "phoneTRUE"                     
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### regularized\_discriminant\_analysis
+
+                   Length Class      Mode     
+    call              5   -none-     call     
+    regularization    2   -none-     numeric  
+    classes           2   -none-     character
+    prior             2   -none-     numeric  
+    error.rate        1   -none-     numeric  
+    varnames         29   -none-     character
+    means            58   -none-     numeric  
+    covariances    1682   -none-     numeric  
+    covpooled       841   -none-     numeric  
+    converged         1   -none-     logical  
+    iter              1   -none-     numeric  
+    xNames           29   -none-     character
+    problemType       1   -none-     character
+    tuneValue         2   data.frame list     
+    obsLevels         2   -none-     character
+    param             0   -none-     list     
+
+    Loading required package: klaR
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-4.png" width="750px" />`[1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"              [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"   [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"             [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"           [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"`
+
+#### regularized\_discriminant\_analysis
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-5.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-6.png" width="750px" />NULL
+
+rda
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### regularized\_discriminant\_analysis\_rc
+
+                   Length Class      Mode     
+    call              5   -none-     call     
+    regularization    2   -none-     numeric  
+    classes           2   -none-     character
+    prior             2   -none-     numeric  
+    error.rate        1   -none-     numeric  
+    varnames         29   -none-     character
+    means            58   -none-     numeric  
+    covariances    1682   -none-     numeric  
+    covpooled       841   -none-     numeric  
+    converged         1   -none-     logical  
+    iter              1   -none-     numeric  
+    xNames           29   -none-     character
+    problemType       1   -none-     character
+    tuneValue         2   data.frame list     
+    obsLevels         2   -none-     character
+    param             0   -none-     list     
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### regularized\_discriminant\_analysis\_rc
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-7.png" width="750px" />NULL
+
+rda
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### mixture\_discriminant\_analysis
+
+                      Length Class      Mode     
+    percent.explained  1     -none-     numeric  
+    values             1     -none-     numeric  
+    means              2     -none-     numeric  
+    theta.mod          1     -none-     numeric  
+    dimension          1     -none-     numeric  
+    sub.prior          2     -none-     list     
+    fit                5     polyreg    list     
+    call               4     -none-     call     
+    weights            2     -none-     list     
+    prior              2     table      numeric  
+    assign.theta       2     -none-     list     
+    deviance           1     -none-     numeric  
+    confusion          4     table      numeric  
+    terms              3     terms      call     
+    xNames            29     -none-     character
+    problemType        1     -none-     character
+    tuneValue          1     data.frame list     
+    obsLevels          2     -none-     character
+    param              0     -none-     list     
+
+    Loading required package: mda
+
+    Loading required package: class
+
+    Loaded mda 0.4-9
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-8.png" width="750px" />`[1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"              [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"   [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"             [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"           [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"`
+
+#### mixture\_discriminant\_analysis
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-10.png" width="750px" />NULL
+
+mda
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### mixture\_discriminant\_analysis\_rc
+
+                      Length Class      Mode     
+    percent.explained  1     -none-     numeric  
+    values             1     -none-     numeric  
+    means              2     -none-     numeric  
+    theta.mod          1     -none-     numeric  
+    dimension          1     -none-     numeric  
+    sub.prior          2     -none-     list     
+    fit                5     polyreg    list     
+    call               4     -none-     call     
+    weights            2     -none-     list     
+    prior              2     table      numeric  
+    assign.theta       2     -none-     list     
+    deviance           1     -none-     numeric  
+    confusion          4     table      numeric  
+    terms              3     terms      call     
+    xNames            29     -none-     character
+    problemType        1     -none-     character
+    tuneValue          1     data.frame list     
+    obsLevels          2     -none-     character
+    param              0     -none-     list     
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### mixture\_discriminant\_analysis\_rc
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-11.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-12.png" width="750px" />NULL
+
+mda
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### GLM
+
+'pls', 'partial\_least\_squares\_discriminant\_analysis', classification\_column\_names, preProc=c('nzv', 'center', 'scale'), expand.grid(ncomp = tuning\_number\_of\_latent\_variables\_to\_retain), NULL, 5, NULL, NULL, NULL, NULL, 'glmnet', 'glmnet\_lasso\_ridge', classification\_column\_names, preProc=c('nzv', 'center', 'scale'), expand.grid(alpha = tuning\_glmnet\_alpha, lambda = tuning\_glmnet\_lambda), NULL, 5, NULL, NULL, NULL, NULL,
 
 ### Random Forest
 
@@ -1114,13 +1402,13 @@ Resamples & Top Models
     ## Call:
     ## summary.resamples(object = resamples)
     ## 
-    ## Models: model_glm_no_pre_processing, model_glm_basic_processing, glm_remove_collinearity_caret, glm_remove_collinearity_custom, logistic_regression_stepwise_backward, linear_discriminant_analsysis, linear_discriminant_analsysis_remove_collinear, partial_least_squares_discriminant_analysis, glmnet_lasso_ridge, sparse_lda, regularized_discriminant_analysis, regularized_discriminant_analysis_rc, mixture_discriminant_analysis, mixture_discriminant_analysis_rc 
+    ## Models: glm_no_pre_process, glm_basic_processing, glm_remove_collinearity_caret, glm_remove_collinearity_custom, logistic_regression_stepwise_backward, linear_discriminant_analsysis, linear_discriminant_analsysis_remove_collinear, partial_least_squares_discriminant_analysis, glmnet_lasso_ridge, sparse_lda, regularized_discriminant_analysis, regularized_discriminant_analysis_rc, mixture_discriminant_analysis, mixture_discriminant_analysis_rc 
     ## Number of resamples: 30 
     ## 
     ## ROC 
     ##                                                     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
-    ## model_glm_no_pre_processing                    0.6748971 0.7308936 0.7598471 0.7628258 0.7839506 0.8536155    0
-    ## model_glm_basic_processing                     0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
+    ## glm_no_pre_process                             0.6748971 0.7308936 0.7598471 0.7628258 0.7839506 0.8536155    0
+    ## glm_basic_processing                           0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
     ## glm_remove_collinearity_caret                  0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
     ## glm_remove_collinearity_custom                 0.6801881 0.7225162 0.7595532 0.7594748 0.7914462 0.8677249    0
     ## logistic_regression_stepwise_backward          0.6878307 0.7264844 0.7757202 0.7644523 0.7962963 0.8641975    0
@@ -1136,8 +1424,8 @@ Resamples & Top Models
     ## 
     ## Sens 
     ##                                                     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
-    ## model_glm_no_pre_processing                    0.2592593 0.4074074 0.4814815 0.4530864 0.5185185 0.5555556    0
-    ## model_glm_basic_processing                     0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
+    ## glm_no_pre_process                             0.2592593 0.4074074 0.4814815 0.4530864 0.5185185 0.5555556    0
+    ## glm_basic_processing                           0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
     ## glm_remove_collinearity_caret                  0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
     ## glm_remove_collinearity_custom                 0.2222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
     ## logistic_regression_stepwise_backward          0.2222222 0.3796296 0.4259259 0.4111111 0.4444444 0.5555556    0
@@ -1153,8 +1441,8 @@ Resamples & Top Models
     ## 
     ## Spec 
     ##                                                     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
-    ## model_glm_no_pre_processing                    0.7460317 0.8253968 0.8730159 0.8592593 0.8888889 0.9523810    0
-    ## model_glm_basic_processing                     0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.9523810    0
+    ## glm_no_pre_process                             0.7460317 0.8253968 0.8730159 0.8592593 0.8888889 0.9523810    0
+    ## glm_basic_processing                           0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.9523810    0
     ## glm_remove_collinearity_caret                  0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.9523810    0
     ## glm_remove_collinearity_custom                 0.7619048 0.8253968 0.8650794 0.8613757 0.8888889 0.9523810    0
     ## logistic_regression_stepwise_backward          0.7936508 0.8571429 0.8730159 0.8772487 0.9047619 0.9523810    0
@@ -1175,13 +1463,11 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
 > after using cross-validation to tune, we'll take the highest ranked models, retrain the models (with the final tuning parameters) on the entire training set, and predict using the test set.
 
+    ## Warning in inner_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining factor and character vector, coercing into character vector
+
     ## 
     ## 
     ## ### Generalized Linear Model (glm_remove_collinearity_custom)
-    ## 
-    ## 
-    ## 
-    ## Pre-Processing: `nzv, center, scale, knnImpute`
     ## 
     ## 
     ## Call:
@@ -1276,10 +1562,6 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
     ## ### Generalized Linear Model (glm_remove_collinearity_caret)
     ## 
     ## 
-    ## 
-    ## Pre-Processing: `nzv, center, scale, knnImpute`
-    ## 
-    ## 
     ## Call:
     ## NULL
     ## 
@@ -1369,11 +1651,7 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
     ## 
     ## 
-    ## ### Generalized Linear Model (model_glm_basic_processing)
-    ## 
-    ## 
-    ## 
-    ## Pre-Processing: `nzv, center, scale, knnImpute`
+    ## ### Generalized Linear Model (glm_basic_processing)
     ## 
     ## 
     ## Call:
@@ -1467,10 +1745,6 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
     ## 
     ## ### Mixture Discriminant Analysis (mixture_discriminant_analysis_rc)
     ## 
-    ## 
-    ## 
-    ## Pre-Processing: `nzv, center, scale`
-    ## 
     ##                   Length Class      Mode     
     ## percent.explained  1     -none-     numeric  
     ## values             1     -none-     numeric  
@@ -1532,10 +1806,6 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
     ## 
     ## 
     ## ### Mixture Discriminant Analysis (mixture_discriminant_analysis)
-    ## 
-    ## 
-    ## 
-    ## Pre-Processing: `nzv, center, scale`
     ## 
     ##                   Length Class      Mode     
     ## percent.explained  1     -none-     numeric  
