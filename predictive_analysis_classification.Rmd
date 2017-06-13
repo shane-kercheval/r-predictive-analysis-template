@@ -94,6 +94,7 @@ tuning_rda_gamma <- seq(from = 0, to = 1, by = 0.2)
 
 tuning_nnet_size <- 1:10
 tuning_nnet_decay <- c(0, 0.1, 1, 2)
+parameter_nnet_linout <- FALSE
 ```
 
 # Dataset
@@ -451,14 +452,19 @@ train_classification <- function(	model_name,
 					class_to_predictor_ratio_threshold = class_to_predictor_ratio_threshold,
 					class_names = class_names)
 
-		training_maxit <- NULL
+		training_max_iterations <- NULL
 		training_numWts <- NULL
+		training_lineout <- NULL
 		if(training_method == 'nnet') {
 			
-			training_maxit <- 2000
+			training_max_iterations <- 2000
+			training_lineout <- parameter_nnet_linout
 
 			max_size <- max(training_tune_grid$size)
 			training_numWts <- (max_size * ncol(dataset)) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
+
+			cat(paste0('\n\nSetting `nnet` specific parameters: `MaxNWts` - `', training_numWts,'`; `maxit` - `', training_max_iterations,'`\n\n'))
+
 		}
 
 
@@ -471,8 +477,9 @@ train_classification <- function(	model_name,
 												trControl = training_control,
 												tuneGrid = training_tune_grid,
 							  					tuneLength = training_tune_length,
-							  					maxit = training_maxit,
-							  					MaxNWts = training_numWts
+							  					maxit = training_max_iterations,
+							  					MaxNWts = training_numWts,
+							  					linout = training_lineout
 							  					)
 
 		saveRDS(caret_model, file = paste0('./classification_data/', model_name,'.RDS'))
