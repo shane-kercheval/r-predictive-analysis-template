@@ -451,8 +451,14 @@ train_classification <- function(	model_name,
 					class_to_predictor_ratio_threshold = class_to_predictor_ratio_threshold,
 					class_names = class_names)
 
+		training_maxit <- NULL
+		training_numWts <- NULL
 		if(training_method == 'nnet') {
+			
+			training_maxit <- 2000
 
+			max_size <- max(training_tune_grid$size)
+			training_numWts <- (max_size * ncol(dataset)) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
 		}
 
 
@@ -464,7 +470,10 @@ train_classification <- function(	model_name,
 												preProc = training_preProcess,
 												trControl = training_control,
 												tuneGrid = training_tune_grid,
-							  					tuneLength = training_tune_length)
+							  					tuneLength = training_tune_length,
+							  					maxit = training_maxit,
+							  					MaxNWts = training_numWts
+							  					)
 
 		saveRDS(caret_model, file = paste0('./classification_data/', model_name,'.RDS'))
 
@@ -579,8 +588,8 @@ spot_check_models <- tribble(
 	'rda', 'regularized_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
 	'rda', 'regularized_discriminant_analysis_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
 	'mda', 'mixture_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(subclasses = tuning_mda_subclasses), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
-	'mda', 'mixture_discriminant_analysis_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(subclasses = tuning_mda_subclasses), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL
-	#'nnet', 'neural_network', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(size = tuning_nnet_size, decay = tuning_nnet_decay), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
+	'mda', 'mixture_discriminant_analysis_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(subclasses = tuning_mda_subclasses), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
+	'nnet', 'neural_network_spatial_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale', 'spatialSign'), expand.grid(size = tuning_nnet_size, decay = tuning_nnet_decay), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL
 	)
 
 stopifnot(!duplicated(spot_check_models$model_name))
