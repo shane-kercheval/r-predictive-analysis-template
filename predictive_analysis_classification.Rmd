@@ -30,6 +30,14 @@ library(caret)
 library(gmodels)
 library(randomForest)
 library(ROCR)
+library(pls)
+library(glmnet)
+library(Matrix)
+library(sparseLDA)
+library(klaR)
+library(mda)
+library(class)
+library(MASS)
 
 opts_chunk$set(out.width='750px', dpi=200)
 
@@ -342,6 +350,8 @@ walk(classification_column_names, ~ {
 
 # Spot-Check
 
+## Configuration
+
 ```{r spot_check_prepare_classification, echo = FALSE}
 set.seed(custom_seed)
 training_index <- createDataPartition(classification_dataset$target, p = training_percentage, list = TRUE)
@@ -349,7 +359,7 @@ classification_train <- classification_dataset[training_index$Resample1, ]
 classification_test <- classification_dataset[-training_index$Resample1, ]
 ```
 
-## Class Balance 
+### Class Balance 
 
 Make sure class balance is even amount training/test datasets.
 
@@ -381,45 +391,19 @@ train_control <- trainControl(
 	index = spot_check_folds)
 
 metric <- 'ROC'
+classification_models <- list()
+model_preprocessing_values <- data.frame(model = NULL, training_preProcess = NULL)
 ```
 
 > Using ``r cross_validation_num_folds``-fold cross-validation with ``r cross_validation_num_repeats`` repeats, using the ``r metric`` statistic to evaluate each model.
 
 > used ``r percent(training_percentage)`` of data for `training` set (``r nrow(classification_train)``), and ``r percent(1 - training_percentage)`` for `test` set (``r nrow(classification_test)``).
 
-
 ### Testing train_classification
-
-# Spot-Check
 
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
 > NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
-
-
-
-```{r logistic_regression_stepwise_backward, echo = FALSE}
-stepwise_logistic_columns <- NULL
-if(refresh_models) {
-	check_data(classification_train, sample_to_predictor_ratio_threshold = 5)
-	
-	set.seed(custom_seed)
-	pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
-	columns_not_in_preprocessed_data <- colnames(classification_train)[!(colnames(classification_train) %in% colnames(pre_processed_numeric_data$data))] # figure out which columns we need to add back in (i.e. all (non-numeric) that are in classification_train but are NOT in pre_processed_numeric_data
-	pre_processed_classification_train <- cbind(classification_train[, columns_not_in_preprocessed_data], pre_processed_numeric_data$data)
-
-	set.seed(custom_seed)
-	stepwise_glm_model <- step(glm(family = binomial, formula = target ~ ., data = pre_processed_classification_train), direction="backward", trace=0) # do stepwise regression (glm doesn't like factor target variables), then use the formula in train in order to take advantage of k-fold Cross Validation
-	# stepwise_glm_model$formula gives the `optimal` formula (need to do this because coefficients will have factor variable names, not original columns. The formula will exclude columns not statistically significant)
-	# now feed this back into training to do cross validation
-	
-	stepwise_glm_model$formula
-	
-	stepwise_logistic_columns <- str_split(stepwise_glm_model$formula, pattern = ' ')[[3]]
-	stepwise_logistic_columns <- c('target', stepwise_logistic_columns[stepwise_logistic_columns != '+'])
-}
-```
-
 
 ```{r run_spot_check, echo = FALSE, comment = '', results = 'asis'}
 train_classification <- function(	model_name,
@@ -434,7 +418,10 @@ train_classification <- function(	model_name,
 									refresh_models = TRUE,
 									sample_to_predictor_ratio_threshold = NULL,
 									class_to_predictor_ratio_threshold = NULL,
-									class_names = NULL) {
+									class_names = NULL,
+									neural_net_numWts = NULL,
+									neural_net_lineout = NULL,
+									neural_net_max_iterations = NULL) {
 	caret_model <- NULL
 	
 	if(!is.null(training_tune_grid)) {
@@ -452,35 +439,33 @@ train_classification <- function(	model_name,
 					class_to_predictor_ratio_threshold = class_to_predictor_ratio_threshold,
 					class_names = class_names)
 
-		training_max_iterations <- NULL
-		training_numWts <- NULL
-		training_lineout <- NULL
-		if(training_method == 'nnet') {
-			
-			training_max_iterations <- 2000
-			training_lineout <- parameter_nnet_linout
-
-			max_size <- max(training_tune_grid$size)
-			training_numWts <- (max_size * ncol(dataset)) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
-
-			cat(paste0('\n\nSetting `nnet` specific parameters: `MaxNWts` - `', training_numWts,'`; `maxit` - `', training_max_iterations,'`\n\n'))
-
-		}
-
-
 		set.seed(custom_seed)
-		caret_model <- train(	target ~ .,
-												data = dataset,
-												method = training_method,
-												metric = training_metric,
-												preProc = training_preProcess,
-												trControl = training_control,
-												tuneGrid = training_tune_grid,
-							  					tuneLength = training_tune_length,
-							  					maxit = training_max_iterations,
-							  					MaxNWts = training_numWts,
-							  					linout = training_lineout
-							  					)
+		if(!is.null(neural_net_numWts) || !is.null(neural_net_max_iterations) || !is.null(neural_net_lineout)) { # neural network
+
+			cat(paste0('\n\n> Setting `nnet` specific parameters: `MaxNWts` - `', neural_net_numWts,'`; `maxit` - `', neural_net_max_iterations,'`\n\n'))
+			caret_model <- train(	target ~ .,
+									data = dataset,
+									method = training_method,
+									metric = training_metric,
+									preProc = training_preProcess,
+									trControl = training_control,
+									tuneGrid = training_tune_grid,
+				  					tuneLength = training_tune_length,
+									trace = FALSE,
+				  					maxit = neural_net_max_iterations,
+				  					MaxNWts = neural_net_numWts,
+				  					linout = neural_net_lineout)			
+		} else { # non-neural network
+
+			caret_model <- train(	target ~ .,
+									data = dataset,
+									method = training_method,
+									metric = training_metric,
+									preProc = training_preProcess,
+									trControl = training_control,
+									tuneGrid = training_tune_grid,
+				  					tuneLength = training_tune_length)
+		}
 
 		saveRDS(caret_model, file = paste0('./classification_data/', model_name,'.RDS'))
 
@@ -496,21 +481,21 @@ train_classification <- function(	model_name,
 	
 	if(!is.null(summary_caret_model)) {
 		
+		cat('\n\n#### Model Summary\n\n')
 		cat(codebc(summary_caret_model, postfix='\n\n'))
 	}
 	
+	cat('\n\n#### Model Predictors\n\n')
 	cat(codebc(predictors(caret_model), postfix='\n\n'))
 	
 	if(!is.null(training_tune_grid)) { # if there are tuning parameters, we can plot them.
 		
-		cat(paste('\n\n####', model_name), '\n\n')
+		cat('\n\n#### Model Tuning Grid Performance\n\n')
 		print(plot(caret_model, top = 20, scales = list(y = list(cex = 0.95))))
-		print(plot.new())
-		cat('\n\n')
-		cat(caret_model$method)
 		cat('\n\n')
 	}
 	
+	cat('\n\n#### Variable Importance\n\n')
 	cat(codebc(varImp(caret_model, scale = FALSE), postfix='\n\n'))
 	
 	return (caret_model)
@@ -578,67 +563,406 @@ expected_error = tryCatch(
 	error=function(e) e)
 stopifnot(inherits(expected_error, 'error'))
 stopifnot(expected_error$message == 'model_tuning_parameters %in% colnames(training_tune_grid) are not all TRUE')
-
-spot_check_models <- tribble(
-	~training_method, ~model_name, ~training_dataset_columns, ~training_preProcess, ~training_tune_grid, ~training_tune_length, ~sample_to_predictor_ratio_threshold, ~class_to_predictor_ratio_threshold, ~class_names, ~function_post_train, ~trained_model,
-	'glm', 'glm_no_pre_process', classification_column_names, NULL, NULL, NULL, 5, NULL, NULL, NULL, NULL,
-	'glm', 'glm_basic_processing', classification_column_names, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
-	'glm', 'glm_remove_collinearity_caret', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
-	'glm', 'glm_remove_collinearity_custom', recommended_columns_custom, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
-	'glm', 'logistic_regression_stepwise_backward', stepwise_logistic_columns, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
-	'lda', 'linear_discriminant_analsysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
-	'lda', 'linear_discriminant_analsysis_remove_collinear', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), NULL, NULL, 5, NULL, NULL, NULL, NULL,
-	'pls', 'partial_least_squares_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(ncomp = tuning_number_of_latent_variables_to_retain), NULL, 5, NULL, NULL, NULL, NULL,
-	'glmnet', 'glmnet_lasso_ridge', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda), NULL, 5, NULL, NULL, NULL, NULL,
-	'sparseLDA', 'sparse_lda', classification_column_names, preProc=c('nzv', 'center', 'scale'), NULL, 5, 5, NULL, NULL, NULL, NULL,
-	#'pam', 'nearest_shrunken_centroids', classification_column_names, preProc=c('nzv', 'center', 'scale'), tuning_nearest_shrunken_centroids_shrinkage_threshold, NULL, 5, NULL, NULL, NULL, NULL,
-	'rda', 'regularized_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
-	'rda', 'regularized_discriminant_analysis_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
-	'mda', 'mixture_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(subclasses = tuning_mda_subclasses), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
-	'mda', 'mixture_discriminant_analysis_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale'), expand.grid(subclasses = tuning_mda_subclasses), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL,
-	'nnet', 'neural_network_spatial_rc', recommended_columns_caret, preProc=c('nzv', 'center', 'scale', 'spatialSign'), expand.grid(size = tuning_nnet_size, decay = tuning_nnet_decay), NULL, NULL, 5, c(target_positive_class, target_negative_class), NULL, NULL
-	)
-
-stopifnot(!duplicated(spot_check_models$model_name))
-
-walk(1:nrow(spot_check_models), ~ {
-	spot_check_model <- spot_check_models[., ]
-	
-	cat(paste('###', spot_check_model$model_name), '\n\n')
-	
-	trained_model <- train_classification(	model_name = spot_check_model$model_name,
-						dataset = classification_train[, spot_check_model$training_dataset_columns[[1]]],
-						custom_seed = custom_seed,
-						training_method = spot_check_model$training_method,
-						training_metric = metric,
-						training_preProcess = spot_check_model$training_preProcess[[1]],
-						training_control = train_control,
-						training_tune_grid = spot_check_model$training_tune_grid[[1]],
-						training_tune_length = spot_check_model$training_tune_length[[1]],
-						refresh_models = refresh_models,
-						sample_to_predictor_ratio_threshold = spot_check_model$sample_to_predictor_ratio_threshold[[1]],
-						class_to_predictor_ratio_threshold = spot_check_model$class_to_predictor_ratio_threshold[[1]],
-						class_names = spot_check_model$class_names[[1]])
-
-	spot_check_models[., ]$trained_model[[1]] <<- trained_model
-	if(!is.null(spot_check_model$function_post_train[[1]])) {
-		spot_check_model$function_post_train[[1]]()
-	}
-})
 ```
 
-### GLM 
-
-'pls', 'partial_least_squares_discriminant_analysis', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(ncomp = tuning_number_of_latent_variables_to_retain), NULL, 5, NULL, NULL, NULL, NULL,
-	'glmnet', 'glmnet_lasso_ridge', classification_column_names, preProc=c('nzv', 'center', 'scale'), expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda), NULL, 5, NULL, NULL, NULL, NULL,
-	
+## Models
 
 
-```{r neural_network, echo = FALSE}
+### glm_no_pre_process
 
-#neural_network <- train_classification()
+```{r glm_no_pre_process, echo = FALSE, comment='', results='asis'}
+glm_no_pre_process <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'glm_no_pre_process',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'glm',
+	training_preProcess = NULL,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
 
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_no_pre_process', training_preProcess = I(list(NA))))
+classification_models[['glm_no_pre_process']] <- glm_no_pre_process
 ```
+
+### glm_basic_processing
+
+```{r glm_basic_processing, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+glm_basic_processing <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'glm_basic_processing',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'glm',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_basic_processing', training_preProcess = I(list(model_pre_processing))))
+classification_models[['glm_basic_processing']] <- glm_basic_processing
+```
+
+### glm_remove_collinearity_caret
+
+```{r glm_remove_collinearity_caret, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+glm_remove_collinearity_caret <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'glm_remove_collinearity_caret',
+	dataset = classification_train[, recommended_columns_caret],
+	training_method = 'glm',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_remove_collinearity_caret', training_preProcess = I(list(model_pre_processing))))
+classification_models[['glm_remove_collinearity_caret']] <- glm_remove_collinearity_caret
+``` 
+
+### glm_remove_collinearity_custom
+
+```{r glm_remove_collinearity_custom, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+glm_remove_collinearity_custom <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'glm_remove_collinearity_custom',
+	dataset = classification_train[, recommended_columns_custom],
+	training_method = 'glm',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_remove_collinearity_custom', training_preProcess = I(list(model_pre_processing))))
+classification_models[['glm_remove_collinearity_custom']] <- glm_remove_collinearity_custom
+```
+
+### logistic_regression_stepwise_backward
+
+```{r logistic_regression_stepwise_backward, echo = FALSE, comment='', results='asis'}
+stepwise_logistic_columns <- NULL
+
+if(refresh_models) {
+	
+	set.seed(custom_seed)
+	pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
+	columns_not_in_preprocessed_data <- colnames(classification_train)[!(colnames(classification_train) %in% colnames(pre_processed_numeric_data$data))] # figure out which columns we need to add back in (i.e. all (non-numeric) that are in classification_train but are NOT in pre_processed_numeric_data
+	pre_processed_classification_train <- cbind(classification_train[, columns_not_in_preprocessed_data], pre_processed_numeric_data$data)
+
+	set.seed(custom_seed)
+	stepwise_glm_model <- step(glm(family = binomial, formula = target ~ ., data = pre_processed_classification_train), direction="backward", trace=0) # do stepwise regression (glm doesn't like factor target variables), then use the formula in train in order to take advantage of k-fold Cross Validation
+	# stepwise_glm_model$formula gives the `optimal` formula (need to do this because coefficients will have factor variable names, not original columns. The formula will exclude columns not statistically significant)
+	# now feed this back into training to do cross validation
+	stepwise_glm_model$formula	
+	stepwise_logistic_columns <- str_split(stepwise_glm_model$formula, pattern = ' ')[[3]]
+	stepwise_logistic_columns <- c('target', stepwise_logistic_columns[stepwise_logistic_columns != '+'])
+}
+
+model_pre_processing <- c('nzv', 'center', 'scale')
+logistic_regression_stepwise_backward <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'logistic_regression_stepwise_backward',
+	dataset = classification_train[, stepwise_logistic_columns],
+	training_method = 'glm',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'logistic_regression_stepwise_backward', training_preProcess = I(list(model_pre_processing))))
+classification_models[['logistic_regression_stepwise_backward']] <- logistic_regression_stepwise_backward
+```
+
+### linear_discriminant_analsysis
+
+```{r linear_discriminant_analsysis, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+linear_discriminant_analsysis <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'linear_discriminant_analsysis',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'lda',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'linear_discriminant_analsysis', training_preProcess = I(list(model_pre_processing))))
+classification_models[['linear_discriminant_analsysis']] <- linear_discriminant_analsysis
+```
+
+### linear_discriminant_analsysis_remove_collinear
+
+```{r linear_discriminant_analsysis_remove_collinear, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+linear_discriminant_analsysis_remove_collinear <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'linear_discriminant_analsysis_remove_collinear',
+	dataset = classification_train[, recommended_columns_caret],
+	training_method = 'lda',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'linear_discriminant_analsysis_remove_collinear', training_preProcess = I(list(model_pre_processing))))
+classification_models[['linear_discriminant_analsysis_remove_collinear']] <- linear_discriminant_analsysis_remove_collinear
+```
+
+### partial_least_squares_discriminant_analysis
+
+```{r partial_least_squares_discriminant_analysis, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+partial_least_squares_discriminant_analysis <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'partial_least_squares_discriminant_analysis',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'pls',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(ncomp = tuning_number_of_latent_variables_to_retain),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'partial_least_squares_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+classification_models[['partial_least_squares_discriminant_analysis']] <- partial_least_squares_discriminant_analysis
+```
+
+### glmnet_lasso_ridge
+
+```{r glmnet_lasso_ridge, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+glmnet_lasso_ridge <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'glmnet_lasso_ridge',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'glmnet',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(alpha = tuning_glmnet_alpha, lambda = tuning_glmnet_lambda),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glmnet_lasso_ridge', training_preProcess = I(list(model_pre_processing))))
+classification_models[['glmnet_lasso_ridge']] <- glmnet_lasso_ridge
+```
+
+### sparse_lda
+
+```{r sparse_lda, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+sparse_lda <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'sparse_lda',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'sparseLDA',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 5,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'sparse_lda', training_preProcess = I(list(model_pre_processing))))
+classification_models[['sparse_lda']] <- sparse_lda
+```
+
+### nearest_shrunken_centroids
+
+> was causing an error, turned off
+
+```{r nearest_shrunken_centroids, eval=FALSE, include=FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+nearest_shrunken_centroids <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'nearest_shrunken_centroids',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'pam',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = tuning_nearest_shrunken_centroids_shrinkage_threshold,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'nearest_shrunken_centroids', training_preProcess = I(list(model_pre_processing))))
+classification_models[['nearest_shrunken_centroids']] <- nearest_shrunken_centroids
+```
+
+### regularized_discriminant_analysis
+
+```{r regularized_discriminant_analysis, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+regularized_discriminant_analysis <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'regularized_discriminant_analysis',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'rda',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'regularized_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+classification_models[['regularized_discriminant_analysis']] <- regularized_discriminant_analysis
+```
+
+### regularized_discriminant_analysis_rc
+
+```{r regularized_discriminant_analysis_rc, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+regularized_discriminant_analysis_rc <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'regularized_discriminant_analysis_rc',
+	dataset = classification_train[, recommended_columns_caret],
+	training_method = 'rda',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'regularized_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
+classification_models[['regularized_discriminant_analysis_rc']] <- regularized_discriminant_analysis_rc
+```
+
+### mixture_discriminant_analysis
+
+```{r mixture_discriminant_analysis, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+mixture_discriminant_analysis <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'mixture_discriminant_analysis',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'mda',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(subclasses = tuning_mda_subclasses),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'mixture_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+classification_models[['mixture_discriminant_analysis']] <- mixture_discriminant_analysis
+```
+
+### mixture_discriminant_analysis_rc
+
+```{r mixture_discriminant_analysis_rc, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'center', 'scale')
+mixture_discriminant_analysis_rc <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'mixture_discriminant_analysis_rc',
+	dataset = classification_train[, recommended_columns_caret],
+	training_method = 'mda',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(subclasses = tuning_mda_subclasses),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'mixture_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
+classification_models[['mixture_discriminant_analysis_rc']] <- mixture_discriminant_analysis_rc
+```
+
+### neural_network_spatial_rc
+
+#### TURN BACK ON
+
+```{r neural_network_spatial_rc, eval=FALSE, include=FALSE, comment='', results='asis'}
+max_size <- max(training_tune_grid$size)
+training_numWts <- (max_size * ncol(classification_train[, recommended_columns_caret],)) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
+
+model_pre_processing <- c('nzv', 'center', 'scale', 'spatialSign')
+neural_network_spatial_rc <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'neural_network_spatial_rc',
+	dataset = classification_train[, recommended_columns_caret],
+	training_method = 'nnet',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(size = tuning_nnet_size, decay = tuning_nnet_decay),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class),
+	neural_net_numWts = training_numWts,
+	neural_net_lineout = parameter_nnet_linout,
+	neural_net_max_iterations = 2000)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'neural_network_spatial_rc', training_preProcess = I(list(model_pre_processing))))
+classification_models[['neural_network_spatial_rc']] <- neural_network_spatial_rc
+```
+
 
 
 ### Random Forest
@@ -656,16 +980,9 @@ walk(1:nrow(spot_check_models), ~ {
 
 ## Resamples & Top Models
 
-### Resamples
+## Resamples
 
 ```{r resamples_regression, echo=FALSE, fig.height=6, fig.width=9}
-classification_models <- list()
-for(index in 1:nrow(spot_check_models)) {
-	
-	classification_models <- c(classification_models, spot_check_models[index,]$trained_model)
-}
-names(classification_models) <- map_chr(1:nrow(spot_check_models), ~ spot_check_models[., ]$model_name)
-
 resamples <- resamples(classification_models)
 
 # Table comparison
@@ -706,11 +1023,11 @@ densityplot(resamples, metric = 'Sens')
 densityplot(resamples, metric = 'Spec')
 ```
 
-# Train Top Models on Entire Training Dataset & Predict on Test Set
+## Train Top Models on Entire Training Dataset & Predict on Test Set
 
 > after using cross-validation to tune, we'll take the highest ranked models, retrain the models (with the final tuning parameters) on the entire training set, and predict using the test set.
 
-```{r model_definitions, echo=FALSE, fig.height=5, fig.width=8}
+```{r model_definitions, echo=FALSE}
 model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 
 	predictions_probabilities_raw <- predict(model, testing_set %>% dplyr::select(-target), type = 'prob')
@@ -755,7 +1072,8 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 
 	print(visualize_quality_of_model(confusion_ls))
 	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
-	cat(codebc(conf_matrix))
+	cat('\n\n')
+	cat(codebc(conf_matrix, postfix = '\n\n'))
 
 	### ROC curves:
 	roc_pred <- prediction(predictions = predicted_probabilities_positive, labels = actual_observations)
@@ -788,49 +1106,68 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 }
 ```
 
-```{r top_models, echo=FALSE, fig.height=5, fig.width=8}
+```{r top_models, echo=FALSE, fig.height=5, fig.width=8, comment='', results='asis'}
+stopifnot(length(classification_models) == nrow(model_preprocessing_values))
+
 top_models <- resamples_means %>% 
 	filter(metric == 'ROC') %>% 
-	mutate(rank = row_number(average)) %>% 
-	filter(rank <= 5) %>% # LOWEST RMSE
+	mutate(rank = dense_rank(desc(average)),
+		   model = as.character(model)) %>% 
+	filter(rank <= 5) %>% # HIGHEST AUC/ROC
 	arrange(rank) %>% 
 	dplyr::select(model, average) %>%
 	dplyr::rename(cross_validation_auc = average) %>%
 	mutate(model_object = map(model, ~ { classification_models[names(classification_models) == .][[1]] })) # add models to data.frame so when we choose the top models later we will 
 
-top_models <- inner_join(top_models, spot_check_models %>% dplyr::select(model_name, training_preProcess) %>% rename(model = model_name), by = c('model'))
+expected_rows <- nrow(top_models)
+top_models <- inner_join(top_models, model_preprocessing_values %>% mutate(model = as.character(model)), by = 'model')
+
+stopifnot(nrow(top_models) == expected_rows)
+stopifnot(!is.na(top_models$cross_validation_auc))
+stopifnot(!is.na(top_models$model_object))
 
 final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE, savePredictions = 'all') # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
 
 model_stats <- pmap(list(as.character(top_models$model), top_models$model_object, top_models$training_preProcess), function(.x, .y, .z){
 	# model_name <- as.character(top_models$model[1])
-	model_object <- top_models$model_object[[1]]
+	# model_object <- top_models$model_object[[1]]
+	# pre_process <- top_models$training_preProcess[[1]]
 	model_name <- .x
 	model_object <- .y
 	pre_process <- .z
-
-	cat(paste0('\n\n### ', model_object$modelInfo$label, ' (', model_name,')\n\n'))
 	
-	# get method, tuning grid, pre-processing steps.
+	cat(paste0('\n\n### ', model_object$modelInfo$label, ' (', model_name,')\n\n'))
+
+	cat(paste0('\n\n> Model Processing: ', paste0(pre_process, collapse = '; ')), '\n\n')
+	if(any(is.na(pre_process))) { # when we set the values (i.e. rbind to dataframe, we have to use NA, but when we pass it in, it should be NULL)
+
+		pre_process = NULL
+	}
+
+	# get method, best tuning grid/parameters, pre-processing steps.
 	model_method <- model_object$method
 	tune_grid <- model_object$bestTune
 
+	# some models only use a subset of the columns; get the columns used and transform into a formula
+	training_column_names <- colnames(model_object$trainingData)
+	model_formula_string <- paste('target ~', paste0(training_column_names[-which(training_column_names == '.outcome')], collapse = ' + '))
+	model_formula <- as.formula(model_formula_string)
+	cat(paste0('\n\n> Model Formula: `', model_formula_string, '`\n\n'))
+
 	if(refresh_models)
 	{
-		set.seed(custom_seed)
 		# some models have different parameters for `train`, which we need to use when training the final model
 		if(model_method == 'asdf')
 		{
 			#final_model <- train(
 			#	target ~ ., data = classification_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
 			#	ntree = parameter_random_forest_ntree, importance = TRUE)
-
 			set.seed(custom_seed)
-  			final_model <- randomForest(target ~ ., data = classification_train, ntree = 2000)
+  			final_model <- randomForest(model_formula, data = classification_train, ntree = 2000)
 
 		}else{
 			set.seed(custom_seed)
-			final_model <- train(target ~ ., data = classification_train, method = model_method, metric = metric, preProc = pre_process, trControl = final_train_control, tuneGrid = tune_grid)
+			final_model <- train(model_formula, data = classification_train, method = model_method, metric = metric, preProc = pre_process, trControl = final_train_control, tuneGrid = tune_grid)
 		}
 
 		saveRDS(final_model, file = paste0('./classification_data/top_model_', model_name, '.RDS'))
@@ -840,7 +1177,10 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 		final_model <- readRDS(file = paste0('./classification_data/top_model_', model_name, '.RDS'))
 	}
 
-	print(summary(final_model$finalModel))
+	expected_error = tryCatch(
+		cat(codebc(summary(final_model$finalModel), postfix='\n\n')),# this causes an error with some models
+		error=function(e) e)
+	
 	model_stats <- model_plots(model = final_model, testing_set = classification_test)
 	return (model_stats)
 })

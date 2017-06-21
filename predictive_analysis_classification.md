@@ -24,34 +24,43 @@
         -   [dependents](#dependents)
         -   [phone](#phone)
 -   [Spot-Check](#spot-check)
-    -   [Class Balance](#class-balance)
+    -   [Configuration](#configuration)
+        -   [Class Balance](#class-balance)
         -   [Training Data](#training-data)
         -   [Test](#test)
         -   [Testing train\_classification](#testing-train_classification)
--   [Spot-Check](#spot-check-1)
-    -   [glm\_no\_pre\_process](#glm_no_pre_process)
-    -   [glm\_basic\_processing](#glm_basic_processing)
-    -   [glm\_remove\_collinearity\_caret](#glm_remove_collinearity_caret)
-    -   [glm\_remove\_collinearity\_custom](#glm_remove_collinearity_custom)
-    -   [logistic\_regression\_stepwise\_backward](#logistic_regression_stepwise_backward)
-    -   [linear\_discriminant\_analsysis](#linear_discriminant_analsysis)
-    -   [linear\_discriminant\_analsysis\_remove\_collinear](#linear_discriminant_analsysis_remove_collinear)
-    -   [partial\_least\_squares\_discriminant\_analysis](#partial_least_squares_discriminant_analysis)
-    -   [glmnet\_lasso\_ridge](#glmnet_lasso_ridge)
-    -   [sparse\_lda](#sparse_lda)
-    -   [regularized\_discriminant\_analysis](#regularized_discriminant_analysis)
-    -   [regularized\_discriminant\_analysis\_rc](#regularized_discriminant_analysis_rc)
-    -   [mixture\_discriminant\_analysis](#mixture_discriminant_analysis)
-    -   [mixture\_discriminant\_analysis\_rc](#mixture_discriminant_analysis_rc)
-    -   [GLM](#glm)
-    -   [Random Forest](#random-forest)
-    -   [Neural Network](#neural-network)
-    -   [Ada Boost](#ada-boost)
-    -   [All Models on Page 550 that are classification or both regression and classification](#all-models-on-page-550-that-are-classification-or-both-regression-and-classification)
-    -   [Models used for spot-check.Rmd](#models-used-for-spot-check.rmd)
+    -   [Models](#models)
+        -   [glm\_no\_pre\_process](#glm_no_pre_process)
+        -   [glm\_basic\_processing](#glm_basic_processing)
+        -   [glm\_remove\_collinearity\_caret](#glm_remove_collinearity_caret)
+        -   [glm\_remove\_collinearity\_custom](#glm_remove_collinearity_custom)
+        -   [logistic\_regression\_stepwise\_backward](#logistic_regression_stepwise_backward)
+        -   [linear\_discriminant\_analsysis](#linear_discriminant_analsysis)
+        -   [linear\_discriminant\_analsysis\_remove\_collinear](#linear_discriminant_analsysis_remove_collinear)
+        -   [partial\_least\_squares\_discriminant\_analysis](#partial_least_squares_discriminant_analysis)
+        -   [glmnet\_lasso\_ridge](#glmnet_lasso_ridge)
+        -   [sparse\_lda](#sparse_lda)
+        -   [nearest\_shrunken\_centroids](#nearest_shrunken_centroids)
+        -   [regularized\_discriminant\_analysis](#regularized_discriminant_analysis)
+        -   [regularized\_discriminant\_analysis\_rc](#regularized_discriminant_analysis_rc)
+        -   [mixture\_discriminant\_analysis](#mixture_discriminant_analysis)
+        -   [mixture\_discriminant\_analysis\_rc](#mixture_discriminant_analysis_rc)
+        -   [neural\_network\_spatial\_rc](#neural_network_spatial_rc)
+        -   [Random Forest](#random-forest)
+        -   [Neural Network](#neural-network)
+        -   [Ada Boost](#ada-boost)
+        -   [All Models on Page 550 that are classification or both regression and classification](#all-models-on-page-550-that-are-classification-or-both-regression-and-classification)
+        -   [Models used for spot-check.Rmd](#models-used-for-spot-check.rmd)
     -   [Resamples & Top Models](#resamples-top-models)
-        -   [Resamples](#resamples)
--   [Train Top Models on Entire Training Dataset & Predict on Test Set](#train-top-models-on-entire-training-dataset-predict-on-test-set)
+    -   [Resamples](#resamples)
+    -   [Train Top Models on Entire Training Dataset & Predict on Test Set](#train-top-models-on-entire-training-dataset-predict-on-test-set)
+        -   [Regularized Discriminant Analysis (regularized\_discriminant\_analysis\_rc)](#regularized-discriminant-analysis-regularized_discriminant_analysis_rc)
+        -   [Regularized Discriminant Analysis (regularized\_discriminant\_analysis)](#regularized-discriminant-analysis-regularized_discriminant_analysis)
+        -   [Generalized Linear Model (logistic\_regression\_stepwise\_backward)](#generalized-linear-model-logistic_regression_stepwise_backward)
+        -   [Sparse Linear Discriminant Analysis (sparse\_lda)](#sparse-linear-discriminant-analysis-sparse_lda)
+        -   [glmnet (glmnet\_lasso\_ridge)](#glmnet-glmnet_lasso_ridge)
+        -   [Generalized Linear Model (glm\_no\_pre\_process)](#generalized-linear-model-glm_no_pre_process)
+        -   [Partial Least Squares (partial\_least\_squares\_discriminant\_analysis)](#partial-least-squares-partial_least_squares_discriminant_analysis)
 
 Tuning Parameters
 =================
@@ -79,6 +88,7 @@ tuning_rda_gamma <- seq(from = 0, to = 1, by = 0.2)
 
 tuning_nnet_size <- 1:10
 tuning_nnet_decay <- c(0, 0.1, 1, 2)
+parameter_nnet_linout <- FALSE
 ```
 
 Dataset
@@ -320,8 +330,10 @@ statistically different means (Wilcoxon-Matt-Whitney): FALSE
 Spot-Check
 ==========
 
-Class Balance
+Configuration
 -------------
+
+### Class Balance
 
 Make sure class balance is even amount training/test datasets.
 
@@ -343,12 +355,11 @@ Make sure class balance is even amount training/test datasets.
 
 ### Testing train\_classification
 
-Spot-Check
-==========
-
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
 > NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+#### Model Summary
 
 
     Call:
@@ -401,12 +412,16 @@ Spot-Check
 
     Number of Fisher Scoring iterations: 5
 
+#### Model Predictors
+
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
     [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
     [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
     [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### Variable Importance
 
     glm variable importance
 
@@ -434,7 +449,12 @@ Spot-Check
       0.8977
       0.8893
 
+Models
+------
+
 ### glm\_no\_pre\_process
+
+#### Model Summary
 
 
     Call:
@@ -493,6 +513,8 @@ Spot-Check
 
     Number of Fisher Scoring iterations: 5
 
+#### Model Predictors
+
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historyperfect"          "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposecar0"                   
     [11] "purposeeducation"               "purposefurniture/appliances"    "purposerenovations"             "amount"                         "savings_balance> 1000 DM"      
@@ -500,6 +522,8 @@ Spot-Check
     [21] "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"             "age"                           
     [26] "other_creditnone"               "other_creditstore"              "housingown"                     "housingrent"                    "existing_loans_count"          
     [31] "jobskilled"                     "jobunemployed"                  "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### Variable Importance
 
     glm variable importance
 
@@ -529,6 +553,8 @@ Spot-Check
 
 ### glm\_basic\_processing
 
+#### Model Summary
+
 
     Call:
     NULL
@@ -580,12 +606,16 @@ Spot-Check
 
     Number of Fisher Scoring iterations: 5
 
+#### Model Predictors
+
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
     [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
     [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
     [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### Variable Importance
 
     glm variable importance
 
@@ -615,6 +645,8 @@ Spot-Check
 
 ### glm\_remove\_collinearity\_caret
 
+#### Model Summary
+
 
     Call:
     NULL
@@ -666,12 +698,16 @@ Spot-Check
 
     Number of Fisher Scoring iterations: 5
 
+#### Model Predictors
+
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
     [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
     [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
     [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### Variable Importance
 
     glm variable importance
 
@@ -701,6 +737,8 @@ Spot-Check
 
 ### glm\_remove\_collinearity\_custom
 
+#### Model Summary
+
 
     Call:
     NULL
@@ -752,12 +790,16 @@ Spot-Check
 
     Number of Fisher Scoring iterations: 5
 
+#### Model Predictors
+
      [1] "months_loan_duration"           "amount"                         "percent_of_income"              "years_at_residence"             "age"                           
      [6] "existing_loans_count"           "dependents"                     "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"       
     [11] "credit_historygood"             "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"              
     [16] "purposefurniture/appliances"    "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
     [21] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "other_creditnone"               "housingown"                    
     [26] "housingrent"                    "jobskilled"                     "jobunskilled"                   "phoneTRUE"                     
+
+#### Variable Importance
 
     glm variable importance
 
@@ -786,6 +828,8 @@ Spot-Check
       0.8893
 
 ### logistic\_regression\_stepwise\_backward
+
+#### Model Summary
 
 
     Call:
@@ -830,11 +874,15 @@ Spot-Check
 
     Number of Fisher Scoring iterations: 5
 
+#### Model Predictors
+
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "credit_historygood"             "credit_historypoor"            
      [6] "credit_historyvery good"        "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
     [11] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "other_creditnone"               "housingown"                    
     [16] "housingrent"                    "phoneTRUE"                      "months_loan_duration"           "amount"                         "percent_of_income"             
     [21] "existing_loans_count"          
+
+#### Variable Importance
 
     glm variable importance
 
@@ -864,6 +912,8 @@ Spot-Check
 
 ### linear\_discriminant\_analsysis
 
+#### Model Summary
+
                 Length Class      Mode     
     prior        2     -none-     numeric  
     counts       2     -none-     numeric  
@@ -879,14 +929,7 @@ Spot-Check
     obsLevels    2     -none-     character
     param        0     -none-     list     
 
-    Loading required package: MASS
-
-
-    Attaching package: 'MASS'
-
-    The following object is masked from 'package:dplyr':
-
-        select
+#### Model Predictors
 
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
@@ -894,6 +937,8 @@ Spot-Check
     [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
     [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### Variable Importance
 
     ROC curve variable importance
 
@@ -917,6 +962,8 @@ Spot-Check
 
 ### linear\_discriminant\_analsysis\_remove\_collinear
 
+#### Model Summary
+
                 Length Class      Mode     
     prior        2     -none-     numeric  
     counts       2     -none-     numeric  
@@ -932,12 +979,16 @@ Spot-Check
     obsLevels    2     -none-     character
     param        0     -none-     list     
 
+#### Model Predictors
+
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
     [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
     [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
     [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### Variable Importance
 
     ROC curve variable importance
 
@@ -961,50 +1012,9 @@ Spot-Check
 
 ### partial\_least\_squares\_discriminant\_analysis
 
-                    Length Class      Mode     
-    coefficients     232   -none-     numeric  
-    scores          3600   scores     numeric  
-    loadings         116   loadings   numeric  
-    loading.weights  116   loadings   numeric  
-    Yscores         3600   scores     numeric  
-    Yloadings          8   loadings   numeric  
-    projection       116   -none-     numeric  
-    Xmeans            29   -none-     numeric  
-    Ymeans             2   -none-     numeric  
-    fitted.values   7200   -none-     numeric  
-    residuals       7200   -none-     numeric  
-    Xvar               4   -none-     numeric  
-    Xtotvar            1   -none-     numeric  
-    fit.time           1   -none-     numeric  
-    ncomp              1   -none-     numeric  
-    method             1   -none-     character
-    call               5   -none-     call     
-    terms              3   terms      call     
-    model              2   data.frame list     
-    obsLevels          2   -none-     character
-    probMethod         1   -none-     character
-    xNames            29   -none-     character
-    problemType        1   -none-     character
-    tuneValue          1   data.frame list     
-    param              0   -none-     list     
-    bestIter           1   data.frame list     
+Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of components considered: 4 TRAINING: % variance explained
 
-    Loading required package: pls
-
-
-    Attaching package: 'pls'
-
-    The following object is masked from 'package:caret':
-
-        R2
-
-    The following object is masked from 'package:corrplot':
-
-        corrplot
-
-    The following object is masked from 'package:stats':
-
-        loadings
+#### Model Predictors
 
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
@@ -1013,11 +1023,11 @@ Spot-Check
     [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
 
-#### partial\_least\_squares\_discriminant\_analysis
+#### Model Tuning Grid Performance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-1.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/partial_least_squares_discriminant_analysis-1.png" width="750px" />
 
-pls
+#### Variable Importance
 
     pls variable importance
 
@@ -1047,6 +1057,8 @@ pls
 
 ### glmnet\_lasso\_ridge
 
+#### Model Summary
+
                 Length Class      Mode     
     a0            66   -none-     numeric  
     beta        1914   dgCMatrix  S4       
@@ -1068,26 +1080,18 @@ pls
     obsLevels      2   -none-     character
     param          0   -none-     list     
 
-    Loading required package: glmnet
+#### Model Predictors
 
-    Loading required package: Matrix
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historyvery good"        "purposeeducation"               "purposefurniture/appliances"    "amount"                         "savings_balance500 - 1000 DM"  
+    [11] "savings_balanceunknown"         "employment_duration> 7 years"   "employment_duration4 - 7 years" "percent_of_income"              "age"                           
+    [16] "other_creditnone"               "housingown"                     "housingrent"                    "phoneTRUE"                     
 
+#### Model Tuning Grid Performance
 
-    Attaching package: 'Matrix'
+<img src="predictive_analysis_classification_files/figure-markdown_github/glmnet_lasso_ridge-1.png" width="750px" />
 
-    The following object is masked from 'package:tidyr':
-
-        expand
-
-    Loaded glmnet 2.0-10
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-2.png" width="750px" />`[1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"              [6] "credit_historyvery good"        "purposeeducation"               "purposefurniture/appliances"    "amount"                         "savings_balance500 - 1000 DM"   [11] "savings_balanceunknown"         "employment_duration> 7 years"   "employment_duration4 - 7 years" "percent_of_income"              "age"                            [16] "other_creditnone"               "housingown"                     "housingrent"                    "phoneTRUE"`
-
-#### glmnet\_lasso\_ridge
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-3.png" width="750px" />NULL
-
-glmnet
+#### Variable Importance
 
     glmnet variable importance
 
@@ -1117,6 +1121,8 @@ glmnet
 
 ### sparse\_lda
 
+#### Model Summary
+
                 Length Class      Mode     
     call         5     -none-     call     
     beta        22     -none-     numeric  
@@ -1135,13 +1141,15 @@ glmnet
     obsLevels    2     -none-     character
     param        0     -none-     list     
 
-    Loading required package: sparseLDA
+#### Model Predictors
 
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposeeducation"               "purposefurniture/appliances"    "amount"                        
     [11] "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"   "employment_duration4 - 7 years" "percent_of_income"             
     [16] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [21] "dependents"                     "phoneTRUE"                     
+
+#### Variable Importance
 
     ROC curve variable importance
 
@@ -1163,7 +1171,13 @@ glmnet
          0.5065
          0.5063
 
+### nearest\_shrunken\_centroids
+
+> was causing an error, turned off
+
 ### regularized\_discriminant\_analysis
+
+#### Model Summary
 
                    Length Class      Mode     
     call              5   -none-     call     
@@ -1183,15 +1197,20 @@ glmnet
     obsLevels         2   -none-     character
     param             0   -none-     list     
 
-    Loading required package: klaR
+#### Model Predictors
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-4.png" width="750px" />`[1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"              [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"   [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"             [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"           [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"`
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
 
-#### regularized\_discriminant\_analysis
+#### Model Tuning Grid Performance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-5.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-6.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/regularized_discriminant_analysis-1.png" width="750px" />
 
-rda
+#### Variable Importance
 
     ROC curve variable importance
 
@@ -1215,6 +1234,8 @@ rda
 
 ### regularized\_discriminant\_analysis\_rc
 
+#### Model Summary
+
                    Length Class      Mode     
     call              5   -none-     call     
     regularization    2   -none-     numeric  
@@ -1233,6 +1254,8 @@ rda
     obsLevels         2   -none-     character
     param             0   -none-     list     
 
+#### Model Predictors
+
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
     [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
@@ -1240,11 +1263,11 @@ rda
     [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
 
-#### regularized\_discriminant\_analysis\_rc
+#### Model Tuning Grid Performance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-7.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/regularized_discriminant_analysis_rc-1.png" width="750px" />
 
-rda
+#### Variable Importance
 
     ROC curve variable importance
 
@@ -1268,6 +1291,8 @@ rda
 
 ### mixture\_discriminant\_analysis
 
+#### Model Summary
+
                       Length Class      Mode     
     percent.explained  1     -none-     numeric  
     values             1     -none-     numeric  
@@ -1289,19 +1314,20 @@ rda
     obsLevels          2     -none-     character
     param              0     -none-     list     
 
-    Loading required package: mda
+#### Model Predictors
 
-    Loading required package: class
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
+    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
+    [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
 
-    Loaded mda 0.4-9
+#### Model Tuning Grid Performance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-8.png" width="750px" />`[1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"              [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"    [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"   [16] "employment_duration1 - 4 years" "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"             [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"           [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"`
+<img src="predictive_analysis_classification_files/figure-markdown_github/mixture_discriminant_analysis-1.png" width="750px" />
 
-#### mixture\_discriminant\_analysis
-
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-10.png" width="750px" />NULL
-
-mda
+#### Variable Importance
 
     ROC curve variable importance
 
@@ -1325,6 +1351,8 @@ mda
 
 ### mixture\_discriminant\_analysis\_rc
 
+#### Model Summary
+
                       Length Class      Mode     
     percent.explained  1     -none-     numeric  
     values             1     -none-     numeric  
@@ -1346,6 +1374,8 @@ mda
     obsLevels          2     -none-     character
     param              0     -none-     list     
 
+#### Model Predictors
+
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
     [11] "amount"                         "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"  
@@ -1353,11 +1383,11 @@ mda
     [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
     [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
 
-#### mixture\_discriminant\_analysis\_rc
+#### Model Tuning Grid Performance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-11.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/run_spot_check-12.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/mixture_discriminant_analysis_rc-1.png" width="750px" />
 
-mda
+#### Variable Importance
 
     ROC curve variable importance
 
@@ -1379,9 +1409,9 @@ mda
          0.5065
          0.5063
 
-### GLM
+### neural\_network\_spatial\_rc
 
-'pls', 'partial\_least\_squares\_discriminant\_analysis', classification\_column\_names, preProc=c('nzv', 'center', 'scale'), expand.grid(ncomp = tuning\_number\_of\_latent\_variables\_to\_retain), NULL, 5, NULL, NULL, NULL, NULL, 'glmnet', 'glmnet\_lasso\_ridge', classification\_column\_names, preProc=c('nzv', 'center', 'scale'), expand.grid(alpha = tuning\_glmnet\_alpha, lambda = tuning\_glmnet\_lambda), NULL, 5, NULL, NULL, NULL, NULL,
+#### TURN BACK ON
 
 ### Random Forest
 
@@ -1396,7 +1426,8 @@ mda
 Resamples & Top Models
 ----------------------
 
-### Resamples
+Resamples
+---------
 
     ## 
     ## Call:
@@ -1459,408 +1490,440 @@ Resamples & Top Models
 <img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-4.png" width="750px" />
 
 Train Top Models on Entire Training Dataset & Predict on Test Set
-=================================================================
+-----------------------------------------------------------------
 
 > after using cross-validation to tune, we'll take the highest ranked models, retrain the models (with the final tuning parameters) on the entire training set, and predict using the test set.
 
-    ## Warning in inner_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining factor and character vector, coercing into character vector
+### Regularized Discriminant Analysis (regularized\_discriminant\_analysis\_rc)
 
-    ## 
-    ## 
-    ## ### Generalized Linear Model (glm_remove_collinearity_custom)
-    ## 
-    ## 
-    ## Call:
-    ## NULL
-    ## 
-    ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
-    ## 
-    ## Coefficients:
-    ##                                   Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
-    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
-    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
-    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
-    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
-    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
-    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
-    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
-    ## purposecar                        0.034689   0.130295   0.266             0.790058    
-    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
-    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
-    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
-    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
-    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
-    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
-    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
-    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
-    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
-    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
-    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
-    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
-    ## age                               0.128240   0.104123   1.232             0.218093    
-    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
-    ## housingown                        0.151433   0.135406   1.118             0.263413    
-    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
-    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
-    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
-    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
-    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
-    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## (Dispersion parameter for binomial family taken to be 1)
-    ## 
-    ##     Null deviance: 1099.56  on 899  degrees of freedom
-    ## Residual deviance:  872.53  on 870  degrees of freedom
-    ## AIC: 932.53
-    ## 
-    ## Number of Fisher Scoring iterations: 5
+> Model Processing: nzv; center; scale
+
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+
+                   Length Class      Mode     
+    call              5   -none-     call     
+    regularization    2   -none-     numeric  
+    classes           2   -none-     character
+    prior             2   -none-     numeric  
+    error.rate        1   -none-     numeric  
+    varnames         29   -none-     character
+    means            58   -none-     numeric  
+    covariances    1682   -none-     numeric  
+    covpooled       841   -none-     numeric  
+    converged         1   -none-     logical  
+    iter              1   -none-     numeric  
+    xNames           29   -none-     character
+    problemType       1   -none-     character
+    tuneValue         2   data.frame list     
+    obsLevels         2   -none-     character
+    param             0   -none-     list     
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-4.png" width="750px" />
 
-    ## ```
-    ## Confusion Matrix and Statistics
-    ## 
-    ##           Reference
-    ## Prediction yes no
-    ##        yes  14  8
-    ##        no   16 62
-    ##                                           
-    ##                Accuracy : 0.76            
-    ##                  95% CI : (0.6643, 0.8398)
-    ##     No Information Rate : 0.7             
-    ##     P-Value [Acc > NIR] : 0.1136          
-    ##                                           
-    ##                   Kappa : 0.3814          
-    ##  Mcnemar's Test P-Value : 0.1530          
-    ##                                           
-    ##             Sensitivity : 0.4667          
-    ##             Specificity : 0.8857          
-    ##          Pos Pred Value : 0.6364          
-    ##          Neg Pred Value : 0.7949          
-    ##              Prevalence : 0.3000          
-    ##          Detection Rate : 0.1400          
-    ##    Detection Prevalence : 0.2200          
-    ##       Balanced Accuracy : 0.6762          
-    ##                                           
-    ##        'Positive' Class : yes             
-    ##                                           
-    ## ```
+    Confusion Matrix and Statistics
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-5.png" width="750px" />
+              Reference
+    Prediction yes no
+           yes  16 10
+           no   14 60
+                                              
+                   Accuracy : 0.76            
+                     95% CI : (0.6643, 0.8398)
+        No Information Rate : 0.7             
+        P-Value [Acc > NIR] : 0.1136          
+                                              
+                      Kappa : 0.4059          
+     Mcnemar's Test P-Value : 0.5403          
+                                              
+                Sensitivity : 0.5333          
+                Specificity : 0.8571          
+             Pos Pred Value : 0.6154          
+             Neg Pred Value : 0.8108          
+                 Prevalence : 0.3000          
+             Detection Rate : 0.1600          
+       Detection Prevalence : 0.2600          
+          Balanced Accuracy : 0.6952          
+                                              
+           'Positive' Class : yes             
+                                              
 
-    ## NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-5.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-10.png" width="750px" />
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-10.png" width="750px" />
+### Regularized Discriminant Analysis (regularized\_discriminant\_analysis)
 
-    ## 
-    ## 
-    ## ### Generalized Linear Model (glm_remove_collinearity_caret)
-    ## 
-    ## 
-    ## Call:
-    ## NULL
-    ## 
-    ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
-    ## 
-    ## Coefficients:
-    ##                                   Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
-    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
-    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
-    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
-    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
-    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
-    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
-    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
-    ## purposecar                        0.034689   0.130295   0.266             0.790058    
-    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
-    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
-    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
-    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
-    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
-    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
-    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
-    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
-    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
-    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
-    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
-    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
-    ## age                               0.128240   0.104123   1.232             0.218093    
-    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
-    ## housingown                        0.151433   0.135406   1.118             0.263413    
-    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
-    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
-    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
-    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
-    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
-    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## (Dispersion parameter for binomial family taken to be 1)
-    ## 
-    ##     Null deviance: 1099.56  on 899  degrees of freedom
-    ## Residual deviance:  872.53  on 870  degrees of freedom
-    ## AIC: 932.53
-    ## 
-    ## Number of Fisher Scoring iterations: 5
+> Model Processing: nzv; center; scale
+
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+
+                   Length Class      Mode     
+    call              5   -none-     call     
+    regularization    2   -none-     numeric  
+    classes           2   -none-     character
+    prior             2   -none-     numeric  
+    error.rate        1   -none-     numeric  
+    varnames         29   -none-     character
+    means            58   -none-     numeric  
+    covariances    1682   -none-     numeric  
+    covpooled       841   -none-     numeric  
+    converged         1   -none-     logical  
+    iter              1   -none-     numeric  
+    xNames           29   -none-     character
+    problemType       1   -none-     character
+    tuneValue         2   data.frame list     
+    obsLevels         2   -none-     character
+    param             0   -none-     list     
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-11.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-12.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-14.png" width="750px" />
 
-    ## ```
-    ## Confusion Matrix and Statistics
-    ## 
-    ##           Reference
-    ## Prediction yes no
-    ##        yes  14  8
-    ##        no   16 62
-    ##                                           
-    ##                Accuracy : 0.76            
-    ##                  95% CI : (0.6643, 0.8398)
-    ##     No Information Rate : 0.7             
-    ##     P-Value [Acc > NIR] : 0.1136          
-    ##                                           
-    ##                   Kappa : 0.3814          
-    ##  Mcnemar's Test P-Value : 0.1530          
-    ##                                           
-    ##             Sensitivity : 0.4667          
-    ##             Specificity : 0.8857          
-    ##          Pos Pred Value : 0.6364          
-    ##          Neg Pred Value : 0.7949          
-    ##              Prevalence : 0.3000          
-    ##          Detection Rate : 0.1400          
-    ##    Detection Prevalence : 0.2200          
-    ##       Balanced Accuracy : 0.6762          
-    ##                                           
-    ##        'Positive' Class : yes             
-    ##                                           
-    ## ```
+    Confusion Matrix and Statistics
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" />
+              Reference
+    Prediction yes no
+           yes  16 10
+           no   14 60
+                                              
+                   Accuracy : 0.76            
+                     95% CI : (0.6643, 0.8398)
+        No Information Rate : 0.7             
+        P-Value [Acc > NIR] : 0.1136          
+                                              
+                      Kappa : 0.4059          
+     Mcnemar's Test P-Value : 0.5403          
+                                              
+                Sensitivity : 0.5333          
+                Specificity : 0.8571          
+             Pos Pred Value : 0.6154          
+             Neg Pred Value : 0.8108          
+                 Prevalence : 0.3000          
+             Detection Rate : 0.1600          
+       Detection Prevalence : 0.2600          
+          Balanced Accuracy : 0.6952          
+                                              
+           'Positive' Class : yes             
+                                              
 
-    ## NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" />
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" />
+### Generalized Linear Model (logistic\_regression\_stepwise\_backward)
 
-    ## 
-    ## 
-    ## ### Generalized Linear Model (glm_basic_processing)
-    ## 
-    ## 
-    ## Call:
-    ## NULL
-    ## 
-    ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -2.5895  -0.8436   0.4207   0.7751   2.0452  
-    ## 
-    ## Coefficients:
-    ##                                   Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)                       1.147190   0.094081  12.194 < 0.0000000000000002 ***
-    ## `checking_balance> 200 DM`        0.238392   0.090948   2.621             0.008763 ** 
-    ## `checking_balance1 - 200 DM`      0.169782   0.093537   1.815             0.069503 .  
-    ## checking_balanceunknown           0.864977   0.112309   7.702   0.0000000000000134 ***
-    ## months_loan_duration             -0.243480   0.109843  -2.217             0.026649 *  
-    ## credit_historygood               -0.296156   0.119650  -2.475             0.013317 *  
-    ## credit_historypoor               -0.109460   0.090283  -1.212             0.225354    
-    ## `credit_historyvery good`        -0.241627   0.089351  -2.704             0.006846 ** 
-    ## purposecar                        0.034689   0.130295   0.266             0.790058    
-    ## purposeeducation                 -0.088180   0.099152  -0.889             0.373819    
-    ## `purposefurniture/appliances`     0.180758   0.135377   1.335             0.181803    
-    ## amount                           -0.400086   0.120926  -3.309             0.000938 ***
-    ## `savings_balance100 - 500 DM`     0.015658   0.085541   0.183             0.854758    
-    ## `savings_balance500 - 1000 DM`    0.054567   0.098771   0.552             0.580635    
-    ## savings_balanceunknown            0.329990   0.100635   3.279             0.001041 ** 
-    ## `employment_duration> 7 years`    0.255840   0.126875   2.016             0.043749 *  
-    ## `employment_duration1 - 4 years`  0.099657   0.111016   0.898             0.369353    
-    ## `employment_duration4 - 7 years`  0.371148   0.112825   3.290             0.001003 ** 
-    ## employment_durationunemployed     0.050138   0.097707   0.513             0.607846    
-    ## percent_of_income                -0.383384   0.097775  -3.921   0.0000881507786376 ***
-    ## years_at_residence                0.005518   0.095818   0.058             0.954075    
-    ## age                               0.128240   0.104123   1.232             0.218093    
-    ## other_creditnone                  0.187232   0.083529   2.242             0.024992 *  
-    ## housingown                        0.151433   0.135406   1.118             0.263413    
-    ## housingrent                      -0.084313   0.130666  -0.645             0.518761    
-    ## existing_loans_count             -0.178839   0.108980  -1.641             0.100790    
-    ## jobskilled                        0.007380   0.130238   0.057             0.954813    
-    ## jobunskilled                      0.044701   0.131371   0.340             0.733655    
-    ## dependents                       -0.041299   0.086738  -0.476             0.633977    
-    ## phoneTRUE                         0.222771   0.099246   2.245             0.024791 *  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## (Dispersion parameter for binomial family taken to be 1)
-    ## 
-    ##     Null deviance: 1099.56  on 899  degrees of freedom
-    ## Residual deviance:  872.53  on 870  degrees of freedom
-    ## AIC: 932.53
-    ## 
-    ## Number of Fisher Scoring iterations: 5
+> Model Processing: nzv; center; scale
+
+> Model Formula: `target ~ checking_balance + credit_history + savings_balance + employment_duration + other_credit + housing + phone + months_loan_duration + amount + percent_of_income + existing_loans_count`
+
+
+    Call:
+    NULL
+
+    Deviance Residuals: 
+        Min       1Q   Median       3Q      Max  
+    -2.5554  -0.8800   0.4347   0.7691   2.0064  
+
+    Coefficients:
+                                      Estimate Std. Error z value             Pr(>|z|)    
+    (Intercept)                       1.131640   0.092838  12.189 < 0.0000000000000002 ***
+    `checking_balance> 200 DM`        0.245993   0.089350   2.753             0.005903 ** 
+    `checking_balance1 - 200 DM`      0.165115   0.091617   1.802             0.071508 .  
+    checking_balanceunknown           0.859391   0.111245   7.725   0.0000000000000112 ***
+    credit_historygood               -0.283603   0.117919  -2.405             0.016169 *  
+    credit_historypoor               -0.120046   0.088977  -1.349             0.177278    
+    `credit_historyvery good`        -0.246000   0.088881  -2.768             0.005645 ** 
+    `savings_balance100 - 500 DM`     0.001352   0.084900   0.016             0.987294    
+    `savings_balance500 - 1000 DM`    0.070428   0.098308   0.716             0.473743    
+    savings_balanceunknown            0.312059   0.098696   3.162             0.001568 ** 
+    `employment_duration> 7 years`    0.295568   0.116962   2.527             0.011502 *  
+    `employment_duration1 - 4 years`  0.103760   0.109846   0.945             0.344866    
+    `employment_duration4 - 7 years`  0.372998   0.111061   3.359             0.000784 ***
+    employment_durationunemployed     0.059406   0.089472   0.664             0.506715    
+    other_creditnone                  0.183429   0.082681   2.219             0.026519 *  
+    housingown                        0.178234   0.123668   1.441             0.149520    
+    housingrent                      -0.081868   0.122738  -0.667             0.504761    
+    phoneTRUE                         0.210035   0.091554   2.294             0.021785 *  
+    months_loan_duration             -0.251555   0.107446  -2.341             0.019221 *  
+    amount                           -0.409812   0.117708  -3.482             0.000498 ***
+    percent_of_income                -0.372375   0.096322  -3.866             0.000111 ***
+    existing_loans_count             -0.180763   0.106837  -1.692             0.090654 .  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1099.56  on 899  degrees of freedom
+    Residual deviance:  879.81  on 878  degrees of freedom
+    AIC: 923.81
+
+    Number of Fisher Scoring iterations: 5
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-22.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-23.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-24.png" width="750px" />
 
-    ## ```
-    ## Confusion Matrix and Statistics
-    ## 
-    ##           Reference
-    ## Prediction yes no
-    ##        yes  14  8
-    ##        no   16 62
-    ##                                           
-    ##                Accuracy : 0.76            
-    ##                  95% CI : (0.6643, 0.8398)
-    ##     No Information Rate : 0.7             
-    ##     P-Value [Acc > NIR] : 0.1136          
-    ##                                           
-    ##                   Kappa : 0.3814          
-    ##  Mcnemar's Test P-Value : 0.1530          
-    ##                                           
-    ##             Sensitivity : 0.4667          
-    ##             Specificity : 0.8857          
-    ##          Pos Pred Value : 0.6364          
-    ##          Neg Pred Value : 0.7949          
-    ##              Prevalence : 0.3000          
-    ##          Detection Rate : 0.1400          
-    ##    Detection Prevalence : 0.2200          
-    ##       Balanced Accuracy : 0.6762          
-    ##                                           
-    ##        'Positive' Class : yes             
-    ##                                           
-    ## ```
+    Confusion Matrix and Statistics
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-25.png" width="750px" />
+              Reference
+    Prediction yes no
+           yes  14  9
+           no   16 61
+                                              
+                   Accuracy : 0.75            
+                     95% CI : (0.6534, 0.8312)
+        No Information Rate : 0.7             
+        P-Value [Acc > NIR] : 0.1631          
+                                              
+                      Kappa : 0.3622          
+     Mcnemar's Test P-Value : 0.2301          
+                                              
+                Sensitivity : 0.4667          
+                Specificity : 0.8714          
+             Pos Pred Value : 0.6087          
+             Neg Pred Value : 0.7922          
+                 Prevalence : 0.3000          
+             Detection Rate : 0.1400          
+       Detection Prevalence : 0.2300          
+          Balanced Accuracy : 0.6690          
+                                              
+           'Positive' Class : yes             
+                                              
 
-    ## NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-25.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-26.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-27.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-28.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-29.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-30.png" width="750px" />
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-26.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-27.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-28.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-29.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-30.png" width="750px" />
+### Sparse Linear Discriminant Analysis (sparse\_lda)
 
-    ## 
-    ## 
-    ## ### Mixture Discriminant Analysis (mixture_discriminant_analysis_rc)
-    ## 
-    ##                   Length Class      Mode     
-    ## percent.explained  1     -none-     numeric  
-    ## values             1     -none-     numeric  
-    ## means              2     -none-     numeric  
-    ## theta.mod          1     -none-     numeric  
-    ## dimension          1     -none-     numeric  
-    ## sub.prior          2     -none-     list     
-    ## fit                5     polyreg    list     
-    ## call               4     -none-     call     
-    ## weights            2     -none-     list     
-    ## prior              2     table      numeric  
-    ## assign.theta       2     -none-     list     
-    ## deviance           1     -none-     numeric  
-    ## confusion          4     table      numeric  
-    ## terms              3     terms      call     
-    ## xNames            29     -none-     character
-    ## problemType        1     -none-     character
-    ## tuneValue          1     data.frame list     
-    ## obsLevels          2     -none-     character
-    ## param              0     -none-     list
+> Model Processing: nzv; center; scale
+
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+
+                Length Class      Mode     
+    call         5     -none-     call     
+    beta        22     -none-     numeric  
+    theta        2     -none-     numeric  
+    varNames    22     -none-     character
+    varIndex    22     -none-     numeric  
+    origP        1     -none-     numeric  
+    rss          1     -none-     numeric  
+    fit          8     lda        list     
+    classes      2     -none-     character
+    lambda       1     -none-     numeric  
+    stop         1     -none-     numeric  
+    xNames      29     -none-     character
+    problemType  1     -none-     character
+    tuneValue    2     data.frame list     
+    obsLevels    2     -none-     character
+    param        0     -none-     list     
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-34.png" width="750px" />
 
-    ## ```
-    ## Confusion Matrix and Statistics
-    ## 
-    ##           Reference
-    ## Prediction yes no
-    ##        yes  14  8
-    ##        no   16 62
-    ##                                           
-    ##                Accuracy : 0.76            
-    ##                  95% CI : (0.6643, 0.8398)
-    ##     No Information Rate : 0.7             
-    ##     P-Value [Acc > NIR] : 0.1136          
-    ##                                           
-    ##                   Kappa : 0.3814          
-    ##  Mcnemar's Test P-Value : 0.1530          
-    ##                                           
-    ##             Sensitivity : 0.4667          
-    ##             Specificity : 0.8857          
-    ##          Pos Pred Value : 0.6364          
-    ##          Neg Pred Value : 0.7949          
-    ##              Prevalence : 0.3000          
-    ##          Detection Rate : 0.1400          
-    ##    Detection Prevalence : 0.2200          
-    ##       Balanced Accuracy : 0.6762          
-    ##                                           
-    ##        'Positive' Class : yes             
-    ##                                           
-    ## ```
+    Confusion Matrix and Statistics
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-35.png" width="750px" />
+              Reference
+    Prediction yes no
+           yes  14  9
+           no   16 61
+                                              
+                   Accuracy : 0.75            
+                     95% CI : (0.6534, 0.8312)
+        No Information Rate : 0.7             
+        P-Value [Acc > NIR] : 0.1631          
+                                              
+                      Kappa : 0.3622          
+     Mcnemar's Test P-Value : 0.2301          
+                                              
+                Sensitivity : 0.4667          
+                Specificity : 0.8714          
+             Pos Pred Value : 0.6087          
+             Neg Pred Value : 0.7922          
+                 Prevalence : 0.3000          
+             Detection Rate : 0.1400          
+       Detection Prevalence : 0.2300          
+          Balanced Accuracy : 0.6690          
+                                              
+           'Positive' Class : yes             
+                                              
 
-    ## NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-35.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-37.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-39.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-40.png" width="750px" />
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-37.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-39.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-40.png" width="750px" />
+### glmnet (glmnet\_lasso\_ridge)
 
-    ## 
-    ## 
-    ## ### Mixture Discriminant Analysis (mixture_discriminant_analysis)
-    ## 
-    ##                   Length Class      Mode     
-    ## percent.explained  1     -none-     numeric  
-    ## values             1     -none-     numeric  
-    ## means              2     -none-     numeric  
-    ## theta.mod          1     -none-     numeric  
-    ## dimension          1     -none-     numeric  
-    ## sub.prior          2     -none-     list     
-    ## fit                5     polyreg    list     
-    ## call               4     -none-     call     
-    ## weights            2     -none-     list     
-    ## prior              2     table      numeric  
-    ## assign.theta       2     -none-     list     
-    ## deviance           1     -none-     numeric  
-    ## confusion          4     table      numeric  
-    ## terms              3     terms      call     
-    ## xNames            29     -none-     character
-    ## problemType        1     -none-     character
-    ## tuneValue          1     data.frame list     
-    ## obsLevels          2     -none-     character
-    ## param              0     -none-     list
+> Model Processing: nzv; center; scale
+
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+
+                Length Class      Mode     
+    a0            66   -none-     numeric  
+    beta        1914   dgCMatrix  S4       
+    df            66   -none-     numeric  
+    dim            2   -none-     numeric  
+    lambda        66   -none-     numeric  
+    dev.ratio     66   -none-     numeric  
+    nulldev        1   -none-     numeric  
+    npasses        1   -none-     numeric  
+    jerr           1   -none-     numeric  
+    offset         1   -none-     logical  
+    classnames     2   -none-     character
+    call           5   -none-     call     
+    nobs           1   -none-     numeric  
+    lambdaOpt      1   -none-     numeric  
+    xNames        29   -none-     character
+    problemType    1   -none-     character
+    tuneValue      2   data.frame list     
+    obsLevels      2   -none-     character
+    param          0   -none-     list     
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-41.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-42.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-44.png" width="750px" />
 
-    ## ```
-    ## Confusion Matrix and Statistics
-    ## 
-    ##           Reference
-    ## Prediction yes no
-    ##        yes  14  8
-    ##        no   16 62
-    ##                                           
-    ##                Accuracy : 0.76            
-    ##                  95% CI : (0.6643, 0.8398)
-    ##     No Information Rate : 0.7             
-    ##     P-Value [Acc > NIR] : 0.1136          
-    ##                                           
-    ##                   Kappa : 0.3814          
-    ##  Mcnemar's Test P-Value : 0.1530          
-    ##                                           
-    ##             Sensitivity : 0.4667          
-    ##             Specificity : 0.8857          
-    ##          Pos Pred Value : 0.6364          
-    ##          Neg Pred Value : 0.7949          
-    ##              Prevalence : 0.3000          
-    ##          Detection Rate : 0.1400          
-    ##    Detection Prevalence : 0.2200          
-    ##       Balanced Accuracy : 0.6762          
-    ##                                           
-    ##        'Positive' Class : yes             
-    ##                                           
-    ## ```
+    Confusion Matrix and Statistics
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-45.png" width="750px" />
+              Reference
+    Prediction yes no
+           yes  12  5
+           no   18 65
+                                              
+                   Accuracy : 0.77            
+                     95% CI : (0.6751, 0.8483)
+        No Information Rate : 0.7             
+        P-Value [Acc > NIR] : 0.07553         
+                                              
+                      Kappa : 0.375           
+     Mcnemar's Test P-Value : 0.01234         
+                                              
+                Sensitivity : 0.4000          
+                Specificity : 0.9286          
+             Pos Pred Value : 0.7059          
+             Neg Pred Value : 0.7831          
+                 Prevalence : 0.3000          
+             Detection Rate : 0.1200          
+       Detection Prevalence : 0.1700          
+          Balanced Accuracy : 0.6643          
+                                              
+           'Positive' Class : yes             
+                                              
 
-    ## NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-45.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-46.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-47.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-48.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-49.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-50.png" width="750px" />
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-46.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-47.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-48.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-49.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-50.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-51.png" width="750px" />
+### Generalized Linear Model (glm\_no\_pre\_process)
+
+> Model Processing: NA
+
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+
+
+    Call:
+    NULL
+
+    Deviance Residuals: 
+        Min       1Q   Median       3Q      Max  
+    -2.6364  -0.7956   0.4122   0.7664   1.8864  
+
+    Coefficients:
+                                        Estimate  Std. Error z value          Pr(>|z|)    
+    (Intercept)                       1.67233497  0.93888105   1.781          0.074880 .  
+    `checking_balance> 200 DM`        0.91202032  0.36959975   2.468          0.013603 *  
+    `checking_balance1 - 200 DM`      0.36146669  0.21675128   1.668          0.095384 .  
+    checking_balanceunknown           1.69919542  0.23318347   7.287 0.000000000000317 ***
+    months_loan_duration             -0.01909034  0.00930934  -2.051          0.040300 *  
+    credit_historygood               -0.83854132  0.26057700  -3.218          0.001291 ** 
+    credit_historyperfect            -1.18300647  0.42783664  -2.765          0.005691 ** 
+    credit_historypoor               -0.70792254  0.34560901  -2.048          0.040527 *  
+    `credit_historyvery good`        -1.43539610  0.42810208  -3.353          0.000800 ***
+    purposecar                       -0.14052327  0.32598325  -0.431          0.666414    
+    purposecar0                       0.63233919  0.81457907   0.776          0.437585    
+    purposeeducation                 -0.58632030  0.43971583  -1.333          0.182398    
+    `purposefurniture/appliances`     0.16610147  0.31881865   0.521          0.602373    
+    purposerenovations               -0.68269967  0.60731250  -1.124          0.260957    
+    amount                           -0.00013829  0.00004389  -3.151          0.001627 ** 
+    `savings_balance> 1000 DM`        1.03432320  0.51321912   2.015          0.043867 *  
+    `savings_balance100 - 500 DM`     0.13185558  0.28429005   0.464          0.642786    
+    `savings_balance500 - 1000 DM`    0.27415120  0.41264732   0.664          0.506452    
+    savings_balanceunknown            0.90758459  0.26502755   3.424          0.000616 ***
+    `employment_duration> 7 years`    0.51216659  0.29605002   1.730          0.083630 .  
+    `employment_duration1 - 4 years`  0.16207344  0.23846600   0.680          0.496726    
+    `employment_duration4 - 7 years`  0.92790647  0.30112909   3.081          0.002060 ** 
+    employment_durationunemployed     0.14840842  0.43655991   0.340          0.733894    
+    percent_of_income                -0.34774866  0.08869354  -3.921 0.000088259512881 ***
+    years_at_residence               -0.00385951  0.08729784  -0.044          0.964736    
+    age                               0.01108220  0.00927862   1.194          0.232329    
+    other_creditnone                  0.52544326  0.24108458   2.179          0.029295 *  
+    other_creditstore                 0.12816587  0.42389741   0.302          0.762384    
+    housingown                        0.27205220  0.30231677   0.900          0.368178    
+    housingrent                      -0.25445634  0.34509987  -0.737          0.460915    
+    existing_loans_count             -0.33507655  0.19199533  -1.745          0.080944 .  
+    jobskilled                        0.04584693  0.28901415   0.159          0.873959    
+    jobunemployed                     0.09476193  0.65453976   0.145          0.884887    
+    jobunskilled                      0.14669504  0.35145618   0.417          0.676392    
+    dependents                       -0.11052559  0.24712936  -0.447          0.654703    
+    phoneTRUE                         0.41866313  0.20925782   2.001          0.045424 *  
+    ---
+    Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    (Dispersion parameter for binomial family taken to be 1)
+
+        Null deviance: 1099.56  on 899  degrees of freedom
+    Residual deviance:  857.01  on 864  degrees of freedom
+    AIC: 929.01
+
+    Number of Fisher Scoring iterations: 5
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-51.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-52.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-53.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-54.png" width="750px" />
+
+    Confusion Matrix and Statistics
+
+              Reference
+    Prediction yes no
+           yes  14  9
+           no   16 61
+                                              
+                   Accuracy : 0.75            
+                     95% CI : (0.6534, 0.8312)
+        No Information Rate : 0.7             
+        P-Value [Acc > NIR] : 0.1631          
+                                              
+                      Kappa : 0.3622          
+     Mcnemar's Test P-Value : 0.2301          
+                                              
+                Sensitivity : 0.4667          
+                Specificity : 0.8714          
+             Pos Pred Value : 0.6087          
+             Neg Pred Value : 0.7922          
+                 Prevalence : 0.3000          
+             Detection Rate : 0.1400          
+       Detection Prevalence : 0.2300          
+          Balanced Accuracy : 0.6690          
+                                              
+           'Positive' Class : yes             
+                                              
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-55.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-56.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-57.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-58.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-59.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-60.png" width="750px" />
+
+### Partial Least Squares (partial\_least\_squares\_discriminant\_analysis)
+
+> Model Processing: nzv; center; scale
+
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-61.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-62.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-63.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-64.png" width="750px" />
+
+    Confusion Matrix and Statistics
+
+              Reference
+    Prediction yes no
+           yes  13  6
+           no   17 64
+                                              
+                   Accuracy : 0.77            
+                     95% CI : (0.6751, 0.8483)
+        No Information Rate : 0.7             
+        P-Value [Acc > NIR] : 0.07553         
+                                              
+                      Kappa : 0.3883          
+     Mcnemar's Test P-Value : 0.03706         
+                                              
+                Sensitivity : 0.4333          
+                Specificity : 0.9143          
+             Pos Pred Value : 0.6842          
+             Neg Pred Value : 0.7901          
+                 Prevalence : 0.3000          
+             Detection Rate : 0.1300          
+       Detection Prevalence : 0.1900          
+          Balanced Accuracy : 0.6738          
+                                              
+           'Positive' Class : yes             
+                                              
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-65.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-66.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-67.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-68.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-69.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-70.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-71.png" width="750px" />
