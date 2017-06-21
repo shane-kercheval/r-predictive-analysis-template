@@ -1291,6 +1291,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### mixture\_discriminant\_analysis
 
+    Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info = trainInfo, : There were missing values in resampled performance measures.
+
 #### Model Summary
 
                       Length Class      Mode     
@@ -1350,6 +1352,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
          0.5063
 
 ### mixture\_discriminant\_analysis\_rc
+
+    Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info = trainInfo, : There were missing values in resampled performance measures.
 
 #### Model Summary
 

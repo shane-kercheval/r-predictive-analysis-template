@@ -45,7 +45,7 @@ require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
 custom_seed <- 123
-refresh_models <- FALSE
+refresh_models <- TRUE
 ```
 
 ```{r dataset_definition, echo = FALSE}
