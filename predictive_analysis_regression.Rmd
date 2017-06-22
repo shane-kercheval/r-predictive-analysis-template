@@ -224,9 +224,14 @@ kable(outliers)
 ### Correlation
 
 ```{r correlation, echo = FALSE, fig.height=10, fig.width=10}
-#pairs.panels(regression_dataset[, numeric_columns])
-correlations <- cor(regression_dataset[, numeric_columns])
-corrplot::corrplot(correlations, order = "hclust", tl.cex = .35, col = colorRampPalette(rev(c("#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#FFFFFF", "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061")))(200))
+if(sum(numeric_columns == TRUE) >= 2) {
+
+	#pairs.panels(regression_dataset[, numeric_columns])
+	correlations <- cor(regression_dataset[, numeric_columns])
+	corrplot::corrplot(correlations, order = "hclust", tl.cex = .35, col = colorRampPalette(rev(c("#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7", "#FFFFFF", "#D1E5F0", "#92C5DE", "#4393C3", "#2166AC", "#053061")))(200))
+} else {
+	cat('\n\n> Not enough numberic columns for correlation.\n\n')
+}
 ```
 
 ### Collinearity Removal
@@ -299,6 +304,48 @@ recommended_numeric_columns <- colnames(predictor_correlations)
 non_numeric_columns <- regression_column_names[!(regression_column_names %in% numeric_column_names)] # includes target
 recommended_columns_custom <- c(non_numeric_columns, recommended_numeric_columns)
 recommended_removal <- regression_column_names[!(regression_column_names %in% recommended_columns_custom)]
+
+
+if(sum(numeric_columns == TRUE) >= 2) {
+
+	predictor_correlations <- cor(numeric_predictor_data)
+
+	walk(1:nrow(predictor_correlations), ~ {
+		predictor_correlations[.,.] <<- NA	
+	})
+
+	while(max(abs(predictor_correlations), na.rm = TRUE) > correlation_threshold) {
+		## caret's findCorrelation function is used to identify columns to remove.
+		num_cols_rows <- nrow(predictor_correlations)
+		#highCorr <- findCorrelation(predictor_correlations, .75)
+		ab_index <- which(abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) & abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
+		a_index <- ceil(ab_index / num_cols_rows) # get the row number 
+		b_index <- ab_index - (num_cols_rows * (a_index-1))
+	
+		ave_a_predictor_correlations <- mean(abs(predictor_correlations[a_index, ]), na.rm = TRUE)
+		ave_b_predictor_correlations <- mean(abs(predictor_correlations[b_index, ]), na.rm = TRUE)
+	
+		if(ave_a_predictor_correlations > ave_b_predictor_correlations)
+		{
+			predictor_correlations <<- predictor_correlations[-a_index, -a_index]
+
+		}else {
+
+			predictor_correlations <<- predictor_correlations[-b_index, -b_index]
+		}	
+		
+	}
+	recommended_numeric_columns <- colnames(predictor_correlations)
+	non_numeric_columns <- regression_column_names[!(regression_column_names %in% numeric_column_names)] # includes target
+	recommended_columns_custom <- c(non_numeric_columns, recommended_numeric_columns)
+	recommended_removal <- regression_column_names[!(regression_column_names %in% recommended_columns_custom)]
+	
+} else {
+
+	cat('\n\n> Not enough numberic columns for collinearity. Not removing any columns.\n\n')
+	recommended_columns_custom <- regression_column_names
+	recommended_removal <- ''
+}
 ```
 
 > columns recommended for removal: ``r paste(recommended_removal, collapse = ', ')``

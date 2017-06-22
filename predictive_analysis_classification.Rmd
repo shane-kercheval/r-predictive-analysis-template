@@ -45,11 +45,16 @@ require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
 custom_seed <- 123
-refresh_models <- TRUE
+refresh_models <- FALSE
 ```
 
 ```{r dataset_definition, echo = FALSE}
-df_credit <- fread('./classification_data/credit.csv')
+#######################################################################################################################################
+# define the dataset:
+# the code below expects a dataset with an dependent variable named `target`, who's value is a factor with defined classes below
+# also, all logical and character columns should be converted to factors
+#######################################################################################################################################
+df_credit <- fread('./classification_data/credit.csv', data.table = FALSE)
 classification_dataset <- df_credit %>%
 	dplyr::rename(target = default) %>%
 	dplyr::mutate(phone = ifelse(phone == 'yes', TRUE, FALSE)) %>% # technically don't need to do this but there seems to be an error in dplyr.mutate_if https://github.com/tidyverse/dplyr/pull/2011 which says it is resolved, but still seems to be a problem, dispite having latest version
@@ -177,9 +182,14 @@ kable(df_outliers)
 ### Correlation
 
 ```{r correlation, echo = FALSE, fig.height=5, fig.width=5}
-#pairs.panels(classification_dataset[, numeric_columns])
-matrix_correlations <- cor(classification_dataset[, numeric_columns])
-corrplot::corrplot(matrix_correlations, order = 'hclust', tl.cex = .35, col = colorRampPalette(rev(c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF', '#D1E5F0', '#92C5DE', '#4393C3', '#2166AC', '#053061')))(200))
+if(sum(numeric_columns == TRUE) >= 2) {
+
+	#pairs.panels(classification_dataset[, numeric_columns])
+	matrix_correlations <- cor(classification_dataset[, numeric_columns])
+	corrplot::corrplot(matrix_correlations, order = 'hclust', tl.cex = .35, col = colorRampPalette(rev(c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF', '#D1E5F0', '#92C5DE', '#4393C3', '#2166AC', '#053061')))(200))
+} else {
+	cat('\n\n> Not enough numberic columns for correlation.\n\n')
+}
 ```
 
 ### Collinearity Removal
@@ -219,37 +229,46 @@ This method is described in APM pg 47 as the following steps
 - Repeat until no absolute correlations are above the threshold (``r correlation_threshold``)
 
 ```{r heuristic_collinearity, echo = FALSE}
-predictor_correlations <- cor(numeric_predictor_data)
+if(sum(numeric_columns == TRUE) >= 2) {
 
-walk(1:nrow(predictor_correlations), ~ {
-	predictor_correlations[.,.] <<- NA	
-})
+	predictor_correlations <- cor(numeric_predictor_data)
 
-while(max(abs(predictor_correlations), na.rm = TRUE) > correlation_threshold) {
-	## caret's findCorrelation function is used to identify columns to remove.
-	num_cols_rows <- nrow(predictor_correlations)
-	#highCorr <- findCorrelation(predictor_correlations, .75)
-	ab_index <- which(abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) & abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
-	a_index <- ceil(ab_index / num_cols_rows) # get the row number 
-	b_index <- ab_index - (num_cols_rows * (a_index-1))
+	walk(1:nrow(predictor_correlations), ~ {
+		predictor_correlations[.,.] <<- NA	
+	})
 
-	ave_a_predictor_correlations <- mean(abs(predictor_correlations[a_index, ]), na.rm = TRUE)
-	ave_b_predictor_correlations <- mean(abs(predictor_correlations[b_index, ]), na.rm = TRUE)
-
-	if(ave_a_predictor_correlations > ave_b_predictor_correlations)
-	{
-		predictor_correlations <<- predictor_correlations[-a_index, -a_index]
-				
-	}else
-	{
-		predictor_correlations <<- predictor_correlations[-b_index, -b_index]
-	}	
+	while(max(abs(predictor_correlations), na.rm = TRUE) > correlation_threshold) {
+		## caret's findCorrelation function is used to identify columns to remove.
+		num_cols_rows <- nrow(predictor_correlations)
+		#highCorr <- findCorrelation(predictor_correlations, .75)
+		ab_index <- which(abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) & abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
+		a_index <- ceil(ab_index / num_cols_rows) # get the row number 
+		b_index <- ab_index - (num_cols_rows * (a_index-1))
 	
+		ave_a_predictor_correlations <- mean(abs(predictor_correlations[a_index, ]), na.rm = TRUE)
+		ave_b_predictor_correlations <- mean(abs(predictor_correlations[b_index, ]), na.rm = TRUE)
+	
+		if(ave_a_predictor_correlations > ave_b_predictor_correlations)
+		{
+			predictor_correlations <<- predictor_correlations[-a_index, -a_index]
+
+		}else {
+
+			predictor_correlations <<- predictor_correlations[-b_index, -b_index]
+		}	
+		
+	}
+	recommended_numeric_columns <- colnames(predictor_correlations)
+	non_numeric_columns <- classification_column_names[!(classification_column_names %in% numeric_column_names)] # includes target
+	recommended_columns_custom <- c(recommended_numeric_columns, non_numeric_columns)
+	recommended_removal <- classification_column_names[!(classification_column_names %in% recommended_columns_custom)]
+	
+} else {
+
+	cat('\n\n> Not enough numberic columns for collinearity. Not removing any columns.\n\n')
+	recommended_columns_custom <- classification_column_names
+	recommended_removal <- ''
 }
-recommended_numeric_columns <- colnames(predictor_correlations)
-non_numeric_columns <- classification_column_names[!(classification_column_names %in% numeric_column_names)] # includes target
-recommended_columns_custom <- c(recommended_numeric_columns, non_numeric_columns)
-recommended_removal <- classification_column_names[!(classification_column_names %in% recommended_columns_custom)]
 ```
 
 > columns recommended for removal: ``r paste(recommended_removal, collapse = ', ')``
@@ -616,36 +635,71 @@ classification_models[['glm_basic_processing']] <- glm_basic_processing
 ### glm_remove_collinearity_caret
 
 ```{r glm_remove_collinearity_caret, echo = FALSE, comment='', results='asis'}
-model_pre_processing <- c('nzv', 'center', 'scale')
-glm_remove_collinearity_caret <- train_classification(
-	refresh_models = refresh_models,
-	training_metric = metric,
-	custom_seed = custom_seed,
-	model_name = 'glm_remove_collinearity_caret',
-	dataset = classification_train[, recommended_columns_caret],
-	training_method = 'glm',
-	training_preProcess = model_pre_processing,
-	training_control = train_control,
-	training_tune_grid = NULL,
-	training_tune_length = NULL,
-	sample_to_predictor_ratio_threshold = 5,
-	class_to_predictor_ratio_threshold = NULL,
-	class_names = NULL)
+if(all(classification_column_names %in% recommended_columns_caret)) { # if all the original column names exist in the recommended column names (i.e. columns are the same;  there are no collinear columns) then these results won't differ, we can skip.
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_remove_collinearity_caret', training_preProcess = I(list(model_pre_processing))))
-classification_models[['glm_remove_collinearity_caret']] <- glm_remove_collinearity_caret
+	cat('\n\n> No collinear columns removed... skipping.\n\n')
+} else {
+
+	model_pre_processing <- c('nzv', 'center', 'scale')
+	glm_remove_collinearity_caret <- train_classification(
+		refresh_models = refresh_models,
+		training_metric = metric,
+		custom_seed = custom_seed,
+		model_name = 'glm_remove_collinearity_caret',
+		dataset = classification_train[, recommended_columns_caret],
+		training_method = 'glm',
+		training_preProcess = model_pre_processing,
+		training_control = train_control,
+		training_tune_grid = NULL,
+		training_tune_length = NULL,
+		sample_to_predictor_ratio_threshold = 5,
+		class_to_predictor_ratio_threshold = NULL,
+		class_names = NULL)
+
+	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_remove_collinearity_caret', training_preProcess = I(list(model_pre_processing))))
+	classification_models[['glm_remove_collinearity_caret']] <- glm_remove_collinearity_caret
+}
 ``` 
 
 ### glm_remove_collinearity_custom
 
 ```{r glm_remove_collinearity_custom, echo = FALSE, comment='', results='asis'}
-model_pre_processing <- c('nzv', 'center', 'scale')
-glm_remove_collinearity_custom <- train_classification(
+if(all(classification_column_names %in% recommended_columns_custom)) { # if all the original column names exist in the recommended column names (i.e. columns are the same;  there are no collinear columns) then these results won't differ, we can skip.
+
+	cat('\n\n> No collinear columns removed... skipping.\n\n')
+} else {
+
+	model_pre_processing <- c('nzv', 'center', 'scale')
+	glm_remove_collinearity_custom <- train_classification(
+		refresh_models = refresh_models,
+		training_metric = metric,
+		custom_seed = custom_seed,
+		model_name = 'glm_remove_collinearity_custom',
+		dataset = classification_train[, recommended_columns_custom],
+		training_method = 'glm',
+		training_preProcess = model_pre_processing,
+		training_control = train_control,
+		training_tune_grid = NULL,
+		training_tune_length = NULL,
+		sample_to_predictor_ratio_threshold = 5,
+		class_to_predictor_ratio_threshold = NULL,
+		class_names = NULL)
+
+	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_remove_collinearity_custom', training_preProcess = I(list(model_pre_processing))))
+	classification_models[['glm_remove_collinearity_custom']] <- glm_remove_collinearity_custom
+}
+```
+
+### glm_yeojohnson
+
+```{r glm_yeojohnson, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'YeoJohnson', 'center', 'scale')
+glm_yeojohnson <- train_classification(
 	refresh_models = refresh_models,
 	training_metric = metric,
 	custom_seed = custom_seed,
-	model_name = 'glm_remove_collinearity_custom',
-	dataset = classification_train[, recommended_columns_custom],
+	model_name = 'glm_yeojohnson',
+	dataset = classification_train[, classification_column_names],
 	training_method = 'glm',
 	training_preProcess = model_pre_processing,
 	training_control = train_control,
@@ -655,8 +709,8 @@ glm_remove_collinearity_custom <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_remove_collinearity_custom', training_preProcess = I(list(model_pre_processing))))
-classification_models[['glm_remove_collinearity_custom']] <- glm_remove_collinearity_custom
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_yeojohnson', training_preProcess = I(list(model_pre_processing))))
+classification_models[['glm_yeojohnson']] <- glm_yeojohnson
 ```
 
 ### logistic_regression_stepwise_backward
@@ -666,6 +720,18 @@ stepwise_logistic_columns <- NULL
 
 if(refresh_models) {
 	
+	if(sum(numeric_columns == TRUE) >= 1) { # have to have at least 1 numeric column to pre-process
+		
+		set.seed(custom_seed)
+		pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
+		columns_not_in_preprocessed_data <- colnames(classification_train)[!(colnames(classification_train) %in% colnames(pre_processed_numeric_data$data))] # figure out which columns we need to add back in (i.e. all (non-numeric) that are in classification_train but are NOT in pre_processed_numeric_data
+		pre_processed_classification_train <- cbind(classification_train[, columns_not_in_preprocessed_data], pre_processed_numeric_data$data)
+	
+	} else {
+
+		pre_processed_classification_train <- classification_train
+	}
+
 	set.seed(custom_seed)
 	pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
 	columns_not_in_preprocessed_data <- colnames(classification_train)[!(colnames(classification_train) %in% colnames(pre_processed_numeric_data$data))] # figure out which columns we need to add back in (i.e. all (non-numeric) that are in classification_train but are NOT in pre_processed_numeric_data
@@ -726,12 +792,42 @@ classification_models[['linear_discriminant_analsysis']] <- linear_discriminant_
 ### linear_discriminant_analsysis_remove_collinear
 
 ```{r linear_discriminant_analsysis_remove_collinear, echo = FALSE, comment='', results='asis'}
-model_pre_processing <- c('nzv', 'center', 'scale')
-linear_discriminant_analsysis_remove_collinear <- train_classification(
+if(all(classification_column_names %in% recommended_columns_caret)) { # if all the original column names exist in the recommended column names (i.e. columns are the same;  there are no collinear columns) then these results won't differ, we can skip.
+
+	cat('\n\n> No collinear columns removed... skipping.\n\n')
+} else {
+
+	model_pre_processing <- c('nzv', 'center', 'scale')
+	linear_discriminant_analsysis_remove_collinear <- train_classification(
+		refresh_models = refresh_models,
+		training_metric = metric,
+		custom_seed = custom_seed,
+		model_name = 'linear_discriminant_analsysis_remove_collinear',
+		dataset = classification_train[, recommended_columns_caret],
+		training_method = 'lda',
+		training_preProcess = model_pre_processing,
+		training_control = train_control,
+		training_tune_grid = NULL,
+		training_tune_length = NULL,
+		sample_to_predictor_ratio_threshold = 5,
+		class_to_predictor_ratio_threshold = NULL,
+		class_names = NULL)
+
+	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'linear_discriminant_analsysis_remove_collinear', training_preProcess = I(list(model_pre_processing))))
+	classification_models[['linear_discriminant_analsysis_remove_collinear']] <- linear_discriminant_analsysis_remove_collinear
+}
+```
+
+### linear_discriminant_analsysis_remove_collinear_skew
+
+```{r linear_discriminant_analsysis_remove_collinear_skew, echo = FALSE, comment='', results='asis'}
+# need to run this even if no collinear columns are removed since we are also removing any skew, which won't be previously captured
+model_pre_processing <- c('nzv', 'YeoJohnson', 'center', 'scale')
+linear_discriminant_analsysis_remove_collinear_skew <- train_classification(
 	refresh_models = refresh_models,
 	training_metric = metric,
 	custom_seed = custom_seed,
-	model_name = 'linear_discriminant_analsysis_remove_collinear',
+	model_name = 'linear_discriminant_analsysis_remove_collinear_skew',
 	dataset = classification_train[, recommended_columns_caret],
 	training_method = 'lda',
 	training_preProcess = model_pre_processing,
@@ -742,8 +838,8 @@ linear_discriminant_analsysis_remove_collinear <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'linear_discriminant_analsysis_remove_collinear', training_preProcess = I(list(model_pre_processing))))
-classification_models[['linear_discriminant_analsysis_remove_collinear']] <- linear_discriminant_analsysis_remove_collinear
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'linear_discriminant_analsysis_remove_collinear_skew', training_preProcess = I(list(model_pre_processing))))
+classification_models[['linear_discriminant_analsysis_remove_collinear_skew']] <- linear_discriminant_analsysis_remove_collinear_skew
 ```
 
 ### partial_least_squares_discriminant_analysis
@@ -767,6 +863,29 @@ partial_least_squares_discriminant_analysis <- train_classification(
 
 model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'partial_least_squares_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
 classification_models[['partial_least_squares_discriminant_analysis']] <- partial_least_squares_discriminant_analysis
+```
+
+### partial_least_squares_discriminant_analysis_skew
+
+```{r partial_least_squares_discriminant_analysis_skew, echo = FALSE, comment='', results='asis'}
+model_pre_processing <- c('nzv', 'YeoJohnson', 'center', 'scale')
+partial_least_squares_discriminant_analysis_skew <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'partial_least_squares_discriminant_analysis_skew',
+	dataset = classification_train[, classification_column_names],
+	training_method = 'pls',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(ncomp = tuning_number_of_latent_variables_to_retain),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = 5,
+	class_to_predictor_ratio_threshold = NULL,
+	class_names = NULL)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'partial_least_squares_discriminant_analysis_skew', training_preProcess = I(list(model_pre_processing))))
+classification_models[['partial_least_squares_discriminant_analysis_skew']] <- partial_least_squares_discriminant_analysis_skew
 ```
 
 ### glmnet_lasso_ridge
@@ -866,24 +985,30 @@ classification_models[['regularized_discriminant_analysis']] <- regularized_disc
 ### regularized_discriminant_analysis_rc
 
 ```{r regularized_discriminant_analysis_rc, echo = FALSE, comment='', results='asis'}
-model_pre_processing <- c('nzv', 'center', 'scale')
-regularized_discriminant_analysis_rc <- train_classification(
-	refresh_models = refresh_models,
-	training_metric = metric,
-	custom_seed = custom_seed,
-	model_name = 'regularized_discriminant_analysis_rc',
-	dataset = classification_train[, recommended_columns_caret],
-	training_method = 'rda',
-	training_preProcess = model_pre_processing,
-	training_control = train_control,
-	training_tune_grid = expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma),
-	training_tune_length = NULL,
-	sample_to_predictor_ratio_threshold = NULL,
-	class_to_predictor_ratio_threshold = 5,
-	class_names = c(target_positive_class, target_negative_class))
+if(all(classification_column_names %in% recommended_columns_caret)) { # if all the original column names exist in the recommended column names (i.e. columns are the same;  there are no collinear columns) then these results won't differ, we can skip.
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'regularized_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
-classification_models[['regularized_discriminant_analysis_rc']] <- regularized_discriminant_analysis_rc
+	cat('\n\n> No collinear columns removed... skipping.\n\n')
+} else {
+
+	model_pre_processing <- c('nzv', 'center', 'scale')
+	regularized_discriminant_analysis_rc <- train_classification(
+		refresh_models = refresh_models,
+		training_metric = metric,
+		custom_seed = custom_seed,
+		model_name = 'regularized_discriminant_analysis_rc',
+		dataset = classification_train[, recommended_columns_caret],
+		training_method = 'rda',
+		training_preProcess = model_pre_processing,
+		training_control = train_control,
+		training_tune_grid = expand.grid(lambda = tuning_rda_lambda, gamma = tuning_rda_gamma),
+		training_tune_length = NULL,
+		sample_to_predictor_ratio_threshold = NULL,
+		class_to_predictor_ratio_threshold = 5,
+		class_names = c(target_positive_class, target_negative_class))
+
+	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'regularized_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
+	classification_models[['regularized_discriminant_analysis_rc']] <- regularized_discriminant_analysis_rc
+}
 ```
 
 ### mixture_discriminant_analysis
@@ -912,24 +1037,30 @@ classification_models[['mixture_discriminant_analysis']] <- mixture_discriminant
 ### mixture_discriminant_analysis_rc
 
 ```{r mixture_discriminant_analysis_rc, echo = FALSE, comment='', results='asis'}
-model_pre_processing <- c('nzv', 'center', 'scale')
-mixture_discriminant_analysis_rc <- train_classification(
-	refresh_models = refresh_models,
-	training_metric = metric,
-	custom_seed = custom_seed,
-	model_name = 'mixture_discriminant_analysis_rc',
-	dataset = classification_train[, recommended_columns_caret],
-	training_method = 'mda',
-	training_preProcess = model_pre_processing,
-	training_control = train_control,
-	training_tune_grid = expand.grid(subclasses = tuning_mda_subclasses),
-	training_tune_length = NULL,
-	sample_to_predictor_ratio_threshold = NULL,
-	class_to_predictor_ratio_threshold = 5,
-	class_names = c(target_positive_class, target_negative_class))
+if(all(classification_column_names %in% recommended_columns_caret)) { # if all the original column names exist in the recommended column names (i.e. columns are the same;  there are no collinear columns) then these results won't differ, we can skip.
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'mixture_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
-classification_models[['mixture_discriminant_analysis_rc']] <- mixture_discriminant_analysis_rc
+	cat('\n\n> No collinear columns removed... skipping.\n\n')
+} else {
+
+	model_pre_processing <- c('nzv', 'center', 'scale')
+	mixture_discriminant_analysis_rc <- train_classification(
+		refresh_models = refresh_models,
+		training_metric = metric,
+		custom_seed = custom_seed,
+		model_name = 'mixture_discriminant_analysis_rc',
+		dataset = classification_train[, recommended_columns_caret],
+		training_method = 'mda',
+		training_preProcess = model_pre_processing,
+		training_control = train_control,
+		training_tune_grid = expand.grid(subclasses = tuning_mda_subclasses),
+		training_tune_length = NULL,
+		sample_to_predictor_ratio_threshold = NULL,
+		class_to_predictor_ratio_threshold = 5,
+		class_names = c(target_positive_class, target_negative_class))
+
+	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'mixture_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
+	classification_models[['mixture_discriminant_analysis_rc']] <- mixture_discriminant_analysis_rc
+}
 ```
 
 ### neural_network_spatial_rc
@@ -937,8 +1068,8 @@ classification_models[['mixture_discriminant_analysis_rc']] <- mixture_discrimin
 #### TURN BACK ON
 
 ```{r neural_network_spatial_rc, eval=FALSE, include=FALSE, comment='', results='asis'}
-max_size <- max(training_tune_grid$size)
-training_numWts <- (max_size * ncol(classification_train[, recommended_columns_caret],)) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
+max_size <- max(tuning_nnet_size)
+training_numWts <- (max_size * ncol(classification_train[, recommended_columns_caret])) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
 
 model_pre_processing <- c('nzv', 'center', 'scale', 'spatialSign')
 neural_network_spatial_rc <- train_classification(
@@ -961,6 +1092,33 @@ neural_network_spatial_rc <- train_classification(
 
 model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'neural_network_spatial_rc', training_preProcess = I(list(model_pre_processing))))
 classification_models[['neural_network_spatial_rc']] <- neural_network_spatial_rc
+```
+
+```{r neural_network_spatial_rc_skew, eval=FALSE, include=FALSE, comment='', results='asis'}
+max_size <- max(tuning_nnet_size)
+training_numWts <- (max_size * ncol(classification_train[, recommended_columns_caret])) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
+
+model_pre_processing <- c('nzv', 'YeoJohnson', 'center', 'scale', 'spatialSign'),
+neural_network_spatial_rc_skew <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'neural_network_spatial_rc_skew',
+	dataset = classification_train[, recommended_columns_caret],
+	training_method = 'nnet',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(size = tuning_nnet_size, decay = tuning_nnet_decay),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class),
+	neural_net_numWts = training_numWts,
+	neural_net_lineout = parameter_nnet_linout,
+	neural_net_max_iterations = 2000)
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'neural_network_spatial_rc_skew', training_preProcess = I(list(model_pre_processing))))
+classification_models[['neural_network_spatial_rc_skew']] <- neural_network_spatial_rc_skew
 ```
 
 
