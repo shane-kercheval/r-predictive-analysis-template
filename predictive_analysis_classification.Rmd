@@ -44,8 +44,12 @@ opts_chunk$set(out.width='750px', dpi=200)
 require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
+calculate_nnet_MaxNWts <- function(max_nnet_size, number_of_dataset_columns) { # number_of_dataset_columns is all columns including target
+	return ((max_nnet_size * number_of_dataset_columns) + max_nnet_size + 1) # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
+}
+
 custom_seed <- 123
-refresh_models <- FALSE
+refresh_models <- TRUE
 ```
 
 ```{r dataset_definition, echo = FALSE}
@@ -108,6 +112,7 @@ tuning_rda_gamma <- seq(from = 0, to = 1, by = 0.2)
 tuning_nnet_size <- 1:10
 tuning_nnet_decay <- c(0, 0.1, 1, 2)
 parameter_nnet_linout <- FALSE
+parameter_nnet_max_iterations <- 2000
 ```
 
 # Dataset
@@ -460,7 +465,8 @@ train_classification <- function(	model_name,
 
 		set.seed(custom_seed)
 		if(!is.null(neural_net_numWts) || !is.null(neural_net_max_iterations) || !is.null(neural_net_lineout)) { # neural network
-
+			
+			stopifnot(!is.null(neural_net_numWts) && !is.null(neural_net_max_iterations) && !is.null(neural_net_lineout)) # if one of these parameters is not null, then non should be null
 			cat(paste0('\n\n> Setting `nnet` specific parameters: `MaxNWts` - `', neural_net_numWts,'`; `maxit` - `', neural_net_max_iterations,'`\n\n'))
 			caret_model <- train(	target ~ .,
 									data = dataset,
@@ -585,7 +591,6 @@ stopifnot(expected_error$message == 'model_tuning_parameters %in% colnames(train
 ```
 
 ## Models
-
 
 ### glm_no_pre_process
 
@@ -1065,11 +1070,8 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 
 ### neural_network_spatial_rc
 
-#### TURN BACK ON
-
-```{r neural_network_spatial_rc, eval=FALSE, include=FALSE, comment='', results='asis'}
-max_size <- max(tuning_nnet_size)
-training_numWts <- (max_size * ncol(classification_train[, recommended_columns_caret])) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
+```{r neural_network_spatial_rc, echo = FALSE, comment='', results='asis'}
+parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tuning_nnet_size), number_of_dataset_columns = ncol(classification_train[, recommended_columns_caret]))
 
 model_pre_processing <- c('nzv', 'center', 'scale', 'spatialSign')
 neural_network_spatial_rc <- train_classification(
@@ -1086,19 +1088,20 @@ neural_network_spatial_rc <- train_classification(
 	sample_to_predictor_ratio_threshold = NULL,
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class),
-	neural_net_numWts = training_numWts,
+	neural_net_numWts = parameter_nnet_training_numWts,
 	neural_net_lineout = parameter_nnet_linout,
-	neural_net_max_iterations = 2000)
+	neural_net_max_iterations = parameter_nnet_max_iterations)
 
 model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'neural_network_spatial_rc', training_preProcess = I(list(model_pre_processing))))
 classification_models[['neural_network_spatial_rc']] <- neural_network_spatial_rc
 ```
 
-```{r neural_network_spatial_rc_skew, eval=FALSE, include=FALSE, comment='', results='asis'}
-max_size <- max(tuning_nnet_size)
-training_numWts <- (max_size * ncol(classification_train[, recommended_columns_caret])) + max_size + 1 # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
+### neural_network_spatial_rc_skew
 
-model_pre_processing <- c('nzv', 'YeoJohnson', 'center', 'scale', 'spatialSign'),
+```{r neural_network_spatial_rc_skew, echo = FALSE, comment='', results='asis'}
+parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tuning_nnet_size), number_of_dataset_columns = ncol(classification_train[, recommended_columns_caret]))
+
+model_pre_processing <- c('nzv', 'YeoJohnson', 'center', 'scale', 'spatialSign')
 neural_network_spatial_rc_skew <- train_classification(
 	refresh_models = refresh_models,
 	training_metric = metric,
@@ -1113,21 +1116,17 @@ neural_network_spatial_rc_skew <- train_classification(
 	sample_to_predictor_ratio_threshold = NULL,
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class),
-	neural_net_numWts = training_numWts,
+	neural_net_numWts = parameter_nnet_training_numWts,
 	neural_net_lineout = parameter_nnet_linout,
-	neural_net_max_iterations = 2000)
+	neural_net_max_iterations = parameter_nnet_max_iterations)
 
 model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'neural_network_spatial_rc_skew', training_preProcess = I(list(model_pre_processing))))
 classification_models[['neural_network_spatial_rc_skew']] <- neural_network_spatial_rc_skew
 ```
 
-
-
 ### Random Forest
 
-
 ### Neural Network
-
 
 ### Ada Boost
 
@@ -1183,7 +1182,7 @@ densityplot(resamples, metric = 'Spec')
 
 ## Train Top Models on Entire Training Dataset & Predict on Test Set
 
-> after using cross-validation to tune, we'll take the highest ranked models, retrain the models (with the final tuning parameters) on the entire training set, and predict using the test set.
+> after using cross-validation to tune, we will take the highest ranked models, retrain the models (with the final tuning parameters) on the entire training set, and predict using the test set.
 
 ```{r model_definitions, echo=FALSE}
 model_plots <- function(model, testing_set, prediction_threshold = 0.5){
@@ -1315,17 +1314,38 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 	if(refresh_models)
 	{
 		# some models have different parameters for `train`, which we need to use when training the final model
-		if(model_method == 'asdf')
+		if(model_method == 'nnet')
 		{
-			#final_model <- train(
-			#	target ~ ., data = classification_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
-			#	ntree = parameter_random_forest_ntree, importance = TRUE)
+
+			parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tune_grid$size), number_of_dataset_columns = length(training_column_names))
+			cat(paste0('\n\n> Setting `nnet` specific parameters: `MaxNWts` - `', parameter_nnet_training_numWts,'`; `maxit` - `', parameter_nnet_max_iterations,'`\n\n'))
+			
+			# seems to fail if the number of calculated weights exceeds the MaxWts parameter, so we'll set it to a default minimum
+			parameter_nnet_training_numWts <- max(parameter_nnet_training_numWts, 50)
 			set.seed(custom_seed)
-  			final_model <- randomForest(model_formula, data = classification_train, ntree = 2000)
+			final_model <- train(	model_formula,
+									data = classification_train,
+									method = model_method,
+									metric = metric,
+									preProc = pre_process,
+									trControl = final_train_control,
+									tuneGrid = tune_grid,
+									trace = FALSE,
+									maxit = parameter_nnet_max_iterations,
+									MaxNWts = parameter_nnet_training_numWts,
+									linout = parameter_nnet_linout)
+			
+  			#final_model <- randomForest(model_formula, data = classification_train, ntree = 2000)
 
 		}else{
 			set.seed(custom_seed)
-			final_model <- train(model_formula, data = classification_train, method = model_method, metric = metric, preProc = pre_process, trControl = final_train_control, tuneGrid = tune_grid)
+			final_model <- train(	model_formula,
+									data = classification_train,
+									method = model_method,
+									metric = metric,
+									preProc = pre_process,
+									trControl = final_train_control,
+									tuneGrid = tune_grid)
 		}
 
 		saveRDS(final_model, file = paste0('./classification_data/top_model_', model_name, '.RDS'))
