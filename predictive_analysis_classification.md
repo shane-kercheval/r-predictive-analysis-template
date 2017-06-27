@@ -54,9 +54,12 @@
         -   [svm\_linear](#svm_linear)
         -   [svm\_polynomial](#svm_polynomial)
         -   [svm\_radial](#svm_radial)
-        -   [Random Forest](#random-forest)
-        -   [Neural Network](#neural-network)
-        -   [Ada Boost](#ada-boost)
+        -   [k\_nearest\_neighbors](#k_nearest_neighbors)
+        -   [naive\_bayes](#naive_bayes)
+        -   [rpart\_independent\_categories](#rpart_independent_categories)
+        -   [rpart\_grouped\_categories](#rpart_grouped_categories)
+        -   [treebag\_independent\_categories](#treebag_independent_categories)
+        -   [treebag\_grouped\_categories](#treebag_grouped_categories)
         -   [All Models on Page 550 that are classification or both regression and classification](#all-models-on-page-550-that-are-classification-or-both-regression-and-classification)
         -   [Models used for spot-check.Rmd](#models-used-for-spot-check.rmd)
     -   [Resamples & Top Models](#resamples-top-models)
@@ -100,6 +103,12 @@ parameter_nnet_max_iterations <- 2000
 tuning_svm_linear_num_costs <- 5
 tuning_svm_poly_num_costs <- 3
 tuning_svm_radial_num_costs <- 6
+
+tuning_knn_tuning_grid <- data.frame(k = c(4 * (0:5) + 1, 20 * (2:5) + 1, 50 * (3:9) + 1))
+
+tuning_naive_bayes_laplace_correction <- c(0, 0.5, 1, 2)
+tuning_naive_bayes_distribution_type <- c(TRUE, FALSE)
+tuning_naive_bayes_bandwidth_adjustment <- c(0, 0.5, 1.0)
 ```
 
 Dataset
@@ -369,6 +378,8 @@ Make sure class balance is even amount training/test datasets.
 > NOTE that for logistic regression (GLM), caret's `train()` (because of `glm()`) uses the second-level factor value as the success/postive event but `resamples()` uses the first-level as the success event. The result is either the `sensitivity` and `specificity` for `resamples()` will be reversed (and so I would be unable to compare apples to apples with other models), or I need to keep the first-level factor as the positive event (the default approach), which will mean that THE COEFFICIENTS WILL BE REVERSED, MAKIN THE MODEL RELATIVE TO THE NEGATIVE EVENT. I chose the latter, in order to compare models below, but this means that when using the logistic model to explain the data, the reader needs to mentally reverse the direction/sign of the coefficients, or correct the problem in the final stages of model building.
 
 > NOTE: "Logistic regression does not make many of the key assumptions of linear regression and general linear models that are based on ordinary least squares algorithms – particularly regarding linearity, normality, homoscedasticity, and measurement level." [link](http://www.statisticssolutions.com/assumptions-of-logistic-regression/)
+
+Using formula in `train()`
 
 #### Model Summary
 
@@ -1641,11 +1652,492 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
          0.5065
          0.5063
 
-### Random Forest
+### k\_nearest\_neighbors
 
-### Neural Network
+#### Model Summary
 
-### Ada Boost
+                Length Class      Mode     
+    learn        2     -none-     list     
+    k            1     -none-     numeric  
+    theDots      0     -none-     list     
+    xNames      35     -none-     character
+    problemType  1     -none-     character
+    tuneValue    1     data.frame list     
+    obsLevels    2     -none-     character
+    param        0     -none-     list     
+
+#### Model Predictors
+
+     [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historyperfect"          "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposecar0"                   
+    [11] "purposeeducation"               "purposefurniture/appliances"    "purposerenovations"             "amount"                         "savings_balance> 1000 DM"      
+    [16] "savings_balance100 - 500 DM"    "savings_balance500 - 1000 DM"   "savings_balanceunknown"         "employment_duration> 7 years"   "employment_duration1 - 4 years"
+    [21] "employment_duration4 - 7 years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"             "age"                           
+    [26] "other_creditnone"               "other_creditstore"              "housingown"                     "housingrent"                    "existing_loans_count"          
+    [31] "jobskilled"                     "jobunemployed"                  "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### Model Tuning Grid Performance
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/k_nearest_neighbors-1.png" width="750px" />
+
+#### Variable Importance
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### naive\_bayes
+
+#### Model Summary
+
+                Length Class      Mode     
+    apriori      2     table      numeric  
+    tables      29     -none-     list     
+    levels       2     -none-     character
+    call         6     -none-     call     
+    x           29     data.frame list     
+    usekernel    1     -none-     logical  
+    varnames    29     -none-     character
+    xNames      29     -none-     character
+    problemType  1     -none-     character
+    tuneValue    3     data.frame list     
+    obsLevels    2     -none-     character
+    param        0     -none-     list     
+
+#### Model Predictors
+
+     [1] "checking_balance..200.DM"       "checking_balance1...200.DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
+     [6] "credit_historypoor"             "credit_historyvery.good"        "purposecar"                     "purposeeducation"               "purposefurniture.appliances"   
+    [11] "amount"                         "savings_balance100...500.DM"    "savings_balance500...1000.DM"   "savings_balanceunknown"         "employment_duration..7.years"  
+    [16] "employment_duration1...4.years" "employment_duration4...7.years" "employment_durationunemployed"  "percent_of_income"              "years_at_residence"            
+    [21] "age"                            "other_creditnone"               "housingown"                     "housingrent"                    "existing_loans_count"          
+    [26] "jobskilled"                     "jobunskilled"                   "dependents"                     "phoneTRUE"                     
+
+#### Model Tuning Grid Performance
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/naive_bayes-1.png" width="750px" />
+
+#### Variable Importance
+
+    ROC curve variable importance
+
+     Importance
+         0.6906
+         0.6195
+         0.6146
+         0.5906
+         0.5700
+         0.5533
+         0.5470
+         0.5279
+         0.5275
+         0.5258
+         0.5252
+         0.5204
+         0.5193
+         0.5105
+         0.5065
+         0.5063
+
+### rpart\_independent\_categories
+
+> See APM pg 373/405 for descriptions on independent categories (binary dummy variables) vs grouped categories
+>
+> When you use the formula interface, most modeling functions (including train, lm, glm, etc) internally run model.matrix to process the data set. This will create dummy variables from any factor variables. The non-formula interface does not \[1\]. <https://stackoverflow.com/questions/22200923/different-results-with-formula-and-non-formula-for-caret-training>
+
+#### Model Summary
+
+    CART 
+
+    900 samples
+     16 predictor
+      2 classes: 'yes', 'no' 
+
+    No pre-processing
+    Resampling: Cross-Validated (10 fold, repeated 3 times) 
+    Summary of sample sizes: 810, 810, 810, 810, 810, 810, ... 
+    Resampling results across tuning parameters:
+
+      cp           ROC        Sens        Spec     
+      0.000000000  0.6996865  0.42962963  0.7984127
+      0.001404853  0.6968352  0.42222222  0.8042328
+      0.002809706  0.6966588  0.40493827  0.8142857
+      0.004214559  0.7011268  0.37777778  0.8301587
+      0.005619413  0.7051342  0.36913580  0.8412698
+      0.007024266  0.7053302  0.36049383  0.8465608
+      0.008429119  0.7082500  0.35308642  0.8576720
+      0.009833972  0.7082109  0.35432099  0.8576720
+      0.011238825  0.7050656  0.34444444  0.8640212
+      0.012643678  0.7096610  0.33703704  0.8703704
+      0.014048531  0.7099157  0.33456790  0.8730159
+      0.015453384  0.7083970  0.32962963  0.8756614
+      0.016858238  0.7068097  0.32962963  0.8708995
+      0.018263091  0.7068097  0.32962963  0.8708995
+      0.019667944  0.7031550  0.31481481  0.8740741
+      0.021072797  0.6947874  0.28148148  0.8820106
+      0.022477650  0.6869684  0.26913580  0.8873016
+      0.023882503  0.6792279  0.24567901  0.9010582
+      0.025287356  0.6668234  0.20864198  0.9190476
+      0.026692209  0.6590927  0.20246914  0.9211640
+      0.028097063  0.6596904  0.19382716  0.9264550
+      0.029501916  0.6578189  0.18888889  0.9259259
+      0.030906769  0.6431119  0.16296296  0.9349206
+      0.032311622  0.6431119  0.16296296  0.9349206
+      0.033716475  0.6187929  0.14074074  0.9402116
+      0.035121328  0.5844503  0.10123457  0.9539683
+      0.036526181  0.5844503  0.10123457  0.9539683
+      0.037931034  0.5715168  0.08641975  0.9582011
+      0.039335888  0.5572996  0.06790123  0.9661376
+      0.040740741  0.5572996  0.06790123  0.9661376
+
+    ROC was used to select the optimal model using  the largest value.
+    The final value used for the model was cp = 0.01404853.
+    NULL
+
+#### Model Predictors
+
+    Loading required package: rpart
+
+     [1] "checking_balanceunknown"       "months_loan_duration"          "employment_durationunemployed" "years_at_residence"            "amount"                       
+     [6] "credit_historyvery good"       "purposecar"                    "checking_balance1 - 200 DM"    "savings_balance500 - 1000 DM"  "savings_balanceunknown"       
+    [11] "savings_balance> 1000 DM"      "purposecar0"                   "age"                           "purposeeducation"              "existing_loans_count"         
+    [16] "purposefurniture/appliances"   "credit_historyperfect"         "percent_of_income"            
+
+#### Model Tuning Grid Performance
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/rpart_independent_categories-1.png" width="750px" />
+
+#### Variable Importance
+
+    rpart variable importance
+
+      only 20 most important variables shown (out of 39)
+
+     Overall
+      48.515
+      38.796
+      35.218
+      23.962
+      19.750
+      12.775
+      12.345
+       7.802
+       5.558
+       5.554
+       5.024
+       4.283
+       4.128
+       3.874
+       2.962
+       2.949
+       2.495
+       2.420
+       0.000
+       0.000
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/rpart_independent_categories-2.png" width="750px" />
+
+### rpart\_grouped\_categories
+
+#### Model Summary
+
+    CART 
+
+    900 samples
+     16 predictor
+      2 classes: 'yes', 'no' 
+
+    No pre-processing
+    Resampling: Cross-Validated (10 fold, repeated 3 times) 
+    Summary of sample sizes: 810, 810, 810, 810, 810, 810, ... 
+    Resampling results across tuning parameters:
+
+      cp           ROC        Sens       Spec     
+      0.000000000  0.7124633  0.4271605  0.8407407
+      0.001660281  0.7126984  0.4234568  0.8455026
+      0.003320562  0.7123163  0.4172840  0.8507937
+      0.004980843  0.7158044  0.4012346  0.8513228
+      0.006641124  0.7103860  0.4000000  0.8613757
+      0.008301405  0.6988830  0.3901235  0.8629630
+      0.009961686  0.6997452  0.3839506  0.8656085
+      0.011621967  0.7066725  0.3802469  0.8730159
+      0.013282248  0.7080443  0.3814815  0.8767196
+      0.014942529  0.7114540  0.3790123  0.8777778
+      0.016602810  0.7134039  0.3950617  0.8735450
+      0.018263091  0.7134039  0.3950617  0.8735450
+      0.019923372  0.7128650  0.3925926  0.8708995
+      0.021583653  0.7141289  0.3876543  0.8756614
+      0.023243934  0.7119048  0.3691358  0.8804233
+      0.024904215  0.7127278  0.3432099  0.8920635
+      0.026564496  0.7131981  0.3407407  0.8925926
+      0.028224777  0.7131981  0.3407407  0.8925926
+      0.029885057  0.7124437  0.3407407  0.8899471
+      0.031545338  0.7139918  0.3382716  0.8931217
+      0.033205619  0.6895356  0.2975309  0.9042328
+      0.034865900  0.6895356  0.2975309  0.9042328
+      0.036526181  0.6895356  0.2975309  0.9042328
+      0.038186462  0.6894964  0.2925926  0.9063492
+      0.039846743  0.6894964  0.2925926  0.9063492
+      0.041507024  0.6807858  0.2753086  0.9084656
+      0.043167305  0.6807858  0.2753086  0.9084656
+      0.044827586  0.6672154  0.2555556  0.9158730
+      0.046487867  0.6519988  0.2185185  0.9232804
+      0.048148148  0.6170096  0.1703704  0.9407407
+
+    ROC was used to select the optimal model using  the largest value.
+    The final value used for the model was cp = 0.004980843.
+    NULL
+
+#### Model Predictors
+
+     [1] "checking_balance"     "months_loan_duration" "employment_duration"  "savings_balance"      "age"                  "percent_of_income"    "credit_history"      
+     [8] "housing"              "amount"               "purpose"              "existing_loans_count" "years_at_residence"   "other_credit"         "job"                 
+    [15] "dependents"           "phone"               
+
+#### Model Tuning Grid Performance
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/rpart_grouped_categories-1.png" width="750px" />
+
+#### Variable Importance
+
+    rpart variable importance
+
+     Overall
+      82.021
+      53.922
+      51.051
+      49.945
+      46.431
+      45.612
+      42.355
+      30.746
+      18.387
+      14.663
+      14.032
+      11.601
+       9.531
+       8.122
+       7.171
+       0.000
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/rpart_grouped_categories-2.png" width="750px" />
+
+### treebag\_independent\_categories
+
+#### Model Summary
+
+    Bagged CART 
+
+    900 samples
+     16 predictor
+      2 classes: 'yes', 'no' 
+
+    No pre-processing
+    Resampling: Cross-Validated (10 fold, repeated 3 times) 
+    Summary of sample sizes: 810, 810, 810, 810, 810, 810, ... 
+    Resampling results:
+
+      ROC        Sens       Spec     
+      0.7522438  0.4703704  0.8465608
+
+    NULL
+
+#### Model Predictors
+
+    Loading required package: ipred
+
+    Loading required package: plyr
+
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    You have loaded plyr after dplyr - this is likely to cause problems.
+    If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+    library(plyr); library(dplyr)
+
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    Attaching package: 'plyr'
+
+    The following objects are masked from 'package:Hmisc':
+
+        is.discrete, summarize
+
+    The following object is masked from 'package:DMwR':
+
+        join
+
+    The following objects are masked from 'package:dplyr':
+
+        arrange, count, desc, failwith, id, mutate, rename, summarise, summarize
+
+    The following object is masked from 'package:purrr':
+
+        compact
+
+     [1] "checking_balanceunknown"        "months_loan_duration"           "phoneTRUE"                      "percent_of_income"              "housingown"                    
+     [6] "age"                            "amount"                         "existing_loans_count"           "checking_balance1 - 200 DM"     "savings_balance> 1000 DM"      
+    [11] "years_at_residence"             "employment_duration> 7 years"   "jobskilled"                     "employment_duration4 - 7 years" "employment_duration1 - 4 years"
+    [16] "housingrent"                    "jobunskilled"                   "purposefurniture/appliances"    "credit_historygood"             "checking_balance> 200 DM"      
+    [21] "credit_historyperfect"          "purposecar"                     "credit_historyvery good"        "purposeeducation"               "dependents"                    
+    [26] "credit_historypoor"             "purposerenovations"             "other_creditnone"               "savings_balanceunknown"         "savings_balance100 - 500 DM"   
+    [31] "savings_balance500 - 1000 DM"   "purposecar0"                    "employment_durationunemployed"  "jobunemployed"                  "other_creditstore"             
+
+#### Variable Importance
+
+    treebag variable importance
+
+      only 20 most important variables shown (out of 45)
+
+     Overall
+      196.14
+      136.57
+      133.42
+       64.97
+       59.69
+       39.99
+       36.03
+       35.23
+       32.05
+       30.71
+       27.57
+       26.32
+       25.32
+       24.81
+       24.64
+       24.50
+       24.06
+       23.87
+       23.27
+       22.49
+
+### treebag\_grouped\_categories
+
+#### Model Summary
+
+    Bagged CART 
+
+    900 samples
+     16 predictor
+      2 classes: 'yes', 'no' 
+
+    No pre-processing
+    Resampling: Cross-Validated (10 fold, repeated 3 times) 
+    Summary of sample sizes: 810, 810, 810, 810, 810, 810, ... 
+    Resampling results:
+
+      ROC        Sens       Spec    
+      0.7624535  0.4740741  0.852381
+
+    NULL
+
+#### Model Predictors
+
+     [1] "checking_balance"     "months_loan_duration" "savings_balance"      "employment_duration"  "purpose"              "percent_of_income"    "age"                 
+     [8] "amount"               "credit_history"       "job"                  "years_at_residence"   "existing_loans_count" "housing"              "phone"               
+    [15] "other_credit"         "dependents"          
+
+#### Variable Importance
+
+    treebag variable importance
+
+     Overall
+      185.55
+      134.89
+      131.73
+       97.96
+       97.16
+       90.85
+       85.83
+       79.24
+       60.97
+       59.13
+       50.89
+       45.28
+       35.36
+       26.27
+       19.84
+       13.43
+
+``` r
+modelLookup('treebag') # bagged cart
+```
+
+    ##     model parameter     label forReg forClass probModel
+    ## 1 treebag parameter parameter   TRUE     TRUE      TRUE
+
+``` r
+modelLookup('J48')
+```
+
+    ##   model parameter                      label forReg forClass probModel
+    ## 1   J48         C       Confidence Threshold  FALSE     TRUE      TRUE
+    ## 2   J48         M Minimum Instances Per Leaf  FALSE     TRUE      TRUE
+
+``` r
+modelLookup('C5.0')
+```
+
+    ##   model parameter                 label forReg forClass probModel
+    ## 1  C5.0    trials # Boosting Iterations  FALSE     TRUE      TRUE
+    ## 2  C5.0     model            Model Type  FALSE     TRUE      TRUE
+    ## 3  C5.0    winnow                Winnow  FALSE     TRUE      TRUE
+
+``` r
+modelLookup('C5.0Rules')
+```
+
+    ##       model parameter label forReg forClass probModel
+    ## 1 C5.0Rules parameter  none  FALSE     TRUE      TRUE
+
+``` r
+modelLookup('rf')
+```
+
+    ##   model parameter                         label forReg forClass probModel
+    ## 1    rf      mtry #Randomly Selected Predictors   TRUE     TRUE      TRUE
+
+``` r
+modelLookup('adaboost')
+```
+
+    ##      model parameter  label forReg forClass probModel
+    ## 1 adaboost     nIter #Trees  FALSE     TRUE      TRUE
+    ## 2 adaboost    method Method  FALSE     TRUE      TRUE
+
+``` r
+modelLookup('AdaBag')
+```
+
+    ##    model parameter          label forReg forClass probModel
+    ## 1 AdaBag    mfinal         #Trees  FALSE     TRUE      TRUE
+    ## 2 AdaBag  maxdepth Max Tree Depth  FALSE     TRUE      TRUE
+
+``` r
+modelLookup('gbm') # stochastic gradient boosting
+```
+
+    ##   model         parameter                   label forReg forClass probModel
+    ## 1   gbm           n.trees   # Boosting Iterations   TRUE     TRUE      TRUE
+    ## 2   gbm interaction.depth          Max Tree Depth   TRUE     TRUE      TRUE
+    ## 3   gbm         shrinkage               Shrinkage   TRUE     TRUE      TRUE
+    ## 4   gbm    n.minobsinnode Min. Terminal Node Size   TRUE     TRUE      TRUE
 
 ### All Models on Page 550 that are classification or both regression and classification
 
@@ -1661,7 +2153,7 @@ Resamples
     ## Call:
     ## summary.resamples(object = resamples)
     ## 
-    ## Models: glm_no_pre_process, glm_basic_processing, glm_yeojohnson, logistic_regression_stepwise_backward, linear_discriminant_analsysis, linear_discriminant_analsysis_remove_collinear_skew, partial_least_squares_discriminant_analysis, partial_least_squares_discriminant_analysis_skew, glmnet_lasso_ridge, sparse_lda, regularized_discriminant_analysis, mixture_discriminant_analysis, neural_network_spatial_rc, neural_network_spatial_rc_skew, flexible_discriminant_analsysis, svm_linear, svm_polynomial, svm_radial 
+    ## Models: glm_no_pre_process, glm_basic_processing, glm_yeojohnson, logistic_regression_stepwise_backward, linear_discriminant_analsysis, linear_discriminant_analsysis_remove_collinear_skew, partial_least_squares_discriminant_analysis, partial_least_squares_discriminant_analysis_skew, glmnet_lasso_ridge, sparse_lda, regularized_discriminant_analysis, mixture_discriminant_analysis, neural_network_spatial_rc, neural_network_spatial_rc_skew, flexible_discriminant_analsysis, svm_linear, svm_polynomial, svm_radial, k_nearest_neighbors, naive_bayes, rpart_independent_categories, rpart_grouped_categories, treebag_independent_categories, treebag_grouped_categories 
     ## Number of resamples: 30 
     ## 
     ## ROC 
@@ -1684,27 +2176,39 @@ Resamples
     ## svm_linear                                          0.6819518 0.7214874 0.7544092 0.7583480 0.7836567 0.8512640    0
     ## svm_polynomial                                      0.6954733 0.7382422 0.7624927 0.7631981 0.7846855 0.8436214    0
     ## svm_radial                                          0.7001764 0.7355967 0.7554380 0.7620811 0.7858613 0.8483245    0
+    ## k_nearest_neighbors                                 0.6860670 0.7212669 0.7532334 0.7519106 0.7781452 0.8500882    0
+    ## naive_bayes                                         0.6666667 0.7026749 0.7375073 0.7360768 0.7642563 0.8500882    0
+    ## rpart_independent_categories                        0.5881834 0.6874633 0.7203116 0.7099157 0.7365520 0.7721928    0
+    ## rpart_grouped_categories                            0.6334509 0.6829071 0.7170782 0.7158044 0.7395650 0.8059965    0
+    ## treebag_independent_categories                      0.6601999 0.7275867 0.7586714 0.7522438 0.7756467 0.8353909    0
+    ## treebag_grouped_categories                          0.6587302 0.7337596 0.7646972 0.7624535 0.7939447 0.8518519    0
     ## 
     ## Sens 
-    ##                                                           Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
-    ## glm_no_pre_process                                  0.25925926 0.4074074 0.4814815 0.4530864 0.5185185 0.5555556    0
-    ## glm_basic_processing                                0.22222222 0.3333333 0.4074074 0.4111111 0.4814815 0.6296296    0
-    ## glm_yeojohnson                                      0.25925926 0.3055556 0.3888889 0.3975309 0.4722222 0.6666667    0
-    ## logistic_regression_stepwise_backward               0.22222222 0.3796296 0.4259259 0.4111111 0.4444444 0.5555556    0
-    ## linear_discriminant_analsysis                       0.25925926 0.3703704 0.4444444 0.4246914 0.4814815 0.5925926    0
-    ## linear_discriminant_analsysis_remove_collinear_skew 0.22222222 0.3703704 0.4444444 0.4259259 0.4814815 0.6296296    0
-    ## partial_least_squares_discriminant_analysis         0.22222222 0.3333333 0.4074074 0.3888889 0.4722222 0.5185185    0
-    ## partial_least_squares_discriminant_analysis_skew    0.22222222 0.3333333 0.3703704 0.3950617 0.4814815 0.5925926    0
-    ## glmnet_lasso_ridge                                  0.18518519 0.2222222 0.2777778 0.2876543 0.3333333 0.4814815    0
-    ## sparse_lda                                          0.25925926 0.3425926 0.4444444 0.4222222 0.4814815 0.6296296    0
-    ## regularized_discriminant_analysis                   0.33333333 0.4444444 0.5000000 0.4962963 0.5555556 0.6296296    0
-    ## mixture_discriminant_analysis                       0.25925926 0.3703704 0.4444444 0.4259259 0.4814815 0.5925926    0
-    ## neural_network_spatial_rc                           0.07407407 0.1851852 0.2592593 0.2518519 0.3240741 0.4444444    0
-    ## neural_network_spatial_rc_skew                      0.07407407 0.1851852 0.2592593 0.2493827 0.3240741 0.4814815    0
-    ## flexible_discriminant_analsysis                     0.22222222 0.3055556 0.3703704 0.3987654 0.4814815 0.5555556    0
-    ## svm_linear                                          0.25925926 0.3703704 0.4074074 0.4148148 0.4814815 0.5185185    0
-    ## svm_polynomial                                      0.14814815 0.2962963 0.3333333 0.3222222 0.3703704 0.4814815    0
-    ## svm_radial                                          0.14814815 0.2592593 0.3333333 0.3172840 0.3703704 0.5185185    0
+    ##                                                           Min.   1st Qu.    Median        Mean   3rd Qu.       Max. NA's
+    ## glm_no_pre_process                                  0.25925926 0.4074074 0.4814815 0.453086420 0.5185185 0.55555556    0
+    ## glm_basic_processing                                0.22222222 0.3333333 0.4074074 0.411111111 0.4814815 0.62962963    0
+    ## glm_yeojohnson                                      0.25925926 0.3055556 0.3888889 0.397530864 0.4722222 0.66666667    0
+    ## logistic_regression_stepwise_backward               0.22222222 0.3796296 0.4259259 0.411111111 0.4444444 0.55555556    0
+    ## linear_discriminant_analsysis                       0.25925926 0.3703704 0.4444444 0.424691358 0.4814815 0.59259259    0
+    ## linear_discriminant_analsysis_remove_collinear_skew 0.22222222 0.3703704 0.4444444 0.425925926 0.4814815 0.62962963    0
+    ## partial_least_squares_discriminant_analysis         0.22222222 0.3333333 0.4074074 0.388888889 0.4722222 0.51851852    0
+    ## partial_least_squares_discriminant_analysis_skew    0.22222222 0.3333333 0.3703704 0.395061728 0.4814815 0.59259259    0
+    ## glmnet_lasso_ridge                                  0.18518519 0.2222222 0.2777778 0.287654321 0.3333333 0.48148148    0
+    ## sparse_lda                                          0.25925926 0.3425926 0.4444444 0.422222222 0.4814815 0.62962963    0
+    ## regularized_discriminant_analysis                   0.33333333 0.4444444 0.5000000 0.496296296 0.5555556 0.62962963    0
+    ## mixture_discriminant_analysis                       0.25925926 0.3703704 0.4444444 0.425925926 0.4814815 0.59259259    0
+    ## neural_network_spatial_rc                           0.07407407 0.1851852 0.2592593 0.251851852 0.3240741 0.44444444    0
+    ## neural_network_spatial_rc_skew                      0.07407407 0.1851852 0.2592593 0.249382716 0.3240741 0.48148148    0
+    ## flexible_discriminant_analsysis                     0.22222222 0.3055556 0.3703704 0.398765432 0.4814815 0.55555556    0
+    ## svm_linear                                          0.25925926 0.3703704 0.4074074 0.414814815 0.4814815 0.51851852    0
+    ## svm_polynomial                                      0.14814815 0.2962963 0.3333333 0.322222222 0.3703704 0.48148148    0
+    ## svm_radial                                          0.14814815 0.2592593 0.3333333 0.317283951 0.3703704 0.51851852    0
+    ## k_nearest_neighbors                                 0.00000000 0.0000000 0.0000000 0.009876543 0.0000000 0.07407407    0
+    ## naive_bayes                                         0.00000000 0.0000000 0.0000000 0.001234568 0.0000000 0.03703704    0
+    ## rpart_independent_categories                        0.14814815 0.2592593 0.3333333 0.334567901 0.4074074 0.51851852    0
+    ## rpart_grouped_categories                            0.25925926 0.3333333 0.4074074 0.401234568 0.4444444 0.55555556    0
+    ## treebag_independent_categories                      0.33333333 0.4166667 0.4814815 0.470370370 0.5185185 0.62962963    0
+    ## treebag_grouped_categories                          0.29629630 0.4074074 0.4444444 0.474074074 0.5462963 0.66666667    0
     ## 
     ## Spec 
     ##                                                          Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's
@@ -1726,6 +2230,12 @@ Resamples
     ## svm_linear                                          0.7777778 0.8571429 0.8730159 0.8746032 0.9047619 0.9523810    0
     ## svm_polynomial                                      0.8253968 0.8888889 0.9206349 0.9089947 0.9365079 0.9682540    0
     ## svm_radial                                          0.8095238 0.8888889 0.9047619 0.9031746 0.9325397 0.9523810    0
+    ## k_nearest_neighbors                                 0.9841270 1.0000000 1.0000000 0.9994709 1.0000000 1.0000000    0
+    ## naive_bayes                                         0.9841270 1.0000000 1.0000000 0.9984127 1.0000000 1.0000000    0
+    ## rpart_independent_categories                        0.7777778 0.8412698 0.8809524 0.8730159 0.9047619 0.9682540    0
+    ## rpart_grouped_categories                            0.7460317 0.8253968 0.8492063 0.8513228 0.8888889 0.9365079    0
+    ## treebag_independent_categories                      0.7301587 0.8015873 0.8412698 0.8465608 0.8888889 0.9523810    0
+    ## treebag_grouped_categories                          0.7777778 0.8253968 0.8571429 0.8523810 0.8888889 0.9365079    0
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/resamples_regression-4.png" width="750px" />
 
@@ -1736,9 +2246,7 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
 ### Regularized Discriminant Analysis (regularized\_discriminant\_analysis)
 
-> Model Processing: nzv; center; scale
-
-> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+> Model Processing: `nzv; center; scale`
 
                    Length Class      Mode     
     call              5   -none-     call     
@@ -1791,9 +2299,7 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
 ### Generalized Linear Model (logistic\_regression\_stepwise\_backward)
 
-> Model Processing: nzv; center; scale
-
-> Model Formula: `target ~ checking_balance + credit_history + savings_balance + employment_duration + other_credit + housing + phone + months_loan_duration + amount + percent_of_income + existing_loans_count`
+> Model Processing: `nzv; center; scale`
 
 
     Call:
@@ -1871,9 +2377,7 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
 ### Sparse Linear Discriminant Analysis (sparse\_lda)
 
-> Model Processing: nzv; center; scale
-
-> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+> Model Processing: `nzv; center; scale`
 
                 Length Class      Mode     
     call         5     -none-     call     
@@ -1926,9 +2430,7 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
 ### Neural Network (neural\_network\_spatial\_rc)
 
-> Model Processing: nzv; center; scale; spatialSign
-
-> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+> Model Processing: `nzv; center; scale; spatialSign`
 
     a 29-1-1 network with 32 weights
     options were - entropy fitting  decay=1
@@ -1972,9 +2474,7 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 
 ### Support Vector Machines with Polynomial Kernel (svm\_polynomial)
 
-> Model Processing: center; scale
-
-> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+> Model Processing: `center; scale`
 
     Length  Class   Mode 
          1   ksvm     S4 

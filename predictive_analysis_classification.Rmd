@@ -38,6 +38,7 @@ library(klaR)
 library(mda)
 library(class)
 library(MASS)
+library(partykit)
 
 opts_chunk$set(out.width='750px', dpi=200)
 
@@ -117,6 +118,13 @@ parameter_nnet_max_iterations <- 2000
 tuning_svm_linear_num_costs <- 5
 tuning_svm_poly_num_costs <- 3
 tuning_svm_radial_num_costs <- 6
+
+tuning_knn_tuning_grid <- data.frame(k = c(4 * (0:5) + 1, 20 * (2:5) + 1, 50 * (3:9) + 1))
+
+tuning_naive_bayes_laplace_correction <- c(0, 0.5, 1, 2)
+tuning_naive_bayes_distribution_type <- c(TRUE, FALSE)
+tuning_naive_bayes_bandwidth_adjustment <- c(0, 0.5, 1.0)
+
 ```
 
 # Dataset
@@ -440,6 +448,7 @@ train_classification <- function(	model_name,
 									training_method,
 									training_metric,
 									training_preProcess,
+									use_formula = TRUE,
 									training_control,
 									training_tune_grid = NULL,
 									training_tune_length = NULL,
@@ -470,9 +479,11 @@ train_classification <- function(	model_name,
 		set.seed(custom_seed)
 		if(!is.null(neural_net_numWts) || !is.null(neural_net_max_iterations) || !is.null(neural_net_lineout)) { # neural network
 			
+			stopifnot(use_formula) # will fix this if I ever need to
 			stopifnot(!is.null(neural_net_numWts) && !is.null(neural_net_max_iterations) && !is.null(neural_net_lineout)) # if one of these parameters is not null, then non should be null
+			
 			cat(paste0('\n\n> Setting `nnet` specific parameters: `MaxNWts` - `', neural_net_numWts,'`; `maxit` - `', neural_net_max_iterations,'`\n\n'))
-			caret_model <- train(	target ~ .,
+			caret_model <- train(	form = target ~ .,
 									data = dataset,
 									method = training_method,
 									metric = training_metric,
@@ -486,14 +497,29 @@ train_classification <- function(	model_name,
 				  					linout = neural_net_lineout)			
 		} else { # non-neural network
 
-			caret_model <- train(	target ~ .,
-									data = dataset,
-									method = training_method,
-									metric = training_metric,
-									preProc = training_preProcess,
-									trControl = training_control,
-									tuneGrid = training_tune_grid,
-				  					tuneLength = training_tune_length)
+			if(use_formula) {
+
+				cat('\n\nUsing formula in `train()`\n\n')
+				caret_model <- train(	form = target ~ .,
+										data = dataset,
+										method = training_method,
+										metric = training_metric,
+										preProc = training_preProcess,
+										trControl = training_control,
+										tuneGrid = training_tune_grid,
+					  					tuneLength = training_tune_length)
+			} else {
+
+				cat('\n\n*Not* using formula in `train()`\n\n')
+				caret_model <- train(	x = dataset %>% dplyr::select(-target),
+										y = dataset$target,
+										method = training_method,
+										metric = training_metric,
+										preProc = training_preProcess,
+										trControl = training_control,
+										tuneGrid = training_tune_grid,
+					  					tuneLength = training_tune_length)
+			}
 		}
 
 		saveRDS(caret_model, file = paste0('./classification_data/', model_name,'.RDS'))
@@ -503,15 +529,22 @@ train_classification <- function(	model_name,
 		caret_model <- readRDS(paste0('./classification_data/', model_name,'.RDS'))
 	}
 
-	summary_caret_model <- NULL
-	expected_error = tryCatch(
-		summary_caret_model <- summary(caret_model),# this causes an error with some models
-		error=function(e) e)
-	
-	if(!is.null(summary_caret_model)) {
-		
+	if(training_method == 'treebag' || training_method == 'rpart') {
+
 		cat('\n\n#### Model Summary\n\n')
-		cat(codebc(summary_caret_model, postfix='\n\n'))
+		cat(codebc(show(caret_model), postfix='\n\n'))
+	} else {
+
+		summary_caret_model <- NULL
+		expected_error = tryCatch(
+			summary_caret_model <- summary(caret_model),# this causes an error with some models
+			error=function(e) e)
+		
+		if(!is.null(summary_caret_model)) {
+			
+			cat('\n\n#### Model Summary\n\n')
+			cat(codebc(summary_caret_model, postfix='\n\n'))
+		}
 	}
 	
 	cat('\n\n#### Model Predictors\n\n')
@@ -1229,16 +1262,179 @@ model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model
 classification_models[['svm_radial']] <- svm_radial
 ```
 
-### Random Forest
+### k_nearest_neighbors
 
-### Neural Network
+```{r k_nearest_neighbors, echo = FALSE, comment = '', results = 'asis'}
+#modelLookup('knn')
+#getModelInfo('knn')
 
-### Ada Boost
+model_pre_processing <- c('center', 'scale')
+k_nearest_neighbors <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'k_nearest_neighbors',
+	dataset = classification_train,
+	training_method = 'knn',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = tuning_knn_tuning_grid,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'k_nearest_neighbors', training_preProcess = I(list(model_pre_processing))))
+classification_models[['k_nearest_neighbors']] <- k_nearest_neighbors
+```
+
+### naive_bayes
+
+```{r naive_bayes, echo = FALSE, comment = '', results = 'asis'}
+#modelLookup('nb')
+#getModelInfo('nb')
+
+model_pre_processing <- c('nzv', 'center', 'scale')
+naive_bayes <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'naive_bayes',
+	dataset = classification_train,
+	training_method = 'nb',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(usekernel = tuning_naive_bayes_distribution_type, fL = tuning_naive_bayes_laplace_correction, adjust = tuning_naive_bayes_bandwidth_adjustment),
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'naive_bayes', training_preProcess = I(list(model_pre_processing))))
+classification_models[['naive_bayes']] <- naive_bayes
+```
+
+### rpart_independent_categories
+
+> See APM pg 373/405 for descriptions on independent categories (binary dummy variables) vs grouped categories
+>
+> When you use the formula interface, most modeling functions (including train, lm, glm, etc) internally run model.matrix to process the data set. This will create dummy variables from any factor variables. The non-formula interface does not [1]. https://stackoverflow.com/questions/22200923/different-results-with-formula-and-non-formula-for-caret-training
+
+```{r rpart_independent_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('rpart') # cart
+model_pre_processing <- NULL
+rpart_independent_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'rpart_independent_categories',
+	dataset = classification_train,
+	use_formula = TRUE,
+	training_method = 'rpart',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 30,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'rpart_independent_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['rpart_independent_categories']] <- rpart_independent_categories
+plot(as.party(rpart_independent_categories$finalModel))
+```
+
+### rpart_grouped_categories
+
+```{r rpart_grouped_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('rpart') # cart
+model_pre_processing <- NULL
+rpart_grouped_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'rpart_grouped_categories',
+	use_formula = FALSE,
+	dataset = classification_train,
+	training_method = 'rpart',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 30,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'rpart_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['rpart_grouped_categories']] <- rpart_grouped_categories
+plot(as.party(rpart_grouped_categories$finalModel))
+```
+
+### treebag_independent_categories
+
+```{r treebag_independent_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('treebag') # cart
+model_pre_processing <- NULL
+treebag_independent_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'treebag_independent_categories',
+	dataset = classification_train,
+	use_formula = TRUE,
+	training_method = 'treebag',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'treebag_independent_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['treebag_independent_categories']] <- treebag_independent_categories
+```
+
+### treebag_grouped_categories
+
+
+```{r treebag_grouped_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('treebag') # cart
+model_pre_processing <- NULL
+treebag_grouped_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'treebag_grouped_categories',
+	use_formula = FALSE,
+	dataset = classification_train,
+	training_method = 'treebag',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'treebag_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['treebag_grouped_categories']] <- treebag_grouped_categories
+```
+
+```{r}
+modelLookup('treebag') # bagged cart
+modelLookup('J48')
+modelLookup('C5.0')
+modelLookup('C5.0Rules')
+modelLookup('rf')
+modelLookup('adaboost')
+modelLookup('AdaBag')
+modelLookup('gbm') # stochastic gradient boosting
+```
 
 ### All Models on Page 550 that are classification or both regression and classification
 
 ### Models used for spot-check.Rmd 
-
 
 ## Resamples & Top Models
 
@@ -1400,8 +1596,8 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 	
 	cat(paste0('\n\n### ', model_object$modelInfo$label, ' (', model_name,')\n\n'))
 
-	cat(paste0('\n\n> Model Processing: ', paste0(pre_process, collapse = '; ')), '\n\n')
-	if(any(is.na(pre_process))) { # when we set the values (i.e. rbind to dataframe, we have to use NA, but when we pass it in, it should be NULL)
+	cat(paste0('\n\n> Model Processing: `', paste0(pre_process, collapse = '; ')), '`\n\n')
+	if(!is.null(pre_process) && any(is.na(pre_process))) { # when we set the values (i.e. rbind to dataframe, we have to use NA, but when we pass it in, it should be NULL)
 
 		pre_process = NULL
 	}
@@ -1410,17 +1606,28 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 	model_method <- model_object$method
 	tune_grid <- model_object$bestTune
 
-	# some models only use a subset of the columns; get the columns used and transform into a formula
-	training_column_names <- colnames(model_object$trainingData)
-	model_formula_string <- paste('target ~', paste0(training_column_names[-which(training_column_names == '.outcome')], collapse = ' + '))
-	model_formula <- as.formula(model_formula_string)
-	cat(paste0('\n\n> Model Formula: `', model_formula_string, '`\n\n'))
 
+	model_formula <- NULL
+	non_formula_columns <- NULL
+	# some models only use a subset of the columns; get the columns used and transform into a formula
+	if(!is.null(model_object$call$x) || !is.null(model_object$call$y)) { # if we used a non-formula
+
+		stopifnot(!is.null(model_object$call$x) && !is.null(model_object$call$y)) # if either is not null, both should be not null
+		non_formula_columns <- colnames(model_object$trainingData)
+		non_formula_columns <- non_formula_columns[-which(non_formula_columns == '.outcome')]
+	} else {
+
+		training_column_names <- colnames(model_object$trainingData)
+		model_formula_string <- paste('target ~', paste0(training_column_names[-which(training_column_names == '.outcome')], collapse = ' + '))
+		model_formula <- as.formula(model_formula_string)
+	}
 	if(refresh_models)
 	{
 		# some models have different parameters for `train`, which we need to use when training the final model
 		if(model_method == 'nnet')
 		{
+
+			stopifnot(!is.null(model_formula) && is.null(non_formula_columns)) # non-formula not implemented for nnet
 
 			parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tune_grid$size), number_of_dataset_columns = length(training_column_names))
 			cat(paste0('\n\n> Setting `nnet` specific parameters: `MaxNWts` - `', parameter_nnet_training_numWts,'`; `maxit` - `', parameter_nnet_max_iterations,'`\n\n'))
@@ -1428,7 +1635,7 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 			# seems to fail if the number of calculated weights exceeds the MaxWts parameter, so we'll set it to a default minimum
 			parameter_nnet_training_numWts <- max(parameter_nnet_training_numWts, 50)
 			set.seed(custom_seed)
-			final_model <- train(	model_formula,
+			final_model <- train(	form = model_formula,
 									data = classification_train,
 									method = model_method,
 									metric = metric,
@@ -1439,18 +1646,33 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 									maxit = parameter_nnet_max_iterations,
 									MaxNWts = parameter_nnet_training_numWts,
 									linout = parameter_nnet_linout)
-			
-  			#final_model <- randomForest(model_formula, data = classification_train, ntree = 2000)
-
 		}else{
-			set.seed(custom_seed)
-			final_model <- train(	model_formula,
-									data = classification_train,
-									method = model_method,
-									metric = metric,
-									preProc = pre_process,
-									trControl = final_train_control,
-									tuneGrid = tune_grid)
+
+			if(is.null(model_formula)) {
+				
+				stopifnot(!is.null(non_formula_columns))
+				
+				cat(paste0('\n\n> Non-Formula Columns: `', paste0(non_formula_columns, collapse = ', '), '`\n\n'))
+				set.seed(custom_seed)
+				final_model <- train(	x = classification_train[, non_formula_columns],
+										y = classification_train$target,
+										method = model_method,
+										metric = metric,
+										preProc = pre_process,
+										trControl = final_train_control,
+										tuneGrid = tune_grid)
+			} else {
+				
+				cat(paste0('\n\n> Model Formula: `', model_formula_string, '`\n\n'))
+				set.seed(custom_seed)
+				final_model <- train(	form = model_formula,
+										data = classification_train,
+										method = model_method,
+										metric = metric,
+										preProc = pre_process,
+										trControl = final_train_control,
+										tuneGrid = tune_grid)
+			}
 		}
 
 		saveRDS(final_model, file = paste0('./classification_data/top_model_', model_name, '.RDS'))
@@ -1460,9 +1682,14 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 		final_model <- readRDS(file = paste0('./classification_data/top_model_', model_name, '.RDS'))
 	}
 
-	expected_error = tryCatch(
-		cat(codebc(summary(final_model$finalModel), postfix='\n\n')),# this causes an error with some models
-		error=function(e) e)
+	if(model_method == 'treebag' || model_method == 'rpart') {
+
+		cat(codebc(show(final_model), postfix='\n\n'))
+	} else {
+		expected_error = tryCatch(
+			cat(codebc(summary(final_model$finalModel), postfix='\n\n')),# this causes an error with some models
+			error=function(e) e)	
+	}
 	
 	model_stats <- model_plots(model = final_model, testing_set = classification_test)
 	return (model_stats)
