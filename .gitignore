@@ -39,3 +39,8 @@ vignettes/*.pdf
 *.Rproj
 .Rapp.history
 .Rproj.user
+
+top_model_adaboost_grouped_categories.RDS
+adaboost_independent_categories.RDS
+adabag_grouped_categories.RDS
+adaboost_grouped_categories.RDS

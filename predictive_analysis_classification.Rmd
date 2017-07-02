@@ -11,6 +11,7 @@ output:
 ```{r setup, echo = FALSE, results='hide', message=FALSE, warning=FALSE}
 options(scipen=999) # non-scientific notation
 options(width=180)
+library(plyr)
 source('~/r-tools/output/plots.R', chdir=TRUE)
 source('~/r-tools/output/markdown.R', chdir=TRUE)
 source('~/r-tools/general/model_measurements.R', chdir=TRUE)
@@ -124,6 +125,11 @@ tuning_knn_tuning_grid <- data.frame(k = c(4 * (0:5) + 1, 20 * (2:5) + 1, 50 * (
 tuning_naive_bayes_laplace_correction <- c(0, 0.5, 1, 2)
 tuning_naive_bayes_distribution_type <- c(TRUE, FALSE)
 tuning_naive_bayes_bandwidth_adjustment <- c(0, 0.5, 1.0)
+
+tuning_gbm_shrinkage <- c(0.01, 0.10, 0.50)
+tuning_gbm_num_boosting_iterations <- floor(seq(from = 50, to = 5000, length.out = 3))
+tuning_gbm_max_tree_depth <- c(1, 5, 9)
+tuning_gbm_min_terminal_node_size <- c(5, 15, 25)
 
 ```
 
@@ -1397,9 +1403,8 @@ classification_models[['treebag_independent_categories']] <- treebag_independent
 
 ### treebag_grouped_categories
 
-
 ```{r treebag_grouped_categories, echo = FALSE, comment = '', results = 'asis'}
-# modelLookup('treebag') # cart
+# modelLookup('treebag')
 model_pre_processing <- NULL
 treebag_grouped_categories <- train_classification(
 	refresh_models = refresh_models,
@@ -1421,16 +1426,317 @@ model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model
 classification_models[['treebag_grouped_categories']] <- treebag_grouped_categories
 ```
 
-```{r}
-modelLookup('treebag') # bagged cart
-modelLookup('J48')
-modelLookup('C5.0')
-modelLookup('C5.0Rules')
-modelLookup('rf')
-modelLookup('adaboost')
-modelLookup('AdaBag')
-modelLookup('gbm') # stochastic gradient boosting
+### c50_model_independent_categories
+
+```{r c50_model_independent_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('C5.0')
+model_pre_processing <- NULL
+c50_model_independent_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'c50_model_independent_categories',
+	use_formula = TRUE,
+	dataset = classification_train,
+	training_method = 'C5.0',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 27,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'c50_model_independent_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['c50_model_independent_categories']] <- c50_model_independent_categories
 ```
+
+### c50_model_grouped_categories
+
+```{r c50_model_grouped_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('C5.0')
+model_pre_processing <- NULL
+c50_model_grouped_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'c50_model_grouped_categories',
+	use_formula = FALSE,
+	dataset = classification_train,
+	training_method = 'C5.0',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 27,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'c50_model_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['c50_model_grouped_categories']] <- c50_model_grouped_categories
+```
+
+### c50_rules_model_independent_categories
+
+```{r c50_rules_model_independent_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('C5.0Rules')
+model_pre_processing <- NULL
+c50_rules_model_independent_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'c50_rules_model_independent_categories',
+	use_formula = TRUE,
+	dataset = classification_train,
+	training_method = 'C5.0Rules',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'c50_rules_model_independent_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['c50_rules_model_independent_categories']] <- c50_rules_model_independent_categories
+```
+
+### c50_rules_model_grouped_categories
+
+```{r c50_rules_model_grouped_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('C5.0Rules')
+model_pre_processing <- NULL
+c50_rules_model_grouped_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'c50_rules_model_grouped_categories',
+	use_formula = FALSE,
+	dataset = classification_train,
+	training_method = 'C5.0Rules',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = NULL,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'c50_rules_model_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['c50_rules_model_grouped_categories']] <- c50_rules_model_grouped_categories
+```
+
+### rf_independent_categories
+
+```{r rf_independent_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('rf')
+model_pre_processing <- NULL
+rf_independent_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'rf_independent_categories',
+	use_formula = TRUE,
+	dataset = classification_train,
+	training_method = 'rf',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 10,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'rf_independent_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['rf_independent_categories']] <- rf_independent_categories
+```
+
+### rf_grouped_categories
+
+```{r rf_grouped_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('rf')
+model_pre_processing <- NULL
+rf_grouped_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'rf_grouped_categories',
+	use_formula = FALSE,
+	dataset = classification_train,
+	training_method = 'rf',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 10,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'rf_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['rf_grouped_categories']] <- rf_grouped_categories
+```
+
+### adaboost_independent_categories
+
+```{r adaboost_independent_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('adaboost')
+model_pre_processing <- NULL
+adaboost_independent_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'adaboost_independent_categories',
+	use_formula = TRUE,
+	dataset = classification_train,
+	training_method = 'adaboost',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 5,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'adaboost_independent_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['adaboost_independent_categories']] <- adaboost_independent_categories
+```
+
+### adaboost_grouped_categories
+
+```{r adaboost_grouped_categories, echo = FALSE, comment='', results='asis'}
+# modelLookup('adaboost')
+model_pre_processing <- NULL
+adaboost_grouped_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'adaboost_grouped_categories',
+	use_formula = FALSE,
+	dataset = classification_train,
+	training_method = 'adaboost',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 5,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'adaboost_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['adaboost_grouped_categories']] <- adaboost_grouped_categories
+```
+
+### adabag_independent_categories
+
+> gives errors with current code/data
+
+```{r adabag_independent_categories, eval=FALSE, comment='', include=FALSE, results='asis'}
+# modelLookup('AdaBag')
+model_pre_processing <- NULL
+adabag_independent_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'adabag_independent_categories',
+	use_formula = TRUE,
+	dataset = classification_train,
+	training_method = 'AdaBag',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 10,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'adabag_independent_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['adabag_independent_categories']] <- adabag_independent_categories
+```
+
+### adabag_grouped_categories
+
+```{r adabag_grouped_categories, eval=FALSE, comment='', include=FALSE, results='asis'}
+# modelLookup('AdaBag')
+model_pre_processing <- NULL
+adabag_grouped_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'adabag_grouped_categories',
+	use_formula = FALSE,
+	dataset = classification_train,
+	training_method = 'AdaBag',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = NULL,
+	training_tune_length = 10,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'adabag_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['adabag_grouped_categories']] <- adabag_grouped_categories
+```
+
+### gbm_independent_categories (stochastic gradient boosting)
+
+> if this takes a long time to run, consider tune_length rather than tune_grid
+
+```{r gbm_independent_categories, echo = FALSE, comment = '', results = 'asis'}
+# modelLookup('gbm')
+# getModelInfo('gbm')
+model_pre_processing <- NULL
+gbm_independent_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'gbm_independent_categories',
+	use_formula = TRUE,
+	dataset = classification_train,
+	training_method = 'gbm',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(shrinkage = tuning_gbm_shrinkage,
+			n.trees = tuning_gbm_num_boosting_iterations,
+			interaction.depth = tuning_gbm_max_tree_depth,
+			n.minobsinnode = tuning_gbm_min_terminal_node_size),
+	#training_tune_length = 6,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'gbm_independent_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['gbm_independent_categories']] <- gbm_independent_categories
+```
+
+### gbm_grouped_categories (stochastic gradient boosting)
+
+```{r gbm_grouped_categories, echo = FALSE, comment='', results='asis'}
+# modelLookup('gbm')
+model_pre_processing <- NULL
+gbm_grouped_categories <- train_classification(
+	refresh_models = refresh_models,
+	training_metric = metric,
+	custom_seed = custom_seed,
+	model_name = 'gbm_grouped_categories',
+	use_formula = FALSE,
+	dataset = classification_train,
+	training_method = 'gbm',
+	training_preProcess = model_pre_processing,
+	training_control = train_control,
+	training_tune_grid = expand.grid(shrinkage = tuning_gbm_shrinkage,
+			n.trees = tuning_gbm_num_boosting_iterations,
+			interaction.depth = tuning_gbm_max_tree_depth,
+			n.minobsinnode = tuning_gbm_min_terminal_node_size),
+	#training_tune_length = 10,
+	sample_to_predictor_ratio_threshold = NULL,
+	class_to_predictor_ratio_threshold = 5,
+	class_names = c(target_positive_class, target_negative_class))
+
+model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'gbm_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+classification_models[['gbm_grouped_categories']] <- gbm_grouped_categories
+```
+
 
 ### All Models on Page 550 that are classification or both regression and classification
 
