@@ -11,6 +11,7 @@ output:
 ```{r setup, echo = FALSE, results='hide', message=FALSE, warning=FALSE}
 options(scipen=999) # non-scientific notation
 options(width=180)
+library(pROC)
 library(plyr)
 source('~/r-tools/output/plots.R', chdir=TRUE)
 source('~/r-tools/output/markdown.R', chdir=TRUE)
@@ -1742,7 +1743,7 @@ classification_models[['gbm_grouped_categories']] <- gbm_grouped_categories
 
 ### Models used for spot-check.Rmd 
 
-## Resamples & Top Models
+# Resamples & Top Models
 
 ## Resamples
 
@@ -1816,14 +1817,50 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	print(histogram(~predicted_probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count'))
 	print(histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count'))
 
-	### Create the confusion matrix from the test set.
+	###########################################################
+	# Create the confusion matrix from the test set.
+	###########################################################
 	confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
 	confusion_ls <- confusion_list(true_pos = confusion_matrix[target_positive_class, target_positive_class],
 									true_neg = confusion_matrix[target_negative_class, target_negative_class],
 									false_pos = confusion_matrix[target_negative_class, target_positive_class],
 									false_neg = confusion_matrix[target_positive_class, target_negative_class])
-	observation_rates <- confusion_matrix / sum(confusion_matrix)
+	#observation_rates <- confusion_matrix / sum(confusion_matrix)
 
+	print(visualize_quality_of_model(confusion_ls))
+	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
+	cat('\n\n')
+	cat(codebc(conf_matrix, postfix = '\n\n'))
+
+	###########################################################
+	# Create the confusion matrix from 'idea' cutoff
+	# i.e. clostest to top left of ROC
+	###########################################################
+	model_roc <- roc(df_results$actual_observations, df_results$predicted_probabilities, levels = rev(c(target_positive_class, target_negative_class)))
+	cutoff_closest_topleft <- coords(model_roc, x = 'best', best.method = 'closest.topleft')
+	cutoff_youden <- coords(model_roc, x = 'best', best.method = 'youden')
+	
+	print(model$model_info$label)
+	print(cutoff_closest_topleft)
+	print(cutoff_youden)
+	
+	predicted_class_topleft <- factor(ifelse(df_results$predicted_probabilities > cutoff_closest_topleft['threshold'],
+											 target_positive_class, target_negative_class),
+									  levels = c(target_positive_class, target_negative_class))
+	
+	confusion_matrix_topleft <- table(actual = actual_observations, predictions = predicted_class_topleft)
+	confusion_ls_topleft <- confusion_list(true_pos = confusion_matrix_topleft[target_positive_class, target_positive_class],
+									true_neg = confusion_matrix_topleft[target_negative_class, target_negative_class],
+									false_pos = confusion_matrix_topleft[target_negative_class, target_positive_class],
+									false_neg = confusion_matrix_topleft[target_positive_class, target_negative_class])
+
+	
+	print(visualize_quality_of_model(confusion_ls_topleft, chart_title = paste0('Quality of Model (using calculated probability threshold, ', round(cutoff_closest_topleft['threshold'], 3),')')))
+	cat('\n\nNOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).\n\n')
+
+	###########################################################
+	# expected value
+	###########################################################
 	average_profit <- 5
 	average_cost <- 2
 	gain_true_positive <- average_profit - average_cost # positive is gain
@@ -1831,24 +1868,22 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	gain_false_positive <- -average_cost # negative is cost
 	gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
 	gain_cost_matrix <- matrix(c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
-
 	print(expected_value_chart(predicted_probabilities_positive = predicted_probabilities_positive, actual_outcomes = actual_observations == target_positive_class, gain_cost_matrix = gain_cost_matrix))
 
-	print(visualize_quality_of_model(confusion_ls))
-	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
-	cat('\n\n')
-	cat(codebc(conf_matrix, postfix = '\n\n'))
-
-	### ROC curves:
+	###########################################################
+	# ROC/AUC
+	###########################################################
 	roc_pred <- prediction(predictions = predicted_probabilities_positive, labels = actual_observations)
 	roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
 	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
 
-	# calculate AUC
 	perf_auc <- performance(roc_pred, measure = 'auc')
 	model_auc <- unlist(perf_auc@y.values)
 
-	# Gain/Lift charts
+	stopifnot(round(model_roc$auc, 2) == round(model_auc, 2)) # make sure AUC matches between different calculations
+	###########################################################
+	# gain/lift/calibration
+	###########################################################
 	creditLift <- lift(actual_observations ~ predicted_probabilities_positive, data = df_results)
 	print(xyplot(creditLift))
 
@@ -1865,8 +1900,16 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = predicted_probabilities_positive, target_positive_class = target_positive_class)
 	cal_chart <- calibration_chart(cal_table = cal_table)
 	print(cal_chart)
-
-	return (c(model_auc = model_auc, model_sensitivity = as.numeric(conf_matrix$byClass['Sensitivity']), model_specificity = as.numeric(conf_matrix$byClass['Specificity'])))
+	
+	return (c(	model_auc = model_auc,
+				model_sensitivity = as.numeric(conf_matrix$byClass['Sensitivity']),
+				model_specificity = as.numeric(conf_matrix$byClass['Specificity']),
+				topleft_threshold = as.numeric(cutoff_closest_topleft['threshold']),
+				topleft_sensitivity = as.numeric(cutoff_closest_topleft['sensitivity']),
+				topleft_specificity = as.numeric(cutoff_closest_topleft['specificity']),
+				youden_threshold = as.numeric(cutoff_youden['threshold']),
+				youden_sensitivity = as.numeric(cutoff_youden['sensitivity']),
+				youden_specificity = as.numeric(cutoff_youden['specificity'])))
 }
 ```
 
@@ -2002,31 +2045,29 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 })
 
 final_models_metrics <- data.frame(model = factor(as.character(top_models$model), levels = as.character(top_models$model)),
-								   test_set_auc = map_dbl(model_stats, ~ .['model_auc']),
-								   cross_validation_auc = top_models$cross_validation_auc,
-								   sensitivity = map_dbl(model_stats, ~ .['model_sensitivity']),
-								   specificity = map_dbl(model_stats, ~ .['model_specificity']))
+								   test_set__auc = map_dbl(model_stats, ~ .['model_auc']),
+								   cross_validation__auc = top_models$cross_validation_auc,
+								   test_set__sensitivity = map_dbl(model_stats, ~ .['model_sensitivity']),
+								   test_set__specificity = map_dbl(model_stats, ~ .['model_specificity']),
+								   top_left__threshold = map_dbl(model_stats, ~ .['topleft_threshold']),
+								   top_left__sensitivity = map_dbl(model_stats, ~ .['topleft_sensitivity']),
+								   top_left__specificity = map_dbl(model_stats, ~ .['topleft_specificity']),
+								   youden__threshold = map_dbl(model_stats, ~ .['youden_threshold']),
+								   youden__sensitivity = map_dbl(model_stats, ~ .['youden_sensitivity']),
+								   youden__specificity = map_dbl(model_stats, ~ .['youden_specificity']))
 
-max_test_auc <- max(final_models_metrics$test_set_auc)
-max_sensitivity <- max(final_models_metrics$sensitivity)
-max_specificity <- max(final_models_metrics$specificity)
+max_test_auc <- max(final_models_metrics$test_set__auc)
+max_sensitivity <- max(final_models_metrics$test_set__sensitivity)
+max_specificity <- max(final_models_metrics$test_set__specificity)
 
-#prepare/format data for ggplot
-final_models_metrics_long <- gather(final_models_metrics, metric, value, -model) %>%
-	mutate(model = factor(model, levels = rev(unique(model))),
-		type = ifelse(str_detect(metric, 'auc'), str_split(metric, '_'), '')) %>%
-	mutate(type = map_chr(type, ~ {
-			if(length(.) > 1)
-			{
-				return(paste0(.[1:2], collapse = ' '))
-			}else{
-				return ('test set')
-			}
-		}),
-	metric = ifelse(str_detect(metric, 'auc'), 'auc', as.character(metric))) %>%
-	mutate(metric = factor(metric, levels = unique(metric)))
+final_models_metrics_long <- final_models_metrics %>%
+	dplyr::select(-contains('threshold')) %>%
+	gather(metric, value, -model) %>%
+	separate(col = metric, c('type', 'metric'), sep = '__') %>%
+	dplyr::mutate(type = factor(type, levels = c('cross_validation', 'test_set', 'top_left', 'youden'))) %>%
+	dplyr::mutate(metric = factor(metric, levels = c('auc', 'sensitivity', 'specificity')))
 
-best_values <- data.frame(metric = unique(final_models_metrics_long$metric), Z = c(max_test_auc, max_sensitivity, max_specificity))
+best_values <- data.frame(metric = c('auc', 'sensitivity', 'specificity'), Z = c(max_test_auc, max_sensitivity, max_specificity))
 ggplot(data = final_models_metrics_long, mapping = aes(x = model, y = value, col = type)) +
 	geom_point(size = 3, alpha = 0.7) +
 	geom_hline(data = best_values, aes(yintercept = Z), color='red') +
