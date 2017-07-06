@@ -27,6 +27,15 @@ The two main outputs for the regression analysis are:
 
 ## predictive_analysis_classification.Rmd
 
-The classification code is currently being implemented
-
 - example output: [predictive_analysis_classification.md](./predictive_analysis_classification.md)
+
+The two main outputs for the classification analysis are:
+
+- **shotgun approach**: plot showing cross-validated `ROC/AUC`, `Sensitivity`, and `Specificity` for a variety of models (with reasonable defaults) training on a training set.
+	- For example:
+![spot_check](./predictive_analysis_classification_files/figure-markdown_github/resamples_regression-1.png)
+
+- **final models**: plot showing `ROC/AUC`, `Sensitivity`, and `Specificity`, on the top x (e.g. 5) models that have been retrained on the entire training set (as oppossed to cross-validated), and the tested on the test set (data-points that the model has not seen).
+	- For example:
+
+![final_models](./predictive_analysis_classification_files/figure-markdown_github/top_models-58.png)
