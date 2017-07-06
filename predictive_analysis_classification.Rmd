@@ -48,6 +48,7 @@ require(doMC)
 registerDoMC(cores = round(detectCores()/2) + 1) # All subsequent models are then run in parallel - https://topepo.github.io/caret/parallel-processing.html
 
 calculate_nnet_MaxNWts <- function(max_nnet_size, number_of_dataset_columns) { # number_of_dataset_columns is all columns including target
+
 	return ((max_nnet_size * number_of_dataset_columns) + max_nnet_size + 1) # from pg 361, but slightly different because their `reducedSet` (vector rather than df) does not include the target variable, so ignoring the `+1` they have
 }
 
@@ -80,9 +81,7 @@ classification_dataset <- classification_dataset %>%
 	dplyr::mutate_if(is.logical, as.factor)
 
 classification_column_names <- colnames(classification_dataset)
-numeric_columns <- map_lgl(classification_column_names, ~ {
-	return (is.numeric(classification_dataset[, .]))
-})
+numeric_columns <- map_lgl(classification_column_names, ~ { return (is.numeric(classification_dataset[, .])) })
 numeric_column_names <- classification_column_names[numeric_columns]
 
 num_sample_size <- nrow(classification_dataset)
@@ -165,10 +164,12 @@ skewnewss_statistics <- map_dbl(classification_column_names, ~ {
 	column_name <- .
 
 	dataset_column <- classification_dataset[, column_name]
-	if(is.numeric(dataset_column) && min(dataset_column > 0))
-	{
+	if(is.numeric(dataset_column) && min(dataset_column > 0)) {
+
 		return (BoxCoxTrans(dataset_column)$skewness)
-	}else{
+
+	} else {
+
 		return (NA)
 	}
 })
@@ -197,7 +198,9 @@ df_outliers <- map(numeric_column_names, ~ {
 	return (list(upper_outlier_count, lower_outlier_count))
 })
 
-df_outliers <- data.frame(columns = numeric_column_names, lower_outlier_count = map_chr(df_outliers, ~ {.[[2]]}), upper_outlier_count = map_chr(df_outliers, ~ {.[[1]]}))
+df_outliers <- data.frame(	columns = numeric_column_names,
+							lower_outlier_count = map_chr(df_outliers, ~ {.[[2]]}),
+							upper_outlier_count = map_chr(df_outliers, ~ {.[[1]]}))
 kable(df_outliers)
 ```
 
@@ -210,8 +213,13 @@ if(sum(numeric_columns == TRUE) >= 2) {
 
 	#pairs.panels(classification_dataset[, numeric_columns])
 	matrix_correlations <- cor(classification_dataset[, numeric_columns])
-	corrplot::corrplot(matrix_correlations, order = 'hclust', tl.cex = .35, col = colorRampPalette(rev(c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF', '#D1E5F0', '#92C5DE', '#4393C3', '#2166AC', '#053061')))(200))
+	corrplot::corrplot(	matrix_correlations, 
+						order = 'hclust',
+						tl.cex = .35,
+						col = colorRampPalette(rev(c(	'#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF', '#D1E5F0',
+														'#92C5DE', '#4393C3', '#2166AC', '#053061')))(200))
 } else {
+
 	cat('\n\n> Not enough numberic columns for correlation.\n\n')
 }
 ```
@@ -229,10 +237,13 @@ Shows caret's recommendation of removing collinear columns based on correlation 
 ```{r caret_collinearity, echo = FALSE}
 numeric_predictor_data <- classification_dataset[, numeric_columns]
 collinear_indexes <- findCorrelation(cor(numeric_predictor_data), correlation_threshold)
-if(length(collinear_indexes) == 0)
-{
+
+if(length(collinear_indexes) == 0) {
+
 	recommended_columns_caret <- colnames(classification_dataset)
-}else{
+
+} else {
+
 	recommended_columns_caret <- c('target', colnames(numeric_predictor_data)[-collinear_indexes])	
 }
 ```
@@ -257,31 +268,30 @@ if(sum(numeric_columns == TRUE) >= 2) {
 
 	predictor_correlations <- cor(numeric_predictor_data)
 
-	walk(1:nrow(predictor_correlations), ~ {
-		predictor_correlations[.,.] <<- NA	
-	})
+	walk(1:nrow(predictor_correlations), ~ { predictor_correlations[.,.] <<- NA	})
 
 	while(max(abs(predictor_correlations), na.rm = TRUE) > correlation_threshold) {
 		## caret's findCorrelation function is used to identify columns to remove.
 		num_cols_rows <- nrow(predictor_correlations)
 		#highCorr <- findCorrelation(predictor_correlations, .75)
-		ab_index <- which(abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) & abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
+		ab_index <- which(	abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) & 
+							abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
 		a_index <- ceil(ab_index / num_cols_rows) # get the row number 
 		b_index <- ab_index - (num_cols_rows * (a_index-1))
 	
 		ave_a_predictor_correlations <- mean(abs(predictor_correlations[a_index, ]), na.rm = TRUE)
 		ave_b_predictor_correlations <- mean(abs(predictor_correlations[b_index, ]), na.rm = TRUE)
 	
-		if(ave_a_predictor_correlations > ave_b_predictor_correlations)
-		{
+		if(ave_a_predictor_correlations > ave_b_predictor_correlations) {
+
 			predictor_correlations <<- predictor_correlations[-a_index, -a_index]
 
-		}else {
+		} else {
 
 			predictor_correlations <<- predictor_correlations[-b_index, -b_index]
-		}	
-		
+		}		
 	}
+
 	recommended_numeric_columns <- colnames(predictor_correlations)
 	non_numeric_columns <- classification_column_names[!(classification_column_names %in% numeric_column_names)] # includes target
 	recommended_columns_custom <- c(recommended_numeric_columns, non_numeric_columns)
@@ -303,6 +313,7 @@ if(sum(numeric_columns == TRUE) >= 2) {
 
 ```{r graphs, echo = FALSE, fig.height=4, fig.width=6, comment = '', results = 'asis'}
 gg_color_hue <- function(n) {
+
   hues = seq(15, 375, length = n + 1)
   hcl(h = hues, l = 65, c = 100)[1:n]
 }
@@ -310,10 +321,11 @@ gg_color_hue <- function(n) {
 colors_two = rev(gg_color_hue(2))
 
 walk(classification_column_names, ~ {
+
 	column_name <- .
 	
-	if(column_name == 'target')
-	{
+	if(column_name == 'target') {
+
 		return ()
 	}
 
@@ -333,6 +345,7 @@ walk(classification_column_names, ~ {
 				coord_cartesian(xlim = c(quantiles[1], quantiles[2])) + labs(x = column_name))
 
 		}, error = function(e) {
+
 			cat('\n\nError with histogram.\n\n')
 		})
 
@@ -345,6 +358,7 @@ walk(classification_column_names, ~ {
 				xlab('target') + ylab(column_name))
 		
 		if(length(levels(classification_dataset$target)) == 2){
+
 			levels <- levels(classification_dataset$target)
 			level_1 <- levels[1]
 			level_2 <- levels[2]
@@ -366,26 +380,30 @@ walk(classification_column_names, ~ {
 			different_means <- wilcox.test(level_1_values, level_2_values, correct = FALSE, paired = FALSE)$p.value <= 0.05
 			cat(paste('\n\nstatistically different means (Wilcoxon-Matt-Whitney):', different_means, '\n\n'))
 		}
-
-	}else if(is.factor(dataset_column) || is.logical(dataset_column)){
+	} else if(is.factor(dataset_column) || is.logical(dataset_column)) {
 		
 		print(ggplot(data = classification_dataset, mapping = aes(x = dataset_column)) + 
 			geom_bar(mapping=aes(fill = dataset_column)) + 
-			ggtitle(paste('Histogram of', column_name)) + ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
+			ggtitle(paste('Histogram of', column_name)) +
+			ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
 
 		df_data <- data.frame(categorical_variable=classification_dataset$target, column = classification_dataset[, column_name ])
 		print(ggplot(df_data, aes(column, ..count..)) +
 				geom_bar(aes(fill = categorical_variable), position = 'dodge') +
-				ggtitle(paste('Histogram of', column_name, ', grouped by the target variable')) + ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + scale_fill_manual(values=colors_two))
+				ggtitle(paste('Histogram of', column_name, ', grouped by the target variable')) +
+				ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + scale_fill_manual(values=colors_two))
 
 		result = tryCatch({
+
 			count_table <- table(classification_dataset[, c('target', column_name)])
 			cat(paste0('\n\n> Chi-Square p-value: `', round(chisq.test(count_table)$p.value, 3), '`\n\n'))
+
 		}, error = function(e) {
+
 			cat(paste('\n\n', e, '\n\n'))
 		})
+	} else {
 
-	}else{
 		stop(paste('unknown data type -', column_name))
 	}
 })
@@ -421,7 +439,9 @@ prop.table(table(classification_test$target))
 ```{r spot_check_classification, echo = FALSE}
 # we have to make sure they are fit on exactly the same test sets in training and cross validation so we are sure we are making an apples-to-apples comparison
 set.seed(custom_seed)
-spot_check_folds <- createMultiFolds(classification_train$target, k = cross_validation_num_folds, times = cross_validation_num_repeats) # maintains the `churn` ratio
+spot_check_folds <- createMultiFolds(	classification_train$target,
+										k = cross_validation_num_folds,
+										times = cross_validation_num_repeats) # maintains the `churn` ratio
 
 train_control <- trainControl(
 	summaryFunction = twoClassSummary,
@@ -654,7 +674,8 @@ glm_no_pre_process <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_no_pre_process', training_preProcess = I(list(NA))))
+model_preprocessing_values <- rbind(model_preprocessing_values, 
+									data.frame(model = 'glm_no_pre_process', training_preProcess = I(list(NA))))
 classification_models[['glm_no_pre_process']] <- glm_no_pre_process
 ```
 
@@ -677,7 +698,8 @@ glm_basic_processing <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_basic_processing', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'glm_basic_processing', training_preProcess = I(list(model_pre_processing))))
 classification_models[['glm_basic_processing']] <- glm_basic_processing
 ```
 
@@ -705,7 +727,8 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 		class_to_predictor_ratio_threshold = NULL,
 		class_names = NULL)
 
-	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_remove_collinearity_caret', training_preProcess = I(list(model_pre_processing))))
+	model_preprocessing_values <- rbind(model_preprocessing_values,
+										data.frame(model = 'glm_remove_collinearity_caret', training_preProcess = I(list(model_pre_processing))))
 	classification_models[['glm_remove_collinearity_caret']] <- glm_remove_collinearity_caret
 }
 ``` 
@@ -734,7 +757,8 @@ if(all(classification_column_names %in% recommended_columns_custom)) { # if all 
 		class_to_predictor_ratio_threshold = NULL,
 		class_names = NULL)
 
-	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_remove_collinearity_custom', training_preProcess = I(list(model_pre_processing))))
+	model_preprocessing_values <- rbind(model_preprocessing_values,
+										data.frame(model = 'glm_remove_collinearity_custom', training_preProcess = I(list(model_pre_processing))))
 	classification_models[['glm_remove_collinearity_custom']] <- glm_remove_collinearity_custom
 }
 ```
@@ -758,7 +782,8 @@ glm_yeojohnson <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glm_yeojohnson', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'glm_yeojohnson', training_preProcess = I(list(model_pre_processing))))
 classification_models[['glm_yeojohnson']] <- glm_yeojohnson
 ```
 
@@ -811,7 +836,8 @@ logistic_regression_stepwise_backward <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'logistic_regression_stepwise_backward', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'logistic_regression_stepwise_backward', training_preProcess = I(list(model_pre_processing))))
 classification_models[['logistic_regression_stepwise_backward']] <- logistic_regression_stepwise_backward
 ```
 
@@ -834,7 +860,8 @@ linear_discriminant_analsysis <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'linear_discriminant_analsysis', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'linear_discriminant_analsysis', training_preProcess = I(list(model_pre_processing))))
 classification_models[['linear_discriminant_analsysis']] <- linear_discriminant_analsysis
 ```
 
@@ -862,7 +889,8 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 		class_to_predictor_ratio_threshold = NULL,
 		class_names = NULL)
 
-	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'linear_discriminant_analsysis_remove_collinear', training_preProcess = I(list(model_pre_processing))))
+	model_preprocessing_values <- rbind(model_preprocessing_values,
+										data.frame(model = 'linear_discriminant_analsysis_remove_collinear', training_preProcess = I(list(model_pre_processing))))
 	classification_models[['linear_discriminant_analsysis_remove_collinear']] <- linear_discriminant_analsysis_remove_collinear
 }
 ```
@@ -887,7 +915,8 @@ linear_discriminant_analsysis_remove_collinear_skew <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'linear_discriminant_analsysis_remove_collinear_skew', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'linear_discriminant_analsysis_remove_collinear_skew', training_preProcess = I(list(model_pre_processing))))
 classification_models[['linear_discriminant_analsysis_remove_collinear_skew']] <- linear_discriminant_analsysis_remove_collinear_skew
 ```
 
@@ -910,7 +939,8 @@ partial_least_squares_discriminant_analysis <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'partial_least_squares_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'partial_least_squares_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
 classification_models[['partial_least_squares_discriminant_analysis']] <- partial_least_squares_discriminant_analysis
 ```
 
@@ -933,7 +963,8 @@ partial_least_squares_discriminant_analysis_skew <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'partial_least_squares_discriminant_analysis_skew', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'partial_least_squares_discriminant_analysis_skew', training_preProcess = I(list(model_pre_processing))))
 classification_models[['partial_least_squares_discriminant_analysis_skew']] <- partial_least_squares_discriminant_analysis_skew
 ```
 
@@ -956,7 +987,8 @@ glmnet_lasso_ridge <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'glmnet_lasso_ridge', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'glmnet_lasso_ridge', training_preProcess = I(list(model_pre_processing))))
 classification_models[['glmnet_lasso_ridge']] <- glmnet_lasso_ridge
 ```
 
@@ -979,7 +1011,8 @@ sparse_lda <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'sparse_lda', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'sparse_lda', training_preProcess = I(list(model_pre_processing))))
 classification_models[['sparse_lda']] <- sparse_lda
 ```
 
@@ -1004,7 +1037,8 @@ nearest_shrunken_centroids <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'nearest_shrunken_centroids', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'nearest_shrunken_centroids', training_preProcess = I(list(model_pre_processing))))
 classification_models[['nearest_shrunken_centroids']] <- nearest_shrunken_centroids
 ```
 
@@ -1027,7 +1061,8 @@ regularized_discriminant_analysis <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'regularized_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'regularized_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
 classification_models[['regularized_discriminant_analysis']] <- regularized_discriminant_analysis
 ```
 
@@ -1055,7 +1090,8 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 		class_to_predictor_ratio_threshold = 5,
 		class_names = c(target_positive_class, target_negative_class))
 
-	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'regularized_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
+	model_preprocessing_values <- rbind(model_preprocessing_values,
+										data.frame(model = 'regularized_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
 	classification_models[['regularized_discriminant_analysis_rc']] <- regularized_discriminant_analysis_rc
 }
 ```
@@ -1079,7 +1115,8 @@ mixture_discriminant_analysis <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'mixture_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'mixture_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
 classification_models[['mixture_discriminant_analysis']] <- mixture_discriminant_analysis
 ```
 
@@ -1107,7 +1144,8 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 		class_to_predictor_ratio_threshold = 5,
 		class_names = c(target_positive_class, target_negative_class))
 
-	model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'mixture_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
+	model_preprocessing_values <- rbind(model_preprocessing_values,
+										data.frame(model = 'mixture_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
 	classification_models[['mixture_discriminant_analysis_rc']] <- mixture_discriminant_analysis_rc
 }
 ```
@@ -1136,7 +1174,8 @@ neural_network_spatial_rc <- train_classification(
 	neural_net_lineout = parameter_nnet_linout,
 	neural_net_max_iterations = parameter_nnet_max_iterations)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'neural_network_spatial_rc', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'neural_network_spatial_rc', training_preProcess = I(list(model_pre_processing))))
 classification_models[['neural_network_spatial_rc']] <- neural_network_spatial_rc
 ```
 
@@ -1164,7 +1203,8 @@ neural_network_spatial_rc_skew <- train_classification(
 	neural_net_lineout = parameter_nnet_linout,
 	neural_net_max_iterations = parameter_nnet_max_iterations)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'neural_network_spatial_rc_skew', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'neural_network_spatial_rc_skew', training_preProcess = I(list(model_pre_processing))))
 classification_models[['neural_network_spatial_rc_skew']] <- neural_network_spatial_rc_skew
 ```
 
@@ -1187,7 +1227,8 @@ flexible_discriminant_analsysis <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'flexible_discriminant_analsysis', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'flexible_discriminant_analsysis', training_preProcess = I(list(model_pre_processing))))
 classification_models[['flexible_discriminant_analsysis']] <- flexible_discriminant_analsysis
 ```
 
@@ -1213,7 +1254,8 @@ svm_linear <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'svm_linear', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'svm_linear', training_preProcess = I(list(model_pre_processing))))
 classification_models[['svm_linear']] <- svm_linear
 ```
 
@@ -1239,7 +1281,8 @@ svm_polynomial <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'svm_polynomial', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'svm_polynomial', training_preProcess = I(list(model_pre_processing))))
 classification_models[['svm_polynomial']] <- svm_polynomial
 ```
 
@@ -1265,7 +1308,8 @@ svm_radial <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'svm_radial', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'svm_radial', training_preProcess = I(list(model_pre_processing))))
 classification_models[['svm_radial']] <- svm_radial
 ```
 
@@ -1291,7 +1335,8 @@ k_nearest_neighbors <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'k_nearest_neighbors', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'k_nearest_neighbors', training_preProcess = I(list(model_pre_processing))))
 classification_models[['k_nearest_neighbors']] <- k_nearest_neighbors
 ```
 
@@ -1317,7 +1362,8 @@ naive_bayes <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'naive_bayes', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'naive_bayes', training_preProcess = I(list(model_pre_processing))))
 classification_models[['naive_bayes']] <- naive_bayes
 ```
 
@@ -1346,7 +1392,8 @@ rpart_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'rpart_independent_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'rpart_independent_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['rpart_independent_categories']] <- rpart_independent_categories
 plot(as.party(rpart_independent_categories$finalModel))
 ```
@@ -1372,7 +1419,8 @@ rpart_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'rpart_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'rpart_grouped_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['rpart_grouped_categories']] <- rpart_grouped_categories
 plot(as.party(rpart_grouped_categories$finalModel))
 ```
@@ -1398,7 +1446,8 @@ treebag_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'treebag_independent_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'treebag_independent_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['treebag_independent_categories']] <- treebag_independent_categories
 ```
 
@@ -1423,7 +1472,8 @@ treebag_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'treebag_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'treebag_grouped_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['treebag_grouped_categories']] <- treebag_grouped_categories
 ```
 
@@ -1448,7 +1498,8 @@ c50_model_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'c50_model_independent_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'c50_model_independent_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['c50_model_independent_categories']] <- c50_model_independent_categories
 ```
 
@@ -1473,7 +1524,8 @@ c50_model_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'c50_model_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'c50_model_grouped_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['c50_model_grouped_categories']] <- c50_model_grouped_categories
 ```
 
@@ -1498,7 +1550,8 @@ c50_rules_model_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'c50_rules_model_independent_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'c50_rules_model_independent_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['c50_rules_model_independent_categories']] <- c50_rules_model_independent_categories
 ```
 
@@ -1523,7 +1576,8 @@ c50_rules_model_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'c50_rules_model_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'c50_rules_model_grouped_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['c50_rules_model_grouped_categories']] <- c50_rules_model_grouped_categories
 ```
 
@@ -1548,7 +1602,8 @@ rf_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'rf_independent_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'rf_independent_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['rf_independent_categories']] <- rf_independent_categories
 ```
 
@@ -1573,7 +1628,8 @@ rf_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'rf_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'rf_grouped_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['rf_grouped_categories']] <- rf_grouped_categories
 ```
 
@@ -1598,7 +1654,8 @@ adaboost_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'adaboost_independent_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'adaboost_independent_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['adaboost_independent_categories']] <- adaboost_independent_categories
 ```
 
@@ -1623,7 +1680,8 @@ adaboost_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'adaboost_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'adaboost_grouped_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['adaboost_grouped_categories']] <- adaboost_grouped_categories
 ```
 
@@ -1650,7 +1708,8 @@ adabag_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'adabag_independent_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'adabag_independent_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['adabag_independent_categories']] <- adabag_independent_categories
 ```
 
@@ -1675,7 +1734,8 @@ adabag_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'adabag_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'adabag_grouped_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['adabag_grouped_categories']] <- adabag_grouped_categories
 ```
 
@@ -1706,7 +1766,8 @@ gbm_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'gbm_independent_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'gbm_independent_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['gbm_independent_categories']] <- gbm_independent_categories
 ```
 
@@ -1734,7 +1795,8 @@ gbm_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values, data.frame(model = 'gbm_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+model_preprocessing_values <- rbind(model_preprocessing_values,
+									data.frame(model = 'gbm_grouped_categories', training_preProcess = I(list(model_pre_processing))))
 classification_models[['gbm_grouped_categories']] <- gbm_grouped_categories
 ```
 
@@ -1814,48 +1876,63 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	# ggplot(df_results, aes(predicted_probabilities)) + geom_histogram(binwidth = 0.1)
 
 	### Plot the probability of negative/positive
-	print(histogram(~predicted_probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count'))
-	print(histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20, xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count'))
+	print(histogram(~predicted_probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20,
+						xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count'))
+	print(histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20,
+						xlab = paste0('Probability of `', target_positive_class,'`'), type = 'count'))
 
 	###########################################################
 	# Create the confusion matrix from the test set.
 	###########################################################
+	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
+	cat('\n\n')
+	cat(codebc(conf_matrix, postfix = '\n\n'))
+
 	confusion_matrix <- table(actual = actual_observations, predictions = df_results$predicted_class)
 	confusion_ls <- confusion_list(true_pos = confusion_matrix[target_positive_class, target_positive_class],
 									true_neg = confusion_matrix[target_negative_class, target_negative_class],
 									false_pos = confusion_matrix[target_negative_class, target_positive_class],
 									false_neg = confusion_matrix[target_positive_class, target_negative_class])
 	#observation_rates <- confusion_matrix / sum(confusion_matrix)
-
 	print(visualize_quality_of_model(confusion_ls))
-	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
-	cat('\n\n')
-	cat(codebc(conf_matrix, postfix = '\n\n'))
+
+	###########################################################
+	# ROC/AUC
+	###########################################################
+	roc_pred <- prediction(predictions = predicted_probabilities_positive, labels = actual_observations)
+	roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
+	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0, 1, 0.05), text.adj = c(-0.2, 1.7)))
+
+	perf_auc <- performance(roc_pred, measure = 'auc')
+	model_auc <- unlist(perf_auc@y.values)
 
 	###########################################################
 	# Create the confusion matrix from 'idea' cutoff
 	# i.e. clostest to top left of ROC
 	###########################################################
-	model_roc <- roc(df_results$actual_observations, df_results$predicted_probabilities, levels = rev(c(target_positive_class, target_negative_class)))
+	model_roc <- roc(	df_results$actual_observations, df_results$predicted_probabilities,
+						levels = rev(c(target_positive_class, target_negative_class)))
 	cutoff_closest_topleft <- coords(model_roc, x = 'best', best.method = 'closest.topleft')
 	cutoff_youden <- coords(model_roc, x = 'best', best.method = 'youden')
-	
-	print(model$model_info$label)
-	print(cutoff_closest_topleft)
-	print(cutoff_youden)
-	
+	stopifnot(round(model_roc$auc, 2) == round(model_auc, 2)) # make sure AUC matches between different calculations
+
+	cat('\n\n')
+	cat(codebc(cutoff_closest_topleft, postfix='\n\n'))
+	cat(codebc(cutoff_youden, postfix='\n\n'))
+
 	predicted_class_topleft <- factor(ifelse(df_results$predicted_probabilities > cutoff_closest_topleft['threshold'],
 											 target_positive_class, target_negative_class),
 									  levels = c(target_positive_class, target_negative_class))
-	
+
 	confusion_matrix_topleft <- table(actual = actual_observations, predictions = predicted_class_topleft)
 	confusion_ls_topleft <- confusion_list(true_pos = confusion_matrix_topleft[target_positive_class, target_positive_class],
 									true_neg = confusion_matrix_topleft[target_negative_class, target_negative_class],
 									false_pos = confusion_matrix_topleft[target_negative_class, target_positive_class],
 									false_neg = confusion_matrix_topleft[target_positive_class, target_negative_class])
 
-	
-	print(visualize_quality_of_model(confusion_ls_topleft, chart_title = paste0('Quality of Model (using calculated probability threshold, ', round(cutoff_closest_topleft['threshold'], 3),')')))
+	print(visualize_quality_of_model(	confusion_ls_topleft,
+										chart_title = paste0('Quality of Model (using calculated probability threshold,',
+										round(cutoff_closest_topleft['threshold'], 3),')')))
 	cat('\n\nNOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).\n\n')
 
 	###########################################################
@@ -1867,37 +1944,38 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	gain_true_negative <- 0
 	gain_false_positive <- -average_cost # negative is cost
 	gain_false_negative <- -(average_profit - average_cost) # more than likely, opportunity cost, but still should be counted (opportunity cost of not making the profit, but had we labed as a positive, we would have also incurred the average_cost (e.g. of mailing the letter, etc.))
-	gain_cost_matrix <- matrix(c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive), nrow = 2, byrow = TRUE, dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
-	print(expected_value_chart(predicted_probabilities_positive = predicted_probabilities_positive, actual_outcomes = actual_observations == target_positive_class, gain_cost_matrix = gain_cost_matrix))
+	gain_cost_matrix <- matrix(	c(gain_true_negative, gain_false_positive, gain_false_negative, gain_true_positive),
+								nrow = 2,
+								byrow = TRUE,
+								dimnames = list(c('Actual Negative', 'Actual Positive'), c('Predicted Negative', 'Predicted Positive')))
 
-	###########################################################
-	# ROC/AUC
-	###########################################################
-	roc_pred <- prediction(predictions = predicted_probabilities_positive, labels = actual_observations)
-	roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
-	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0,1,0.05), text.adj = c(-0.2, 1.7)))
+	print(expected_value_chart(	predicted_probabilities_positive = predicted_probabilities_positive,
+								actual_outcomes = actual_observations == target_positive_class,
+								gain_cost_matrix = gain_cost_matrix))
 
-	perf_auc <- performance(roc_pred, measure = 'auc')
-	model_auc <- unlist(perf_auc@y.values)
-
-	stopifnot(round(model_roc$auc, 2) == round(model_auc, 2)) # make sure AUC matches between different calculations
 	###########################################################
 	# gain/lift/calibration
 	###########################################################
 	creditLift <- lift(actual_observations ~ predicted_probabilities_positive, data = df_results)
 	print(xyplot(creditLift))
 
-	gl_table <- gain_lift_table(actual_observations = actual_observations, predicted_probabilities = predicted_probabilities_positive, target_positive_class = target_positive_class)
+	gl_table <- gain_lift_table(actual_observations = actual_observations,
+								predicted_probabilities = predicted_probabilities_positive,
+								target_positive_class = target_positive_class)
 	gl_charts <- gain_lift_charts(gl_table = gl_table)
 
 	print(gl_charts[[1]])
 	print(gl_charts[[2]])
 
 	# Calibration Chart
-	calibration_data <- calibration(actual_observations ~ predicted_probabilities, data = df_results, cuts = 10)
+	calibration_data <- calibration(actual_observations ~ predicted_probabilities,
+									data = df_results,
+									cuts = 10)
 	print(xyplot(calibration_data, auto.key = list(columns = 2)))
 
-	cal_table <- calibration_table(actual_observations = actual_observations, predicted_probabilities = predicted_probabilities_positive, target_positive_class = target_positive_class)
+	cal_table <- calibration_table(	actual_observations = actual_observations,
+									predicted_probabilities = predicted_probabilities_positive,
+									target_positive_class = target_positive_class)
 	cal_chart <- calibration_chart(cal_table = cal_table)
 	print(cal_chart)
 	
@@ -1948,13 +2026,12 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 	cat(paste0('\n\n> Model Processing: `', paste0(pre_process, collapse = '; ')), '`\n\n')
 	if(!is.null(pre_process) && any(is.na(pre_process))) { # when we set the values (i.e. rbind to dataframe, we have to use NA, but when we pass it in, it should be NULL)
 
-		pre_process = NULL
+		pre_process <- NULL
 	}
 
 	# get method, best tuning grid/parameters, pre-processing steps.
 	model_method <- model_object$method
 	tune_grid <- model_object$bestTune
-
 
 	model_formula <- NULL
 	non_formula_columns <- NULL
@@ -1967,19 +2044,23 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 	} else {
 
 		training_column_names <- colnames(model_object$trainingData)
-		model_formula_string <- paste('target ~', paste0(training_column_names[-which(training_column_names == '.outcome')], collapse = ' + '))
+		model_formula_string <- paste(	'target ~', 
+										paste0(training_column_names[-which(training_column_names == '.outcome')],
+										collapse = ' + '))
+
 		model_formula <- as.formula(model_formula_string)
 	}
-	if(refresh_models)
-	{
+	
+	if(refresh_models) {
 		# some models have different parameters for `train`, which we need to use when training the final model
-		if(model_method == 'nnet')
-		{
+		if(model_method == 'nnet') {
 
 			stopifnot(!is.null(model_formula) && is.null(non_formula_columns)) # non-formula not implemented for nnet
 
-			parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tune_grid$size), number_of_dataset_columns = length(training_column_names))
-			cat(paste0('\n\n> Setting `nnet` specific parameters: `MaxNWts` - `', parameter_nnet_training_numWts,'`; `maxit` - `', parameter_nnet_max_iterations,'`\n\n'))
+			parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(	max_nnet_size = max(tune_grid$size),
+																		number_of_dataset_columns = length(training_column_names))
+			cat(paste0(	'\n\n> Setting `nnet` specific parameters: `MaxNWts` - `', parameter_nnet_training_numWts,
+						'`; `maxit` - `', parameter_nnet_max_iterations,'`\n\n'))
 			
 			# seems to fail if the number of calculated weights exceeds the MaxWts parameter, so we'll set it to a default minimum
 			parameter_nnet_training_numWts <- max(parameter_nnet_training_numWts, 50)
@@ -1995,7 +2076,7 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 									maxit = parameter_nnet_max_iterations,
 									MaxNWts = parameter_nnet_training_numWts,
 									linout = parameter_nnet_linout)
-		}else{
+		} else{
 
 			if(is.null(model_formula)) {
 				
@@ -2026,7 +2107,7 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 
 		saveRDS(final_model, file = paste0('./classification_data/top_model_', model_name, '.RDS'))
 
-	}else{
+	} else {
 
 		final_model <- readRDS(file = paste0('./classification_data/top_model_', model_name, '.RDS'))
 	}

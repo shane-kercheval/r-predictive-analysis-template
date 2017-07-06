@@ -25691,7 +25691,7 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
     obsLevels          2   -none-     character
     param              0   -none-     list     
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-2.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-3.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-2.png" width="750px" />
 
     Confusion Matrix and Statistics
 
@@ -25720,11 +25720,19 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
            'Positive' Class : yes             
                                               
 
-NULL threshold specificity sensitivity 0.4890000 0.9142857 0.6333333 threshold specificity sensitivity 0.4890000 0.9142857 0.6333333 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-4.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-4.png" width="750px" />NULL
+
+      threshold specificity sensitivity 
+      0.4890000   0.9142857   0.6333333 
+
+      threshold specificity sensitivity 
+      0.4890000   0.9142857   0.6333333 
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-5.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-5.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-6.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-10.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-11.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-10.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-11.png" width="750px" />
 
 ### Stochastic Gradient Boosting (gbm\_grouped\_categories)
 
@@ -25732,7 +25740,7 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-12.png" width="750px" />`var    rel.inf      checking_balance 20.2991981                amount 14.7668276  months_loan_duration 12.9758115        credit_history  9.1126882   employment_duration  7.7445948       savings_balance  7.1323685                   age  6.9311927               purpose  5.4043114          other_credit  3.6950532     percent_of_income  3.0209027               housing  2.8956110    years_at_residence  1.9670349            dependents  1.4892067                 phone  0.9052488  existing_loans_count  0.8825967                   job  0.7773533`
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-14.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-14.png" width="750px" />
 
     Confusion Matrix and Statistics
 
@@ -25761,11 +25769,19 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
            'Positive' Class : yes             
                                               
 
-NULL threshold specificity sensitivity 0.2810120 0.7142857 0.7666667 threshold specificity sensitivity 0.2810120 0.7142857 0.7666667 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" />NULL
+
+      threshold specificity sensitivity 
+      0.2810120   0.7142857   0.7666667 
+
+      threshold specificity sensitivity 
+      0.2810120   0.7142857   0.7666667 
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-17.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-22.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-23.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-22.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-23.png" width="750px" />
 
 ### Stochastic Gradient Boosting (gbm\_independent\_categories)
 
@@ -25773,7 +25789,7 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-24.png" width="750px" />`var     rel.inf                          amount 24.50924462                             age 13.99074860            months_loan_duration 11.48396109         checking_balanceunknown  8.46060673               percent_of_income  4.21441883              years_at_residence  3.51606589          savings_balanceunknown  2.35678482         credit_historyvery good  2.05957224                other_creditnone  1.87888148           credit_historyperfect  1.75432501                       phoneTRUE  1.67061557                      housingown  1.62837285  employment_duration4 - 7 years  1.59821125            existing_loans_count  1.57737056        checking_balance> 200 DM  1.57583990     purposefurniture/appliances  1.50093489      checking_balance1 - 200 DM  1.39118928              credit_historypoor  1.36232219   employment_durationunemployed  1.35822574              credit_historygood  1.28202896  employment_duration1 - 4 years  1.24699943                      purposecar  1.06998968                purposeeducation  0.98712940                      dependents  0.97553656                     housingrent  0.91442823    employment_duration> 7 years  0.89525717               other_creditstore  0.82081094                    jobunskilled  0.76224815              purposerenovations  0.71093790                      jobskilled  0.70136546     savings_balance100 - 500 DM  0.63422718        savings_balance> 1000 DM  0.56647347    savings_balance500 - 1000 DM  0.34235700                     purposecar0  0.13406462                   jobunemployed  0.06845431`
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-25.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-26.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-27.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-25.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-26.png" width="750px" />
 
     Confusion Matrix and Statistics
 
@@ -25802,11 +25818,19 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
            'Positive' Class : yes             
                                               
 
-NULL threshold specificity sensitivity 0.2470993 0.6857143 0.7666667 threshold specificity sensitivity 0.2470993 0.6857143 0.7666667 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-28.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-27.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-28.png" width="750px" />NULL
+
+      threshold specificity sensitivity 
+      0.2470993   0.6857143   0.7666667 
+
+      threshold specificity sensitivity 
+      0.2470993   0.6857143   0.7666667 
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-29.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-29.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-30.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-34.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-35.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-30.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-34.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-35.png" width="750px" />
 
 ### Regularized Discriminant Analysis (regularized\_discriminant\_analysis)
 
@@ -25830,7 +25854,7 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
     obsLevels         2   -none-     character
     param             0   -none-     list     
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-37.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-38.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-37.png" width="750px" />
 
     Confusion Matrix and Statistics
 
@@ -25859,11 +25883,19 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
            'Positive' Class : yes             
                                               
 
-NULL threshold specificity sensitivity 0.2707901 0.6714286 0.7333333 threshold specificity sensitivity 0.2482568 0.6428571 0.7666667 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-39.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-39.png" width="750px" />NULL
+
+      threshold specificity sensitivity 
+      0.2707901   0.6714286   0.7333333 
+
+      threshold specificity sensitivity 
+      0.2482568   0.6428571   0.7666667 
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-40.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-40.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-41.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-42.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-44.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-45.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-46.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-41.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-42.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-44.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-45.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-46.png" width="750px" />
 
 ### Random Forest (rf\_independent\_categories)
 
@@ -25894,7 +25926,7 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
     obsLevels          2   -none-     character
     param              0   -none-     list     
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-47.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-48.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-49.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-47.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-48.png" width="750px" />
 
     Confusion Matrix and Statistics
 
@@ -25923,8 +25955,16 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
            'Positive' Class : yes             
                                               
 
-NULL threshold specificity sensitivity 0.372 0.800 0.700 threshold specificity sensitivity 0.372 0.800 0.700 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-50.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-49.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-50.png" width="750px" />NULL
+
+      threshold specificity sensitivity 
+          0.372       0.800       0.700 
+
+      threshold specificity sensitivity 
+          0.372       0.800       0.700 
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-51.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-51.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-52.png" width="750px" />NULL <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-53.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-54.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-55.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-56.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-57.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-58.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-52.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-53.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-54.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-55.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-56.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-57.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-58.png" width="750px" />
