@@ -6,7 +6,9 @@
     -   [Correlation & Collinearity](#correlation-collinearity)
         -   [Correlation](#correlation)
         -   [Collinearity Removal](#collinearity-removal)
-    -   [Graphs](#graphs)
+    -   [Variable Importance](#variable-importance)
+        -   [ROC Values](#roc-values)
+    -   [Graphs of Predictors](#graphs-of-predictors)
         -   [checking\_balance](#checking_balance)
         -   [months\_loan\_duration](#months_loan_duration)
         -   [credit\_history](#credit_history)
@@ -233,8 +235,34 @@ This method is described in APM pg 47 as the following steps
 
 > final columns recommended: `months_loan_duration, amount, percent_of_income, years_at_residence, age, existing_loans_count, dependents, target, checking_balance, credit_history, purpose, savings_balance, employment_duration, other_credit, housing, job, phone`
 
-Graphs
-------
+Variable Importance
+-------------------
+
+### ROC Values
+
+> "If the predictor could perfectly separate the classes, there would be a cutoff for the predictor that would achieve a sensitivity oand specificity of 1 and the area under the curve would be one. \[A\] completely irrelevant predictor would have an area under the curve of approximately 0.5."
+
+|                        |        yes|         no|
+|------------------------|----------:|----------:|
+| checking\_balance      |  0.6942024|  0.6942024|
+| months\_loan\_duration |  0.6285929|  0.6285929|
+| credit\_history        |  0.6210095|  0.6210095|
+| purpose                |  0.5343500|  0.5343500|
+| amount                 |  0.5548571|  0.5548571|
+| savings\_balance       |  0.5915000|  0.5915000|
+| employment\_duration   |  0.5360571|  0.5360571|
+| percent\_of\_income    |  0.5433833|  0.5433833|
+| years\_at\_residence   |  0.5015214|  0.5015214|
+| age                    |  0.5706333|  0.5706333|
+| other\_credit          |  0.5246714|  0.5246714|
+| housing                |  0.5119429|  0.5119429|
+| existing\_loans\_count |  0.5251048|  0.5251048|
+| job                    |  0.5199286|  0.5199286|
+| dependents             |  0.5011905|  0.5011905|
+| phone                  |  0.5195238|  0.5195238|
+
+Graphs of Predictors
+--------------------
 
 ### checking\_balance
 
@@ -244,123 +272,123 @@ Graphs
 
 ### months\_loan\_duration
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-4.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-5.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-4.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-5.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-7.png" width="750px" />
 
-statistically different means (check assumptions for t-test): TRUE
+> statistically different means (check assumptions for t-test): `TRUE`
 
-The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
+\*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*>
 
-statistically different means (Wilcoxon-Matt-Whitney): TRUE
+> statistically different means (Wilcoxon-Matt-Whitney): `TRUE`
 
 ### credit\_history
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-7.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-9.png" width="750px" />
 
 > Chi-Square p-value: `0`
 
 ### purpose
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-8.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-10.png" width="750px" />
 
     Warning in chisq.test(count_table): Chi-squared approximation may be incorrect
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-9.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-11.png" width="750px" />
 
 > Chi-Square p-value: `0.145`
 
 ### amount
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-10.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-11.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-12.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-12.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-14.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-15.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-16.png" width="750px" />
 
-statistically different means (check assumptions for t-test): TRUE
+> statistically different means (check assumptions for t-test): `TRUE`
 
-The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
+\*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*>
 
-statistically different means (Wilcoxon-Matt-Whitney): TRUE
+> statistically different means (Wilcoxon-Matt-Whitney): `TRUE`
 
 ### savings\_balance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-14.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-18.png" width="750px" />
 
 > Chi-Square p-value: `0`
 
 ### employment\_duration
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-15.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-16.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-20.png" width="750px" />
 
 > Chi-Square p-value: `0.001`
 
 ### percent\_of\_income
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-17.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-19.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-22.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-23.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-24.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-25.png" width="750px" />
 
-statistically different means (check assumptions for t-test): TRUE
+> statistically different means (check assumptions for t-test): `TRUE`
 
-The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
+\*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*>
 
-statistically different means (Wilcoxon-Matt-Whitney): TRUE
+> statistically different means (Wilcoxon-Matt-Whitney): `TRUE`
 
 ### years\_at\_residence
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-22.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-26.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-27.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-28.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-29.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-30.png" width="750px" />
 
-statistically different means (check assumptions for t-test): FALSE
+> statistically different means (check assumptions for t-test): `FALSE`
 
-The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
+\*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*>
 
-statistically different means (Wilcoxon-Matt-Whitney): FALSE
+> statistically different means (Wilcoxon-Matt-Whitney): `FALSE`
 
 ### age
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-23.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-24.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-25.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-34.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-35.png" width="750px" />
 
-statistically different means (check assumptions for t-test): TRUE
+> statistically different means (check assumptions for t-test): `TRUE`
 
-The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
+\*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*>
 
-statistically different means (Wilcoxon-Matt-Whitney): TRUE
+> statistically different means (Wilcoxon-Matt-Whitney): `TRUE`
 
 ### other\_credit
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-26.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-27.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-37.png" width="750px" />
 
 > Chi-Square p-value: `0.002`
 
 ### housing
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-28.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-29.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-39.png" width="750px" />
 
 > Chi-Square p-value: `0`
 
 ### existing\_loans\_count
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-30.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-32.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-40.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-41.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-42.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-44.png" width="750px" />
 
-statistically different means (check assumptions for t-test): FALSE
+> statistically different means (check assumptions for t-test): `FALSE`
 
-The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
+\*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*>
 
-statistically different means (Wilcoxon-Matt-Whitney): FALSE
+> statistically different means (Wilcoxon-Matt-Whitney): `FALSE`
 
 ### job
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-34.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-45.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-46.png" width="750px" />
 
 > Chi-Square p-value: `0.597`
 
 ### dependents
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-35.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-37.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-47.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-48.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-49.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-50.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-51.png" width="750px" />
 
-statistically different means (check assumptions for t-test): FALSE
+> statistically different means (check assumptions for t-test): `FALSE`
 
-The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/>)
+\*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (<https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*>
 
-statistically different means (Wilcoxon-Matt-Whitney): FALSE
+> statistically different means (Wilcoxon-Matt-Whitney): `FALSE`
 
 ### phone
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-39.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/graphs-52.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/graphs-53.png" width="750px" />
 
 > Chi-Square p-value: `0.279`
 

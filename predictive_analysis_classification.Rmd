@@ -309,7 +309,20 @@ if(sum(numeric_columns == TRUE) >= 2) {
 
 > final columns recommended: ``r paste(recommended_columns_custom, collapse = ', ')``
 
-## Graphs
+## Variable Importance
+
+### ROC Values
+
+> "If the predictor could perfectly separate the classes, there would be a cutoff for the predictor that would achieve a sensitivity oand specificity of 1 and the area under the curve would be one. [A] completely irrelevant predictor would have an area under the curve of approximately 0.5."
+
+```{r variable_importance, echo = FALSE, comment = '', results = 'asis'}
+
+kable(
+	filterVarImp(x = classification_dataset %>% dplyr::select(-target),
+			 y = classification_dataset$target))
+```
+
+## Graphs of Predictors
 
 ```{r graphs, echo = FALSE, fig.height=4, fig.width=6, comment = '', results = 'asis'}
 gg_color_hue <- function(n) {
@@ -331,18 +344,45 @@ walk(classification_column_names, ~ {
 
 	cat(paste('\n\n###', column_name, '\n\n'))
 	dataset_column <- classification_dataset[, column_name]
-	if(is.numeric(dataset_column))
-	{
+	if(is.numeric(dataset_column)) {
+
+		target_column <- classification_dataset$target
+		
 		df_data <- data.frame(target=dataset_column)
 		fun_args <- list(mean = mean(df_data$target), sd = sd(df_data$target))
 		quantiles <- quantile(df_data$target, c(0.02, 0.98)) # cut off any 'outliers' (crude) so it doesn't skew graph
 		
 		result = tryCatch({
 			print(ggplot(data = df_data, mapping = aes(x = target)) +
+					geom_histogram(mapping=aes(y = ..density..), bins = 30) + # histogram of data
+					geom_density(col = 'red') + # emperical PDF
+					stat_function(fun = dnorm, args = fun_args, col = 'blue') + # theoretical normal PDF, based on data's mean & standard deviation
+					coord_cartesian(xlim = c(quantiles[1], quantiles[2])) + labs(x = column_name) +
+					labs(title = 'Histogram of Predictor Data'))
+
+			df_column_target <- data.frame(column = dataset_column, target = target_column)
+			df_column_target_positive <- df_column_target %>% dplyr::filter(target == target_positive_class)
+			df_column_target_negative <- df_column_target %>% dplyr::filter(target == target_negative_class)
+	
+			df_data <- data.frame(target=df_column_target_positive$column)
+			fun_args <- list(mean = mean(df_data$target), sd = sd(df_data$target))
+			quantiles <- quantile(df_data$target, c(0.02, 0.98)) # cut off any 'outliers' (crude) so it doesn't skew graph
+			print(ggplot(data = df_data, mapping = aes(x = target)) +
 				geom_histogram(mapping=aes(y = ..density..), bins = 30) + # histogram of data
 				geom_density(col = 'red') + # emperical PDF
 				stat_function(fun = dnorm, args = fun_args, col = 'blue') + # theoretical normal PDF, based on data's mean & standard deviation
-				coord_cartesian(xlim = c(quantiles[1], quantiles[2])) + labs(x = column_name))
+				coord_cartesian(xlim = c(quantiles[1], quantiles[2])) + labs(x = column_name) +
+				labs(title = 'Histogram for Positive Class'))
+	
+			df_data <- data.frame(target=df_column_target_negative$column)
+			fun_args <- list(mean = mean(df_data$target), sd = sd(df_data$target))
+			quantiles <- quantile(df_data$target, c(0.02, 0.98)) # cut off any 'outliers' (crude) so it doesn't skew graph
+			print(ggplot(data = df_data, mapping = aes(x = target)) +
+				geom_histogram(mapping=aes(y = ..density..), bins = 30) + # histogram of data
+				geom_density(col = 'red') + # emperical PDF
+				stat_function(fun = dnorm, args = fun_args, col = 'blue') + # theoretical normal PDF, based on data's mean & standard deviation
+				coord_cartesian(xlim = c(quantiles[1], quantiles[2])) + labs(x = column_name) +
+				labs(title = 'Histogram for Negative Class'))
 
 		}, error = function(e) {
 
@@ -371,14 +411,14 @@ walk(classification_column_names, ~ {
 			homogeneous <- var.test(level_1_values, level_2_values)$p.value > 0.05 # If we obtain a p-value greater than 0.05, then we fail to reject the null and can assume that the two variances are homogeneous
 			different_means <- t.test(level_1_values, level_2_values, var.equal = homogeneous, paired = FALSE)$p.value <= 0.05 # if we obtain a p-value of <= 0.05 then we reject the null and conclude that the true difference in means is not equal to 0
 			
-			cat(paste('\n\nstatistically different means (check assumptions for t-test):', different_means, '\n\n'))
+			cat(paste0('\n\n> statistically different means (check assumptions for t-test): `', different_means, '`\n\n'))
 
 			# https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/
 			# Comparison of the averages of two independent groups of samples, of which we can not assume a distribution of Gaussian type; is also known as Mann-Whitney U-test.
-			cat('\n\nThe Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)')
+			cat('\n\n*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*')
 
 			different_means <- wilcox.test(level_1_values, level_2_values, correct = FALSE, paired = FALSE)$p.value <= 0.05
-			cat(paste('\n\nstatistically different means (Wilcoxon-Matt-Whitney):', different_means, '\n\n'))
+			cat(paste0('\n\n> statistically different means (Wilcoxon-Matt-Whitney): `', different_means, '`\n\n'))
 		}
 	} else if(is.factor(dataset_column) || is.logical(dataset_column)) {
 		
