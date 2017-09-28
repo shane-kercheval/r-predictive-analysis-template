@@ -474,7 +474,7 @@ train_control <- trainControl(
 
 ### Linear Regression - no pre processing
 
-```{r linear_regression_no_pre_processing}
+```{r linear_regression_no_pre_processing, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -490,7 +490,7 @@ plot(lm_no_pre_processing$finalModel)
 
 ### Linear Regression - basic pre processing
 
-```{r linear_regression_basic_pre_processing}
+```{r linear_regression_basic_pre_processing, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -506,7 +506,7 @@ plot(lm_basic_pre_processing$finalModel)
 
 ### Linear Regression - basic pre processing with medianImpute
 
-```{r linear_regression_impute}
+```{r linear_regression_impute, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -522,7 +522,7 @@ plot(lm_median_impute$finalModel)
 
 ### Linear Regression - basic pre processing
 
-```{r linear_regression_basic}
+```{r linear_regression_basic, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -538,7 +538,7 @@ plot(lm_near_zero_variance$finalModel)
 
 ### Linear Regression - skewness - YeoJohnson
 
-```{r linear_regression_YeoJohnson}
+```{r linear_regression_YeoJohnson, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -554,7 +554,7 @@ plot(lm_skewness_y$finalModel)
 
 ### Linear Regression - skewness - BoxCox
 
-```{r linear_regression_BoxCox}
+```{r linear_regression_BoxCox, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -570,7 +570,7 @@ plot(lm_skewness_bc$finalModel)
 
 ### Linear Regression - remove collinear data - based on caret's recommendation
 
-```{r linear_regression_collinear_caret}
+```{r linear_regression_collinear_caret, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train[, recommended_columns_caret], validate_n_p = TRUE)
@@ -586,7 +586,7 @@ plot(lm_remove_collinearity_caret$finalModel)
 
 ### Linear Regression - remove collinear data - based on calculation
 
-```{r linear_regression_collinear_calc}
+```{r linear_regression_collinear_calc, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train[, recommended_columns_custom], validate_n_p = TRUE)
@@ -602,7 +602,7 @@ plot(lm_remove_collinearity_custom$finalModel)
 
 ### Robust Linear Regression
 
-```{r robust_linear}
+```{r robust_linear, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -618,7 +618,7 @@ plot(lm_robust$finalModel)
 
 ### Linear Regression - spatial sign
 
-```{r linear_regression_spatial_sign}
+```{r linear_regression_spatial_sign, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -634,7 +634,7 @@ plot(lm_spatial_sign$finalModel)
 
 ### Linear Regression - principal components analysis
 
-```{r linear_regression_PCA}
+```{r linear_regression_PCA, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -649,7 +649,7 @@ plot(lm_pca$finalModel)
 
 ### Principal Component Regression
 
-```{r principal_component_PCR}
+```{r principal_component_PCR, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -664,7 +664,7 @@ plot(lm_pcr)
 
 ### Partial Least Squares
 
-```{r partial_least_squares}
+```{r partial_least_squares, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -684,7 +684,7 @@ xyplot(RMSE ~ ncomp, data = rbind(lm_pls$results %>% mutate(Model = 'PLS'), lm_p
 
 ### Ridge Regression
 
-```{r ridge_regression}
+```{r ridge_regression, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -700,7 +700,7 @@ plot(lm_ridge)
 
 ### ridge & lasso combo
 
-```{r ridge_lasso}
+```{r ridge_lasso, echo = FALSE}
 if(refresh_models)
 {
 	check_data(regression_train, validate_n_p = TRUE)
@@ -717,7 +717,7 @@ plot(lm_enet)
 
 ### neural network - basic
 
-```{r neural_network_basic, eval=FALSE, include=FALSE}
+```{r neural_network_basic, echo = FALSE, eval=FALSE, include=FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -739,7 +739,7 @@ plot(nlm_neur_net_basic)
 
 ### neural network - basic - removing correlated predictors
 
-```{r neural_network_basic_removing_correlated_predictors, eval=FALSE, include=FALSE}
+```{r neural_network_basic_removing_correlated_predictors, echo = FALSE, eval=FALSE, include=FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -761,7 +761,7 @@ plot(nlm_neur_net_basic_remove_corr)
 
 ### neural network - model averaging - removing correlated predictors
 
-```{r neural_network_averaging_removing_correlated_predictors, eval=FALSE, include=FALSE}
+```{r neural_network_averaging_removing_correlated_predictors, echo = FALSE, eval=FALSE, include=FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -784,7 +784,7 @@ plot(nlm_neur_net_averaging_remove_corr)
 
 ### neural network - model averaging - PCA
 
-```{r neural_network_averaging_PCA}
+```{r neural_network_averaging_PCA, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -806,7 +806,7 @@ plot(nlm_neur_net_averaging_pca)
 
 ### MARS (Multivariate Adaptive Regression Splines)
 
-```{r mars, fig.height=6, fig.width=9}
+```{r mars, echo = FALSE, fig.height=6, fig.width=9}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -826,7 +826,7 @@ plotmo(nlm_mars$finalModel)
 
 ### SVM - Support Vector Machine - Radial
 
-```{r svm_radial}
+```{r svm_radial, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -841,7 +841,7 @@ plot(nlm_svm_radial, scales = list(x = list(log = 2)))
 
 ### SVM - Support Vector Machine - Linear
 
-```{r svm_linear}
+```{r svm_linear, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -856,7 +856,7 @@ plot(nlm_svm_linear, scales = list(x = list(log = 2)))
 
 ### SVM - Support Vector Machine - Polynomial
 
-```{r svm_poly}
+```{r svm_poly, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -871,7 +871,7 @@ plot(nlm_svm_poly, scales = list(x = list(log = 2),  between = list(x = .5, y = 
 
 ### CART - Classification and Regression Tree - Tuning over maximum depth
 
-```{r cart, fig.height=6, fig.width=9}
+```{r cart, echo = FALSE, fig.height=6, fig.width=9}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -888,7 +888,7 @@ plot(party_tree)
 
 ### CART - Classification and Regression Tree - Tuning over maximum depth
 
-```{r cart2, fig.height=6, fig.width=9}
+```{r cart2, echo = FALSE, fig.height=6, fig.width=9}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -905,7 +905,7 @@ plot(party_tree)
 
 ### Conditional Inference Tree
 
-```{r conditional_inference, fig.height=6, fig.width=9}
+```{r conditional_inference, echo = FALSE, fig.height=6, fig.width=9}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -921,7 +921,7 @@ plot(tree_cond_inference$finalModel)
 
 ### Conditional Inference Tree - Tuning over maximum depth
 
-```{r conditional_inference2, fig.height=6, fig.width=9}
+```{r conditional_inference2, echo = FALSE, fig.height=6, fig.width=9}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -939,7 +939,7 @@ plot(tree_cond_inference2$finalModel)
 
 > This model is failing (not only for me, try in the future, seems like a problem in RWeka): https://github.com/topepo/caret/issues/618
 
-```{r model_trees_m5, eval=FALSE, include=FALSE}
+```{r model_trees_m5, echo = FALSE, eval=FALSE, include=FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -957,7 +957,7 @@ plot(tree_m5$finalModel)
 
 > This model is failing (not only for me, try in the future, seems like a problem in RWeka): https://github.com/topepo/caret/issues/618
 
-```{r model_trees_m5rules, eval=FALSE, include=FALSE}
+```{r model_trees_m5rules, echo = FALSE, eval=FALSE, include=FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -973,7 +973,7 @@ plot(tree_m5rules$finalModel)
 
 ### Bagged Trees
 
-```{r bagged_trees}
+```{r bagged_trees, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -988,7 +988,7 @@ summary(ensemble_bagged_tree)
 
 ### Random Forest
 
-```{r random_forest}
+```{r random_forest, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -1005,7 +1005,7 @@ plot(ensemble_random_forest)
 
 ### Random Forest - Conditional Inference
 
-```{r random_forest_cond_inf, eval=FALSE, include=FALSE}
+```{r random_forest_cond_inf, echo = FALSE, eval=FALSE, include=FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -1023,7 +1023,7 @@ plot(ensemble_random_forest_cond_inf)
 
 ### Boosting
 
-```{r boosting}
+```{r boosting, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -1041,7 +1041,7 @@ plot(ensemble_boosting)
 
 ### Cubist
 
-```{r cubist}
+```{r cubist, echo = FALSE}
 if(refresh_models)
 {
 	set.seed(seed)
@@ -1211,7 +1211,7 @@ model_plots <- function(model, testing_set){
 }
 ```
 
-# Train Top Models on Entire Dataset & Predict on Test Set
+# Train Top Models on Entire Training Dataset & Predict on Test Set
 
 ```{r}
 top_x_models <- 5
@@ -1239,6 +1239,8 @@ top_models <- resamples_means %>%
 final_train_control <- trainControl(method = "none") # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
 
 model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
+	# model_name <- as.character(top_models$model)[[1]]
+	# model_object <- top_models$model_object[[1]]
 	model_name <- .x
 	model_object <- .y
 
@@ -1247,7 +1249,7 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 	# get method, tuning grid, pre-processing steps.
 	model_method <- model_object$method
 	tune_grid <- model_object$bestTune
-	
+
 	if(is.null(model_object$preProcess$method))
 	{
 		pre_process <- NULL
@@ -1258,6 +1260,29 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 		cat(paste0('\n\nPre-Processing: `', paste(pre_process, collapse = ', '), '`\n\n'))
 	}
 	
+	# if(!is.null(model_object$call$x) || !is.null(model_object$call$y)) { # if we used a non-formula
+	# 
+	# 	stopifnot(!is.null(model_object$call$x) && !is.null(model_object$call$y)) # if either is not null, both should be not null
+	# 	non_formula_columns <- colnames(model_object$trainingData)
+	# 	non_formula_columns <- non_formula_columns[-which(non_formula_columns == '.outcome')]
+	# } else {
+
+		training_column_names <- colnames(model_object$trainingData)
+		model_formula_string <- paste(	'target ~', 
+										paste0(training_column_names[-which(training_column_names == '.outcome')],
+										collapse = ' + '))
+
+		model_formula <- as.formula(model_formula_string)
+	# }
+
+	cat(paste0('\n\n> Model Formula: `', model_formula_string, '`\n\n'))
+	
+	if(!is.null(tune_grid) && nrow(tune_grid) == 1) {
+		cat('\n\n```\n')
+		walk2(colnames(tune_grid), as.character(tune_grid[1,]), ~ cat(paste0(.x,': ', .y, '\n')))
+		cat('```\n')
+	}
+
 	if(refresh_models)
 	{	
 		set.seed(seed)
@@ -1265,19 +1290,35 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 		if(model_method == 'rf')
 		{
 			final_model <- train(
-				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
-				ntree = parameter_random_forest_ntree, importance = TRUE)
+				form = model_formula,
+				data = regression_train,
+				method = model_method,
+				trControl = final_train_control,
+				preProc = pre_process,
+				tuneGrid = tune_grid, 
+				ntree = parameter_random_forest_ntree,
+				importance = TRUE)
 
 		}else if(model_method == 'cforest'){
 			
 			final_model <- train(
-				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid, 
+				form = model_formula,
+				data = regression_train,
+				method = model_method,
+				trControl = final_train_control,
+				preProc = pre_process,
+				tuneGrid = tune_grid, 
 				controls = cforest_unbiased(ntree = parameter_random_forest_ntree), importance = TRUE)
 
 		}else if(model_method == 'avNNet' || model_method == 'nnet'){
 			
 			final_model <- train(
-				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid,
+				form = model_formula,
+				data = regression_train,
+				method = model_method,
+				trControl = final_train_control,
+				preProc = pre_process,
+				tuneGrid = tune_grid,
 				linout = parameter_neural_network_linout,
 				trace = parameter_neural_network_trace,
 				MaxNWts = parameter_neural_network_max_num_weights,
@@ -1286,13 +1327,23 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 		}else if(model_method == 'treebag'){
 			
 			final_model <- train(
-				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid,
+				form = model_formula,
+				data = regression_train,
+				method = model_method,
+				trControl = final_train_control,
+				preProc = pre_process,
+				tuneGrid = tune_grid,
 				nbagg = tuning_treebag_nbagg)
 
 		}else{
 
 			final_model <- train(
-				target ~ ., data = regression_train, method = model_method, trControl = final_train_control, preProc = pre_process, tuneGrid = tune_grid)
+				form = model_formula,
+				data = regression_train,
+				method = model_method,
+				trControl = final_train_control,
+				preProc = pre_process,
+				tuneGrid = tune_grid)
 		}
 
 		saveRDS(final_model, file = paste0('./regression_data/top_model_', model_name, '.RDS'))
@@ -1307,11 +1358,12 @@ model_stats <- map2(as.character(top_models$model), top_models$model_object, ~ {
 	return (model_stats)
 })
 
-final_models_metrics <- data.frame(model = factor(as.character(top_models$model), levels = as.character(top_models$model)),
-								   test_set_rmse = map_dbl(model_stats, ~ .['model_rmse']),
-								   cross_validation_rmse = top_models$cross_validation_rmse,
-								   mae = map_dbl(model_stats, ~ .['model_mae']),
-								   correlation = map_dbl(model_stats, ~ .['model_correlation']))
+final_models_metrics <- data.frame(	model = factor(as.character(top_models$model),
+									levels = as.character(top_models$model)),
+									test_set_rmse = map_dbl(model_stats, ~ .['model_rmse']),
+									cross_validation_rmse = top_models$cross_validation_rmse,
+									mae = map_dbl(model_stats, ~ .['model_mae']),
+									correlation = map_dbl(model_stats, ~ .['model_correlation']))
 
 min_rmse <- min(final_models_metrics$test_set_rmse)
 min_mae <- min(final_models_metrics$mae)
