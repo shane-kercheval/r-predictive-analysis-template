@@ -84,6 +84,7 @@
         -   [Stochastic Gradient Boosting (gbm\_independent\_categories)](#stochastic-gradient-boosting-gbm_independent_categories)
         -   [Regularized Discriminant Analysis (regularized\_discriminant\_analysis)](#regularized-discriminant-analysis-regularized_discriminant_analysis)
         -   [Random Forest (rf\_independent\_categories)](#random-forest-rf_independent_categories)
+        -   [Top Model Comparison](#top-model-comparison)
 
 Tuning Parameters
 =================
@@ -426,6 +427,8 @@ Make sure class balance is even amount training/test datasets.
 
 Using formula in `train()`
 
+> Mean ROC cutoff: `0.318373501838689`
+
 #### Model Summary
 
 
@@ -520,6 +523,8 @@ Models
 ------
 
 ### glm\_no\_pre\_process
+
+> Mean ROC cutoff: `0.318722127079708`
 
 #### Model Summary
 
@@ -619,6 +624,8 @@ Models
        1.124
 
 ### glm\_basic\_processing
+
+> Mean ROC cutoff: `0.318373501838689`
 
 #### Model Summary
 
@@ -720,6 +727,8 @@ Models
 
 ### glm\_yeojohnson
 
+> Mean ROC cutoff: `0.314959958059083`
+
 #### Model Summary
 
 
@@ -812,6 +821,8 @@ Models
 
 ### logistic\_regression\_stepwise\_backward
 
+> Mean ROC cutoff: `0.310290064910415`
+
 #### Model Summary
 
 
@@ -895,6 +906,8 @@ Models
 
 ### linear\_discriminant\_analsysis
 
+> Mean ROC cutoff: `0.32609658742466`
+
 #### Model Summary
 
                 Length Class      Mode     
@@ -949,6 +962,8 @@ Models
 
 ### linear\_discriminant\_analsysis\_remove\_collinear\_skew
 
+> Mean ROC cutoff: `0.305594510244253`
+
 #### Model Summary
 
                 Length Class      Mode     
@@ -999,7 +1014,7 @@ Models
 
 ### partial\_least\_squares\_discriminant\_analysis
 
-Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of components considered: 4 TRAINING: % variance explained
+> Mean ROC cutoff: `0.427677953560535`Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of components considered: 4 TRAINING: % variance explained
 
 #### Model Predictors
 
@@ -1044,7 +1059,7 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### partial\_least\_squares\_discriminant\_analysis\_skew
 
-Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of components considered: 4 TRAINING: % variance explained
+> Mean ROC cutoff: `0.426019805652964`Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of components considered: 4 TRAINING: % variance explained
 
 #### Model Predictors
 
@@ -1088,6 +1103,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
      0.01100
 
 ### glmnet\_lasso\_ridge
+
+> Mean ROC cutoff: `0.341277098088859`
 
 #### Model Summary
 
@@ -1153,6 +1170,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### sparse\_lda
 
+> Mean ROC cutoff: `0.329047602264799`
+
 #### Model Summary
 
                 Length Class      Mode     
@@ -1212,6 +1231,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 > was causing an error, turned off
 
 ### regularized\_discriminant\_analysis
+
+> Mean ROC cutoff: `0.314184820135548`
 
 #### Model Summary
 
@@ -1273,6 +1294,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 > No collinear columns removed... skipping.
 
 ### mixture\_discriminant\_analysis
+
+> Mean ROC cutoff: `0.326159912569579`
 
 #### Model Summary
 
@@ -1338,6 +1361,10 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### neural\_network\_spatial\_rc
 
+    Loading required package: nnet
+
+> Mean ROC cutoff: `0.331450032514323`
+
 #### Model Summary
 
     a 29-1-1 network with 32 weights
@@ -1350,8 +1377,6 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
     -1.18  4.39 
 
 #### Model Predictors
-
-    Loading required package: nnet
 
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposeeducation"               "purposefurniture/appliances"   
@@ -1393,6 +1418,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
        1.925
 
 ### neural\_network\_spatial\_rc\_skew
+
+> Mean ROC cutoff: `0.319020384133483`
 
 #### Model Summary
 
@@ -1448,27 +1475,6 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### flexible\_discriminant\_analsysis
 
-#### Model Summary
-
-                      Length Class      Mode     
-    percent.explained  1     -none-     numeric  
-    values             1     -none-     numeric  
-    means              2     -none-     numeric  
-    theta.mod          1     -none-     numeric  
-    dimension          1     -none-     numeric  
-    prior              2     table      numeric  
-    fit               29     earth      list     
-    call               7     -none-     call     
-    terms              3     terms      call     
-    confusion          4     table      numeric  
-    xNames            29     -none-     character
-    problemType        1     -none-     character
-    tuneValue          2     data.frame list     
-    obsLevels          2     -none-     character
-    param              0     -none-     list     
-
-#### Model Predictors
-
     Loading required package: earth
 
     Loading required package: plotmo
@@ -1502,6 +1508,29 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
     The following objects are masked from 'package:Hmisc':
 
         cnvrt.coords, subplot
+
+> Mean ROC cutoff: `0.309002721593784`
+
+#### Model Summary
+
+                      Length Class      Mode     
+    percent.explained  1     -none-     numeric  
+    values             1     -none-     numeric  
+    means              2     -none-     numeric  
+    theta.mod          1     -none-     numeric  
+    dimension          1     -none-     numeric  
+    prior              2     table      numeric  
+    fit               29     earth      list     
+    call               7     -none-     call     
+    terms              3     terms      call     
+    confusion          4     table      numeric  
+    xNames            29     -none-     character
+    problemType        1     -none-     character
+    tuneValue          2     data.frame list     
+    obsLevels          2     -none-     character
+    param              0     -none-     list     
+
+#### Model Predictors
 
      [1] "checking_balanceunknown"       "months_loan_duration"          "amount"                        "savings_balanceunknown"        "`checking_balance>200DM`"     
      [6] "housingown"                    "`credit_historyverygood`"      "`employment_duration4-7years`" "`checking_balance1-200DM`"     "percent_of_income"            
@@ -1540,6 +1569,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
         0.00
 
 ### svm\_linear
+
+> Mean ROC cutoff: `0.304256766203935`
 
 #### Model Summary
 
@@ -1602,13 +1633,6 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### svm\_polynomial
 
-#### Model Summary
-
-    Length  Class   Mode 
-         1   ksvm     S4 
-
-#### Model Predictors
-
     Loading required package: kernlab
 
 
@@ -1625,6 +1649,15 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
     The following object is masked from 'package:ggplot2':
 
         alpha
+
+> Mean ROC cutoff: `0.281680315512391`
+
+#### Model Summary
+
+    Length  Class   Mode 
+         1   ksvm     S4 
+
+#### Model Predictors
 
     [1] NA
 
@@ -1655,6 +1688,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
          0.5063
 
 ### svm\_radial
+
+> Mean ROC cutoff: `0.302516023292395`
 
 #### Model Summary
 
@@ -1698,6 +1733,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
          0.5063
 
 ### k\_nearest\_neighbors
+
+> Mean ROC cutoff: `0.286801915485666`
 
 #### Model Summary
 
@@ -1748,6 +1785,20 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
          0.5063
 
 ### naive\_bayes
+
+    Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with observation 37
+
+    Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with observation 71
+
+    Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with observation 74
+
+    Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with observation 44
+
+    Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with observation 42
+
+    Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with observation 82
+
+> Mean ROC cutoff: `0.00443560251211087`
 
 #### Model Summary
 
@@ -1806,6 +1857,10 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 >
 > When you use the formula interface, most modeling functions (including train, lm, glm, etc) internally run model.matrix to process the data set. This will create dummy variables from any factor variables. The non-formula interface does not \[1\]. <https://stackoverflow.com/questions/22200923/different-results-with-formula-and-non-formula-for-caret-training>
 
+    Loading required package: rpart
+
+> Mean ROC cutoff: `0.285674863195472`
+
 #### Model Summary
 
     CART 
@@ -1857,8 +1912,6 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 #### Model Predictors
 
-    Loading required package: rpart
-
      [1] "checking_balanceunknown"       "months_loan_duration"          "employment_durationunemployed" "years_at_residence"            "amount"                       
      [6] "credit_historyvery good"       "purposecar"                    "checking_balance1 - 200 DM"    "savings_balance500 - 1000 DM"  "savings_balanceunknown"       
     [11] "savings_balance> 1000 DM"      "purposecar0"                   "age"                           "purposeeducation"              "existing_loans_count"         
@@ -1899,6 +1952,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 <img src="predictive_analysis_classification_files/figure-markdown_github/rpart_independent_categories-2.png" width="750px" />
 
 ### rpart\_grouped\_categories
+
+> Mean ROC cutoff: `0.281021604841888`
 
 #### Model Summary
 
@@ -1985,6 +2040,10 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### treebag\_independent\_categories
 
+    Loading required package: ipred
+
+> Mean ROC cutoff: `0.436666666666667`
+
 #### Model Summary
 
     Bagged CART 
@@ -2004,8 +2063,6 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
     NULL
 
 #### Model Predictors
-
-    Loading required package: ipred
 
      [1] "checking_balanceunknown"        "months_loan_duration"           "phoneTRUE"                      "percent_of_income"              "housingown"                    
      [6] "age"                            "amount"                         "existing_loans_count"           "checking_balance1 - 200 DM"     "savings_balance> 1000 DM"      
@@ -2044,6 +2101,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
        22.49
 
 ### treebag\_grouped\_categories
+
+> Mean ROC cutoff: `0.448`
 
 #### Model Summary
 
@@ -2093,34 +2152,16139 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### c50\_model\_independent\_categories
 
+    Loading required package: C50
+
+> Mean ROC cutoff: `0.440844410001459`
+
 #### Model Summary
 
-                 Length Class      Mode     
-    names          1    -none-     character
-    cost           1    -none-     character
-    costMatrix     0    -none-     NULL     
-    caseWeights    1    -none-     logical  
-    control       11    -none-     list     
-    trials         2    -none-     numeric  
-    rbm            1    -none-     logical  
-    boostResults   5    data.frame list     
-    size         100    -none-     numeric  
-    dims           2    -none-     numeric  
-    call           7    -none-     call     
-    levels         2    -none-     character
-    output         1    -none-     character
-    tree           1    -none-     character
-    predictors    35    -none-     character
-    rules          1    -none-     character
-    xNames        35    -none-     character
-    problemType    1    -none-     character
-    tuneValue      3    data.frame list     
-    obsLevels      2    -none-     character
-    param          0    -none-     list     
+
+    Call:
+    C5.0.default(x = structure(c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+     = TRUE, label = "outcome", seed = 3515L), .Names = c("subset", "bands", "winnow", "noGlobalPruning", "CF", "minCases", "fuzzyThreshold", "sample", "earlyStopping",
+     "label", "seed")))
+
+
+    C5.0 [Release 2.07 GPL Edition]     Tue Jun 27 22:01:01 2017
+    -------------------------------
+
+    Class specified by attribute `outcome'
+
+    Read 900 cases (36 attributes) from undefined.data
+
+    -----  Trial 0:  -----
+
+    Rules:
+
+    Rule 0/1: (21/1, lift 3.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 36
+        credit_historyvery good <= 0
+        amount <= 7980
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        dependents <= 1
+        ->  class yes  [0.913]
+
+    Rule 0/2: (9, lift 3.0)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        employment_duration1 - 4 years > 0
+        years_at_residence > 1
+        age <= 24
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.909]
+
+    Rule 0/3: (9, lift 3.0)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        years_at_residence > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.909]
+
+    Rule 0/4: (8, lift 3.0)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        months_loan_duration <= 36
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.900]
+
+    Rule 0/5: (7, lift 3.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        other_creditnone <= 0
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.889]
+
+    Rule 0/6: (7, lift 3.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        months_loan_duration <= 36
+        credit_historygood > 0
+        percent_of_income > 3
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.889]
+
+    Rule 0/7: (27/3, lift 2.9)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        amount > 7980
+        ->  class yes  [0.862]
+
+    Rule 0/8: (5, lift 2.9)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 11
+        purposeeducation > 0
+        age <= 36
+        ->  class yes  [0.857]
+
+    Rule 0/9: (18/2, lift 2.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historyperfect <= 0
+        purposefurniture/appliances > 0
+        employment_duration> 7 years <= 0
+        years_at_residence > 1
+        age > 30
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.850]
+
+    Rule 0/10: (4, lift 2.8)
+        checking_balanceunknown <= 0
+        employment_durationunemployed > 0
+        dependents > 1
+        ->  class yes  [0.833]
+
+    Rule 0/11: (14/3, lift 2.5)
+        checking_balanceunknown > 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age <= 43
+        other_creditnone <= 0
+        ->  class yes  [0.750]
+
+    Rule 0/12: (36/10, lift 2.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        months_loan_duration <= 36
+        purposecar > 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        phoneTRUE <= 0
+        ->  class yes  [0.711]
+
+    Rule 0/13: (33/10, lift 2.3)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        amount <= 7980
+        savings_balance500 - 1000 DM <= 0
+        ->  class yes  [0.686]
+
+    Rule 0/14: (33/10, lift 2.3)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        ->  class yes  [0.686]
+
+    Rule 0/15: (35/12, lift 2.2)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        amount <= 7980
+        ->  class yes  [0.649]
+
+    Rule 0/16: (43/17, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        months_loan_duration <= 36
+        credit_historyvery good <= 0
+        purposecar > 0
+        employment_duration> 7 years <= 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.600]
+
+    Rule 0/17: (95/51, lift 1.5)
+        purposefurniture/appliances <= 0
+        other_creditnone <= 0
+        ->  class yes  [0.464]
+
+    Rule 0/18: (301/25, lift 1.3)
+        checking_balanceunknown > 0
+        other_creditnone > 0
+        ->  class no  [0.914]
+
+    Rule 0/19: (861/246, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.714]
+
+    Default class: no
+
+    -----  Trial 1:  -----
+
+    Rules:
+
+    Rule 1/1: (8, lift 2.3)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        percent_of_income > 3
+        ->  class yes  [0.900]
+
+    Rule 1/2: (7.2, lift 2.3)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 47
+        credit_historyvery good > 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        other_creditstore <= 0
+        ->  class yes  [0.891]
+
+    Rule 1/3: (28.2/5.7, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 47
+        credit_historypoor <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.777]
+
+    Rule 1/4: (26.1/6.4, lift 1.9)
+        credit_historygood > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.737]
+
+    Rule 1/5: (37.5/9.6, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        ->  class yes  [0.732]
+
+    Rule 1/6: (74.6/19.6, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.731]
+
+    Rule 1/7: (17.4/5.3, lift 1.7)
+        checking_balanceunknown <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        ->  class yes  [0.677]
+
+    Rule 1/8: (82.1/26.8, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        other_creditstore <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.670]
+
+    Rule 1/9: (59.2/26.3, lift 1.4)
+        credit_historypoor > 0
+        purposecar <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.553]
+
+    Rule 1/10: (408.1/221, lift 1.2)
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.459]
+
+    Rule 1/11: (16.6, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 47
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.946]
+
+    Rule 1/12: (51.2/2.9, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.927]
+
+    Rule 1/13: (8.4, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor > 0
+        purposecar > 0
+        ->  class no  [0.904]
+
+    Rule 1/14: (13.2/0.8, lift 1.4)
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        housingrent > 0
+        dependents > 1
+        ->  class no  [0.882]
+
+    Rule 1/15: (85.6/9.8, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.876]
+
+    Rule 1/16: (124.5/15.1, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.873]
+
+    Rule 1/17: (134.2/18.1, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.860]
+
+    Rule 1/18: (4.9, lift 1.4)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.856]
+
+    Rule 1/19: (26.9/3.2, lift 1.4)
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.855]
+
+    Rule 1/20: (4.8, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        percent_of_income <= 1
+        ->  class no  [0.853]
+
+    Rule 1/21: (9.6/0.8, lift 1.4)
+        credit_historypoor > 0
+        purposecar <= 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.845]
+
+    Rule 1/22: (12.4/1.6, lift 1.3)
+        checking_balanceunknown <= 0
+        savings_balanceunknown > 0
+        jobunskilled > 0
+        ->  class no  [0.820]
+
+    Rule 1/23: (40.8/8.6, lift 1.3)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.776]
+
+    Rule 1/24: (190.9/46.3, lift 1.2)
+        months_loan_duration <= 47
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        housingrent <= 0
+        ->  class no  [0.755]
+
+    Rule 1/25: (253/65, lift 1.2)
+        months_loan_duration <= 47
+        credit_historypoor <= 0
+        percent_of_income <= 3
+        age > 25
+        housingrent <= 0
+        ->  class no  [0.741]
+
+    Default class: no
+
+    -----  Trial 2:  -----
+
+    Rules:
+
+    Rule 2/1: (9.1, lift 2.3)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        amount > 1203
+        amount <= 1386
+        employment_durationunemployed <= 0
+        age <= 47
+        housingown <= 0
+        ->  class yes  [0.910]
+
+    Rule 2/2: (6.8, lift 2.2)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation > 0
+        employment_duration4 - 7 years <= 0
+        jobskilled <= 0
+        ->  class yes  [0.886]
+
+    Rule 2/3: (9.5/1.3, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 47
+        housingown <= 0
+        jobunskilled > 0
+        ->  class yes  [0.798]
+
+    Rule 2/4: (25.7/6.4, lift 1.8)
+        checking_balanceunknown > 0
+        percent_of_income > 1
+        years_at_residence > 1
+        years_at_residence <= 2
+        age <= 44
+        other_creditnone <= 0
+        ->  class yes  [0.734]
+
+    Rule 2/5: (36.1/10.4, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class yes  [0.701]
+
+    Rule 2/6: (82.9/28.4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        housingown > 0
+        jobskilled > 0
+        ->  class yes  [0.654]
+
+    Rule 2/7: (23.5/8.4, lift 1.6)
+        checking_balanceunknown <= 0
+        employment_durationunemployed > 0
+        housingown > 0
+        ->  class yes  [0.632]
+
+    Rule 2/8: (19.5/7.3, lift 1.5)
+        purposerenovations > 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.612]
+
+    Rule 2/9: (80/34, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 7
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        housingown > 0
+        ->  class yes  [0.574]
+
+    Rule 2/10: (590.3/310.8, lift 1.2)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.474]
+
+    Rule 2/11: (18/1.4, lift 1.5)
+        checking_balance> 200 DM <= 0
+        amount <= 6615
+        employment_duration4 - 7 years > 0
+        housingown > 0
+        jobskilled <= 0
+        ->  class no  [0.882]
+
+    Rule 2/12: (6, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor > 0
+        savings_balance> 1000 DM <= 0
+        housingown > 0
+        jobskilled > 0
+        ->  class no  [0.876]
+
+    Rule 2/13: (17.1/1.7, lift 1.4)
+        amount <= 6615
+        savings_balance> 1000 DM > 0
+        housingown > 0
+        jobskilled > 0
+        ->  class no  [0.858]
+
+    Rule 2/14: (27.8/4.1, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 7
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        housingown > 0
+        ->  class no  [0.830]
+
+    Rule 2/15: (25.4/4, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown > 0
+        employment_durationunemployed <= 0
+        housingown > 0
+        ->  class no  [0.818]
+
+    Rule 2/16: (309.7/81.9, lift 1.2)
+        checking_balanceunknown > 0
+        ->  class no  [0.734]
+
+    Rule 2/17: (58.2/15.1, lift 1.2)
+        checking_balance> 200 DM > 0
+        dependents <= 1
+        ->  class no  [0.732]
+
+    Rule 2/18: (614.8/229.3, lift 1.0)
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        other_creditnone > 0
+        ->  class no  [0.627]
+
+    Default class: no
+
+    -----  Trial 3:  -----
+
+    Rules:
+
+    Rule 3/1: (18, lift 2.3)
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        purposecar > 0
+        amount <= 1103
+        savings_balance> 1000 DM <= 0
+        age <= 45
+        ->  class yes  [0.950]
+
+    Rule 3/2: (9.2, lift 2.2)
+        checking_balanceunknown <= 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        age > 42
+        age <= 45
+        dependents <= 1
+        ->  class yes  [0.911]
+
+    Rule 3/3: (9.1, lift 2.2)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.910]
+
+    Rule 3/4: (21.5/1.2, lift 2.2)
+        months_loan_duration > 24
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.908]
+
+    Rule 3/5: (16.3/1.1, lift 2.2)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 14
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        age > 30
+        age <= 45
+        dependents <= 1
+        ->  class yes  [0.884]
+
+    Rule 3/6: (5.8, lift 2.1)
+        amount <= 983
+        savings_balance100 - 500 DM > 0
+        age <= 45
+        ->  class yes  [0.872]
+
+    Rule 3/7: (18.2/1.7, lift 2.1)
+        amount > 9283
+        employment_duration4 - 7 years <= 0
+        housingown <= 0
+        ->  class yes  [0.866]
+
+    Rule 3/8: (5, lift 2.1)
+        checking_balanceunknown <= 0
+        housingown <= 0
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class yes  [0.858]
+
+    Rule 3/9: (20.3/2.2, lift 2.1)
+        employment_durationunemployed > 0
+        years_at_residence <= 2
+        housingown > 0
+        ->  class yes  [0.855]
+
+    Rule 3/10: (8.2/0.6, lift 2.1)
+        checking_balance> 200 DM > 0
+        months_loan_duration > 7
+        dependents > 1
+        ->  class yes  [0.846]
+
+    Rule 3/11: (17.2/2.8, lift 2.0)
+        months_loan_duration > 7
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        age <= 45
+        other_creditnone <= 0
+        housingown > 0
+        dependents > 1
+        ->  class yes  [0.802]
+
+    Rule 3/12: (21.4/4, lift 1.9)
+        checking_balance1 - 200 DM > 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.785]
+
+    Rule 3/13: (12.4/2.2, lift 1.9)
+        checking_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class yes  [0.779]
+
+    Rule 3/14: (2.1, lift 1.8)
+        savings_balance> 1000 DM > 0
+        existing_loans_count > 2
+        ->  class yes  [0.759]
+
+    Rule 3/15: (20.7/4.6, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance100 - 500 DM <= 0
+        years_at_residence <= 2
+        other_creditnone <= 0
+        jobskilled > 0
+        ->  class yes  [0.755]
+
+    Rule 3/16: (25/6.2, lift 1.8)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        age <= 45
+        dependents <= 1
+        ->  class yes  [0.733]
+
+    Rule 3/17: (17.5/5, lift 1.7)
+        months_loan_duration > 7
+        purposerenovations > 0
+        savings_balance100 - 500 DM <= 0
+        ->  class yes  [0.691]
+
+    Rule 3/18: (32.5/10.5, lift 1.6)
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        dependents <= 1
+        phoneTRUE > 0
+        ->  class yes  [0.668]
+
+    Rule 3/19: (27.3/9.6, lift 1.6)
+        credit_historyvery good <= 0
+        purposeeducation > 0
+        age <= 45
+        housingown > 0
+        ->  class yes  [0.640]
+
+    Rule 3/20: (18.4, lift 1.6)
+        employment_duration4 - 7 years > 0
+        percent_of_income <= 3
+        housingown <= 0
+        ->  class no  [0.951]
+
+    Rule 3/21: (25.9/1.7, lift 1.5)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        existing_loans_count <= 2
+        ->  class no  [0.903]
+
+    Rule 3/22: (7.9, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor > 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.899]
+
+    Rule 3/23: (20.1/3.2, lift 1.4)
+        employment_durationunemployed > 0
+        years_at_residence > 2
+        housingown > 0
+        ->  class no  [0.811]
+
+    Rule 3/24: (868.4/361.8, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.583]
+
+    Default class: no
+
+    -----  Trial 4:  -----
+
+    Rules:
+
+    Rule 4/1: (6.8, lift 1.9)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.886]
+
+    Rule 4/2: (20.1/2.4, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        years_at_residence <= 3
+        existing_loans_count <= 2
+        jobunskilled <= 0
+        ->  class yes  [0.846]
+
+    Rule 4/3: (15.7/1.8, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 30
+        credit_historyvery good > 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.844]
+
+    Rule 4/4: (4.2, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance500 - 1000 DM > 0
+        jobunskilled > 0
+        ->  class yes  [0.839]
+
+    Rule 4/5: (4.2, lift 1.8)
+        checking_balanceunknown <= 0
+        employment_durationunemployed > 0
+        dependents > 1
+        ->  class yes  [0.838]
+
+    Rule 4/6: (20/2.8, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        months_loan_duration <= 30
+        credit_historyperfect <= 0
+        purposefurniture/appliances > 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        other_creditstore <= 0
+        jobskilled > 0
+        ->  class yes  [0.825]
+
+    Rule 4/7: (32.3/5.9, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        ->  class yes  [0.799]
+
+    Rule 4/8: (32.6/6.2, lift 1.7)
+        checking_balanceunknown <= 0
+        purposecar > 0
+        amount > 3905
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 3
+        ->  class yes  [0.792]
+
+    Rule 4/9: (17.5/3.3, lift 1.7)
+        credit_historyperfect <= 0
+        purposecar <= 0
+        employment_duration1 - 4 years > 0
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.782]
+
+    Rule 4/10: (60/12.7, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 30
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.778]
+
+    Rule 4/11: (10.6/1.9, lift 1.7)
+        employment_duration4 - 7 years > 0
+        age <= 22
+        ->  class yes  [0.771]
+
+    Rule 4/12: (42.1/9.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 30
+        credit_historypoor <= 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 2
+        ->  class yes  [0.768]
+
+    Rule 4/13: (46.5/10.3, lift 1.6)
+        checking_balanceunknown > 0
+        amount > 4153
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        dependents <= 1
+        ->  class yes  [0.766]
+
+    Rule 4/14: (20.1/4.3, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 30
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        ->  class yes  [0.759]
+
+    Rule 4/15: (28.6/7.6, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.719]
+
+    Rule 4/16: (31.2/8.6, lift 1.5)
+        purposecar <= 0
+        purposefurniture/appliances <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 3
+        existing_loans_count <= 2
+        jobunskilled <= 0
+        ->  class yes  [0.713]
+
+    Rule 4/17: (297.4/137.1, lift 1.2)
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        existing_loans_count <= 1
+        ->  class yes  [0.539]
+
+    Rule 4/18: (36.7/1.5, lift 1.8)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        age > 22
+        ->  class no  [0.936]
+
+    Rule 4/19: (5.8, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration > 30
+        savings_balanceunknown > 0
+        years_at_residence <= 2
+        ->  class no  [0.872]
+
+    Rule 4/20: (47.9/5.5, lift 1.6)
+        checking_balanceunknown > 0
+        amount <= 4153
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        housingrent <= 0
+        existing_loans_count > 1
+        ->  class no  [0.871]
+
+    Rule 4/21: (5.1, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.858]
+
+    Rule 4/22: (8.9/1.4, lift 1.5)
+        purposeeducation > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.783]
+
+    Rule 4/23: (18.8/3.5, lift 1.5)
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.782]
+
+    Rule 4/24: (67.7/16, lift 1.4)
+        checking_balanceunknown > 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.756]
+
+    Rule 4/25: (40.3/12.4, lift 1.3)
+        checking_balanceunknown > 0
+        dependents > 1
+        ->  class no  [0.683]
+
+    Rule 4/26: (733.8/324.5, lift 1.0)
+        months_loan_duration <= 30
+        ->  class no  [0.558]
+
+    Default class: no
+
+    -----  Trial 5:  -----
+
+    Rules:
+
+    Rule 5/1: (43.1/12.9, lift 1.4)
+        credit_historypoor > 0
+        purposecar0 <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        age > 25
+        jobunskilled <= 0
+        ->  class yes  [0.692]
+
+    Rule 5/2: (758.8/376.9, lift 1.0)
+        savings_balanceunknown <= 0
+        ->  class yes  [0.503]
+
+    Rule 5/3: (19, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        age > 44
+        ->  class no  [0.952]
+
+    Rule 5/4: (29.2/2.1, lift 1.7)
+        checking_balanceunknown > 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        age > 25
+        ->  class no  [0.901]
+
+    Rule 5/5: (8, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        amount > 999
+        savings_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        housingown > 0
+        dependents <= 1
+        ->  class no  [0.900]
+
+    Rule 5/6: (7.5, lift 1.7)
+        checking_balance> 200 DM > 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        housingown <= 0
+        dependents <= 1
+        ->  class no  [0.895]
+
+    Rule 5/7: (6.6, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        purposecar0 > 0
+        savings_balanceunknown <= 0
+        ->  class no  [0.884]
+
+    Rule 5/8: (5.1, lift 1.7)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.858]
+
+    Rule 5/9: (13.7/1.6, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 8
+        credit_historygood > 0
+        age > 25
+        ->  class no  [0.837]
+
+    Rule 5/10: (21.7/3, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        credit_historygood > 0
+        amount > 999
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        age > 25
+        housingown > 0
+        dependents <= 1
+        ->  class no  [0.832]
+
+    Rule 5/11: (27/4.6, lift 1.6)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.805]
+
+    Rule 5/12: (23.7/4.1, lift 1.5)
+        credit_historyvery good <= 0
+        purposecar <= 0
+        amount <= 1221
+        employment_durationunemployed <= 0
+        age <= 25
+        ->  class no  [0.801]
+
+    Rule 5/13: (42.8/8, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        age > 25
+        ->  class no  [0.800]
+
+    Rule 5/14: (32.6/6, lift 1.5)
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        amount > 999
+        employment_duration4 - 7 years <= 0
+        age > 25
+        age <= 30
+        housingown > 0
+        ->  class no  [0.797]
+
+    Rule 5/15: (2.5, lift 1.5)
+        credit_historyperfect > 0
+        savings_balance500 - 1000 DM > 0
+        ->  class no  [0.776]
+
+    Rule 5/16: (2.4, lift 1.5)
+        credit_historyperfect > 0
+        purposeeducation > 0
+        ->  class no  [0.771]
+
+    Rule 5/17: (130.5/31.9, lift 1.5)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposecar0 <= 0
+        purposeeducation <= 0
+        age > 25
+        other_creditnone > 0
+        ->  class no  [0.752]
+
+    Rule 5/18: (76.3/19, lift 1.4)
+        checking_balance> 200 DM <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        age > 25
+        ->  class no  [0.744]
+
+    Rule 5/19: (141.2/51.6, lift 1.2)
+        savings_balanceunknown > 0
+        ->  class no  [0.632]
+
+    Default class: no
+
+    -----  Trial 6:  -----
+
+    Rules:
+
+    Rule 6/1: (18.6, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        amount > 4933
+        employment_durationunemployed <= 0
+        percent_of_income > 3
+        years_at_residence > 1
+        ->  class yes  [0.951]
+
+    Rule 6/2: (12.6, lift 2.0)
+        credit_historypoor <= 0
+        amount > 11816
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        ->  class yes  [0.931]
+
+    Rule 6/3: (18.5/2.2, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        amount > 1098
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        existing_loans_count > 1
+        ->  class yes  [0.843]
+
+    Rule 6/4: (18.9/4.8, lift 1.6)
+        checking_balanceunknown > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class yes  [0.722]
+
+    Rule 6/5: (43.8/13.6, lift 1.5)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age <= 44
+        other_creditnone <= 0
+        ->  class yes  [0.682]
+
+    Rule 6/6: (630.4/313, lift 1.1)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.503]
+
+    Rule 6/7: (10.5, lift 1.7)
+        months_loan_duration <= 8
+        credit_historypoor <= 0
+        purposecar > 0
+        amount <= 8133
+        years_at_residence > 1
+        ->  class no  [0.920]
+
+    Rule 6/8: (41.1/3.4, lift 1.7)
+        credit_historypoor <= 0
+        amount <= 4933
+        percent_of_income > 3
+        years_at_residence > 1
+        age > 37
+        other_creditnone > 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.899]
+
+    Rule 6/9: (18.6/1.3, lift 1.7)
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class no  [0.888]
+
+    Rule 6/10: (6.1, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        percent_of_income <= 1
+        ->  class no  [0.876]
+
+    Rule 6/11: (25.6/3.1, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        amount > 5190
+        amount <= 8133
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        percent_of_income <= 3
+        years_at_residence > 1
+        ->  class no  [0.851]
+
+    Rule 6/12: (4.1, lift 1.6)
+        credit_historypoor > 0
+        purposecar0 > 0
+        ->  class no  [0.836]
+
+    Rule 6/13: (26.3/4.1, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        purposefurniture/appliances <= 0
+        amount <= 8133
+        employment_durationunemployed <= 0
+        percent_of_income <= 3
+        dependents <= 1
+        ->  class no  [0.821]
+
+    Rule 6/14: (3.6, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.820]
+
+    Rule 6/15: (66.7/18, lift 1.3)
+        checking_balance> 200 DM <= 0
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        amount > 960
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        other_creditstore <= 0
+        ->  class no  [0.723]
+
+    Rule 6/16: (56.9/17.7, lift 1.3)
+        checking_balance> 200 DM > 0
+        existing_loans_count <= 2
+        dependents <= 1
+        ->  class no  [0.682]
+
+    Rule 6/17: (82.7/28.9, lift 1.2)
+        purposefurniture/appliances > 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.647]
+
+    Rule 6/18: (269.6/100.6, lift 1.2)
+        checking_balanceunknown > 0
+        ->  class no  [0.626]
+
+    Default class: no
+
+    -----  Trial 7:  -----
+
+    Rules:
+
+    Rule 7/1: (9.7, lift 2.1)
+        months_loan_duration > 8
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.914]
+
+    Rule 7/2: (7.6, lift 2.0)
+        amount > 11054
+        percent_of_income <= 1
+        ->  class yes  [0.896]
+
+    Rule 7/3: (16.8/1, lift 2.0)
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age <= 22
+        phoneTRUE <= 0
+        ->  class yes  [0.892]
+
+    Rule 7/4: (29.1/3.1, lift 1.9)
+        months_loan_duration > 11
+        amount <= 4351
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        existing_loans_count <= 1
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.868]
+
+    Rule 7/5: (38.9/5.8, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historygood > 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        percent_of_income > 2
+        existing_loans_count <= 1
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.834]
+
+    Rule 7/6: (14.8/2, lift 1.8)
+        months_loan_duration > 28
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        years_at_residence > 1
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.820]
+
+    Rule 7/7: (3.3, lift 1.8)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.811]
+
+    Rule 7/8: (3.2, lift 1.8)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.807]
+
+    Rule 7/9: (26.1/5.6, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        credit_historyvery good > 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        percent_of_income > 1
+        ->  class yes  [0.765]
+
+    Rule 7/10: (42.1/11.3, lift 1.6)
+        months_loan_duration > 15
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        existing_loans_count <= 1
+        ->  class yes  [0.721]
+
+    Rule 7/11: (22/6.1, lift 1.6)
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        savings_balance100 - 500 DM > 0
+        percent_of_income > 1
+        existing_loans_count > 1
+        ->  class yes  [0.704]
+
+    Rule 7/12: (28/8.1, lift 1.6)
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        housingrent > 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        ->  class yes  [0.696]
+
+    Rule 7/13: (643.3/344.9, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.464]
+
+    Rule 7/14: (18.9, lift 1.7)
+        months_loan_duration <= 11
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        dependents > 1
+        ->  class no  [0.952]
+
+    Rule 7/15: (13.9, lift 1.7)
+        months_loan_duration > 8
+        months_loan_duration <= 15
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.937]
+
+    Rule 7/16: (13.4, lift 1.7)
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        other_creditstore <= 0
+        existing_loans_count <= 1
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.935]
+
+    Rule 7/17: (10.6, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historygood > 0
+        other_creditnone <= 0
+        existing_loans_count <= 1
+        phoneTRUE > 0
+        ->  class no  [0.921]
+
+    Rule 7/18: (9.5, lift 1.6)
+        checking_balance> 200 DM > 0
+        credit_historygood > 0
+        phoneTRUE > 0
+        ->  class no  [0.913]
+
+    Rule 7/19: (6.4, lift 1.6)
+        checking_balance> 200 DM > 0
+        credit_historygood > 0
+        purposefurniture/appliances <= 0
+        dependents <= 1
+        ->  class no  [0.881]
+
+    Rule 7/20: (26.4/2.5, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        savings_balance100 - 500 DM <= 0
+        existing_loans_count <= 1
+        phoneTRUE > 0
+        ->  class no  [0.875]
+
+    Rule 7/21: (23.7/3, lift 1.5)
+        savings_balanceunknown > 0
+        percent_of_income > 1
+        housingrent <= 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        ->  class no  [0.844]
+
+    Rule 7/22: (17.1/2.1, lift 1.5)
+        credit_historypoor > 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.840]
+
+    Rule 7/23: (24.9/3.8, lift 1.5)
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        years_at_residence <= 1
+        other_creditstore <= 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.822]
+
+    Rule 7/24: (3.2, lift 1.5)
+        purposerenovations > 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.807]
+
+    Rule 7/25: (39.6/7.1, lift 1.5)
+        credit_historyperfect <= 0
+        amount > 1455
+        savings_balance100 - 500 DM > 0
+        percent_of_income > 1
+        existing_loans_count <= 1
+        ->  class no  [0.805]
+
+    Rule 7/26: (29.3/5.1, lift 1.5)
+        months_loan_duration <= 8
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 1
+        ->  class no  [0.804]
+
+    Rule 7/27: (37.3/7.5, lift 1.4)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM <= 0
+        existing_loans_count > 1
+        jobunskilled > 0
+        ->  class no  [0.784]
+
+    Rule 7/28: (81.9/18.3, lift 1.4)
+        credit_historyperfect <= 0
+        amount <= 11054
+        savings_balance> 1000 DM <= 0
+        percent_of_income <= 1
+        years_at_residence > 1
+        ->  class no  [0.770]
+
+    Rule 7/29: (25.9/5.6, lift 1.4)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.762]
+
+    Rule 7/30: (72.9/17.7, lift 1.4)
+        months_loan_duration <= 28
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age > 22
+        other_creditstore <= 0
+        phoneTRUE <= 0
+        ->  class no  [0.751]
+
+    Rule 7/31: (65.4/16.1, lift 1.3)
+        checking_balanceunknown > 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        housingrent <= 0
+        existing_loans_count > 1
+        ->  class no  [0.746]
+
+    Rule 7/32: (349.7/140.3, lift 1.1)
+        employment_duration> 7 years <= 0
+        age > 29
+        ->  class no  [0.598]
+
+    Default class: no
+
+    -----  Trial 8:  -----
+
+    Rules:
+
+    Rule 8/1: (14.5, lift 2.1)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        age > 33
+        ->  class yes  [0.940]
+
+    Rule 8/2: (18.3/1.6, lift 1.9)
+        checking_balanceunknown <= 0
+        amount > 2255
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        other_creditnone > 0
+        jobunskilled > 0
+        ->  class yes  [0.873]
+
+    Rule 8/3: (19.4/2.3, lift 1.9)
+        credit_historygood > 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        age <= 29
+        other_creditnone > 0
+        housingown <= 0
+        jobskilled > 0
+        ->  class yes  [0.844]
+
+    Rule 8/4: (10.7/1.1, lift 1.8)
+        checking_balance1 - 200 DM <= 0
+        credit_historyvery good > 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        housingown > 0
+        jobskilled <= 0
+        ->  class yes  [0.835]
+
+    Rule 8/5: (7.5/0.6, lift 1.8)
+        credit_historygood <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 30
+        housingown <= 0
+        jobskilled <= 0
+        ->  class yes  [0.829]
+
+    Rule 8/6: (3.8, lift 1.8)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.828]
+
+    Rule 8/7: (13.1/2.1, lift 1.8)
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        housingrent <= 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class yes  [0.798]
+
+    Rule 8/8: (2.7, lift 1.7)
+        purposeeducation > 0
+        other_creditstore > 0
+        ->  class yes  [0.786]
+
+    Rule 8/9: (6.9/1.1, lift 1.7)
+        purposeeducation > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.764]
+
+    Rule 8/10: (33.5/7.5, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        age > 29
+        other_creditnone > 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class yes  [0.761]
+
+    Rule 8/11: (35.8/8.4, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        credit_historygood <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        housingown > 0
+        jobskilled <= 0
+        ->  class yes  [0.750]
+
+    Rule 8/12: (38.3/10.6, lift 1.6)
+        credit_historygood > 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.713]
+
+    Rule 8/13: (36.9/10.2, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration > 11
+        credit_historygood <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        age > 22
+        housingown <= 0
+        jobskilled > 0
+        ->  class yes  [0.711]
+
+    Rule 8/14: (20.5/5.7, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.703]
+
+    Rule 8/15: (646.9/342.3, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.471]
+
+    Rule 8/16: (21/2.2, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 11
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        housingown <= 0
+        ->  class no  [0.862]
+
+    Rule 8/17: (22.3/3.1, lift 1.5)
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.830]
+
+    Rule 8/18: (2.6, lift 1.4)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.782]
+
+    Rule 8/19: (20.6/4.4, lift 1.4)
+        savings_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.762]
+
+    Rule 8/20: (103.8/32.1, lift 1.3)
+        checking_balance1 - 200 DM <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        housingown > 0
+        ->  class no  [0.687]
+
+    Rule 8/21: (816/356.6, lift 1.0)
+        amount <= 7485
+        ->  class no  [0.563]
+
+    Default class: no
+
+    -----  Trial 9:  -----
+
+    Rules:
+
+    Rule 9/1: (12.2/0.5, lift 1.9)
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        amount > 1851
+        amount <= 2303
+        employment_duration> 7 years > 0
+        age > 28
+        ->  class yes  [0.892]
+
+    Rule 9/2: (11.3/0.6, lift 1.8)
+        checking_balanceunknown <= 0
+        amount > 6948
+        employment_duration> 7 years > 0
+        ->  class yes  [0.884]
+
+    Rule 9/3: (5.4/0.5, lift 1.6)
+        credit_historyperfect > 0
+        dependents > 1
+        ->  class yes  [0.793]
+
+    Rule 9/4: (46.3/9.9, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration > 9
+        purposeeducation <= 0
+        amount <= 1249
+        age > 28
+        ->  class yes  [0.773]
+
+    Rule 9/5: (47/15.6, lift 1.4)
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.662]
+
+    Rule 9/6: (705.5/355.2, lift 1.0)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.497]
+
+    Rule 9/7: (15.3, lift 1.8)
+        months_loan_duration <= 8
+        purposecar <= 0
+        purposeeducation <= 0
+        years_at_residence <= 3
+        ->  class no  [0.942]
+
+    Rule 9/8: (9.2, lift 1.8)
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        other_creditstore <= 0
+        jobskilled > 0
+        ->  class no  [0.911]
+
+    Rule 9/9: (21.8/1.2, lift 1.8)
+        months_loan_duration <= 16
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        dependents > 1
+        ->  class no  [0.908]
+
+    Rule 9/10: (7.7, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        credit_historypoor <= 0
+        amount > 7596
+        savings_balanceunknown > 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.897]
+
+    Rule 9/11: (12.2/0.6, lift 1.7)
+        checking_balanceunknown > 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.887]
+
+    Rule 9/12: (16.3/1.1, lift 1.7)
+        months_loan_duration > 16
+        credit_historyperfect <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        age > 32
+        housingrent <= 0
+        existing_loans_count > 1
+        existing_loans_count <= 2
+        dependents <= 1
+        ->  class no  [0.883]
+
+    Rule 9/13: (6.6, lift 1.7)
+        checking_balance> 200 DM > 0
+        months_loan_duration <= 16
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class no  [0.883]
+
+    Rule 9/14: (17/1.9, lift 1.6)
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        percent_of_income <= 2
+        years_at_residence > 3
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.849]
+
+    Rule 9/15: (9.1/0.9, lift 1.6)
+        credit_historyperfect <= 0
+        purposecar0 > 0
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.826]
+
+    Rule 9/16: (40.5/6.7, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration <= 16
+        credit_historyperfect <= 0
+        purposecar <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        years_at_residence <= 3
+        jobskilled > 0
+        ->  class no  [0.818]
+
+    Rule 9/17: (29.8/5.1, lift 1.6)
+        months_loan_duration > 16
+        months_loan_duration <= 42
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        other_creditstore <= 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class no  [0.808]
+
+    Rule 9/18: (23.3/4, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 16
+        savings_balanceunknown > 0
+        ->  class no  [0.801]
+
+    Rule 9/19: (55.2/12.5, lift 1.5)
+        months_loan_duration <= 16
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        existing_loans_count > 1
+        ->  class no  [0.764]
+
+    Rule 9/20: (29.5/6.6, lift 1.5)
+        months_loan_duration > 16
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income <= 1
+        existing_loans_count <= 1
+        ->  class no  [0.760]
+
+    Rule 9/21: (10.4/2.2, lift 1.4)
+        purposeeducation > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.747]
+
+    Rule 9/22: (35.7/8.9, lift 1.4)
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.738]
+
+    Rule 9/23: (172.4/70.1, lift 1.1)
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.593]
+
+    Default class: no
+
+    -----  Trial 10:  -----
+
+    Rules:
+
+    Rule 10/1: (14.9/0.6, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        percent_of_income > 2
+        years_at_residence > 1
+        age <= 57
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class yes  [0.902]
+
+    Rule 10/2: (8, lift 2.0)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.900]
+
+    Rule 10/3: (26.6/6.8, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        amount > 8648
+        ->  class yes  [0.727]
+
+    Rule 10/4: (54.9/14.8, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        months_loan_duration <= 24
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        years_at_residence <= 3
+        jobskilled > 0
+        ->  class yes  [0.722]
+
+    Rule 10/5: (67.7/21, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 24
+        credit_historyvery good <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        other_creditstore <= 0
+        ->  class yes  [0.685]
+
+    Rule 10/6: (52/16.4, lift 1.5)
+        checking_balanceunknown > 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age <= 44
+        other_creditnone <= 0
+        ->  class yes  [0.679]
+
+    Rule 10/7: (634.6/333.3, lift 1.1)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.475]
+
+    Rule 10/8: (491.1/259.3, lift 1.1)
+        savings_balanceunknown <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.472]
+
+    Rule 10/9: (21.6, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 24
+        credit_historyvery good <= 0
+        percent_of_income > 2
+        age <= 57
+        other_creditstore <= 0
+        existing_loans_count > 1
+        jobskilled <= 0
+        ->  class no  [0.958]
+
+    Rule 10/10: (21.4, lift 1.7)
+        months_loan_duration <= 8
+        credit_historyvery good <= 0
+        amount <= 8648
+        years_at_residence <= 3
+        ->  class no  [0.957]
+
+    Rule 10/11: (4.3, lift 1.5)
+        credit_historyvery good > 0
+        savings_balance500 - 1000 DM > 0
+        ->  class no  [0.842]
+
+    Rule 10/12: (52.5/8.9, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        amount > 1386
+        amount <= 8648
+        percent_of_income <= 2
+        ->  class no  [0.818]
+
+    Rule 10/13: (69.8/15.3, lift 1.4)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 45
+        credit_historyvery good <= 0
+        amount > 3499
+        amount <= 8648
+        employment_durationunemployed <= 0
+        percent_of_income <= 2
+        ->  class no  [0.773]
+
+    Rule 10/14: (66.8/18.6, lift 1.3)
+        credit_historyvery good <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        years_at_residence <= 1
+        ->  class no  [0.714]
+
+    Rule 10/15: (191.2/61.9, lift 1.2)
+        months_loan_duration <= 24
+        credit_historyvery good <= 0
+        amount <= 8648
+        years_at_residence > 3
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.674]
+
+    Rule 10/16: (834.7/364, lift 1.0)
+        credit_historyvery good <= 0
+        ->  class no  [0.564]
+
+    Default class: no
+
+    -----  Trial 11:  -----
+
+    Rules:
+
+    Rule 11/1: (13.1/1.8, lift 1.8)
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        age <= 22
+        ->  class yes  [0.814]
+
+    Rule 11/2: (44.7/13.5, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        ->  class yes  [0.689]
+
+    Rule 11/3: (755.8/402, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.468]
+
+    Rule 11/4: (23.8, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        age > 44
+        housingrent <= 0
+        ->  class no  [0.961]
+
+    Rule 11/5: (21.2, lift 1.8)
+        checking_balanceunknown > 0
+        amount <= 1300
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.957]
+
+    Rule 11/6: (12.5, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        credit_historypoor <= 0
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years <= 0
+        housingrent > 0
+        ->  class no  [0.931]
+
+    Rule 11/7: (12.2, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        employment_duration1 - 4 years > 0
+        other_creditstore > 0
+        ->  class no  [0.930]
+
+    Rule 11/8: (24.5/1.2, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        amount <= 9629
+        age > 29
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.916]
+
+    Rule 11/9: (18.9/0.8, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 13
+        months_loan_duration <= 40
+        credit_historygood > 0
+        purposecar <= 0
+        amount <= 9629
+        employment_duration4 - 7 years <= 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.914]
+
+    Rule 11/10: (7.7, lift 1.6)
+        months_loan_duration <= 8
+        savings_balance> 1000 DM <= 0
+        dependents > 1
+        ->  class no  [0.897]
+
+    Rule 11/11: (6, lift 1.6)
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        housingrent <= 0
+        ->  class no  [0.875]
+
+    Rule 11/12: (37.3/5.6, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historypoor <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        percent_of_income > 3
+        other_creditnone > 0
+        housingown > 0
+        ->  class no  [0.832]
+
+    Rule 11/13: (83.2/13.6, lift 1.5)
+        checking_balanceunknown > 0
+        months_loan_duration > 10
+        credit_historypoor <= 0
+        amount <= 11816
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.828]
+
+    Rule 11/14: (25.1/4.3, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        purposecar <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent <= 0
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class no  [0.805]
+
+    Rule 11/15: (8.2/1, lift 1.5)
+        credit_historypoor > 0
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class no  [0.800]
+
+    Rule 11/16: (20.6/3.8, lift 1.4)
+        credit_historygood <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        dependents > 1
+        ->  class no  [0.788]
+
+    Rule 11/17: (51.1/11.5, lift 1.4)
+        checking_balance1 - 200 DM <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances > 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        other_creditnone > 0
+        housingown > 0
+        dependents <= 1
+        ->  class no  [0.764]
+
+    Rule 11/18: (24.4/5.5, lift 1.4)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.753]
+
+    Rule 11/19: (60.5/20.8, lift 1.2)
+        checking_balance> 200 DM > 0
+        dependents <= 1
+        ->  class no  [0.651]
+
+    Rule 11/20: (144.2/54.6, lift 1.1)
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.620]
+
+    Default class: no
+
+    -----  Trial 12:  -----
+
+    Rules:
+
+    Rule 12/1: (4.8, lift 2.0)
+        checking_balance1 - 200 DM > 0
+        employment_duration> 7 years > 0
+        age > 53
+        ->  class yes  [0.853]
+
+    Rule 12/2: (12.6/1.2, lift 2.0)
+        checking_balance1 - 200 DM <= 0
+        amount <= 4716
+        employment_duration4 - 7 years > 0
+        age <= 26
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.851]
+
+    Rule 12/3: (4.4, lift 2.0)
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        percent_of_income > 1
+        jobunskilled > 0
+        ->  class yes  [0.843]
+
+    Rule 12/4: (38.2/5.5, lift 2.0)
+        months_loan_duration > 11
+        credit_historygood > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age <= 26
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.839]
+
+    Rule 12/5: (13/1.5, lift 2.0)
+        months_loan_duration > 21
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        other_creditstore <= 0
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class yes  [0.832]
+
+    Rule 12/6: (3.2, lift 1.9)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.809]
+
+    Rule 12/7: (33.3/7.5, lift 1.8)
+        credit_historygood > 0
+        purposeeducation <= 0
+        amount > 1175
+        employment_duration> 7 years <= 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        ->  class yes  [0.758]
+
+    Rule 12/8: (25.2/5.6, lift 1.8)
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class yes  [0.757]
+
+    Rule 12/9: (18.9/4.6, lift 1.7)
+        months_loan_duration > 9
+        months_loan_duration <= 22
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years > 0
+        dependents > 1
+        ->  class yes  [0.734]
+
+    Rule 12/10: (18.1/5.1, lift 1.7)
+        checking_balance> 200 DM > 0
+        employment_duration> 7 years <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.694]
+
+    Rule 12/11: (19.5/5.7, lift 1.6)
+        amount <= 2241
+        other_creditstore > 0
+        ->  class yes  [0.689]
+
+    Rule 12/12: (29.1/8.7, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        purposeeducation > 0
+        percent_of_income > 1
+        age <= 43
+        ->  class yes  [0.687]
+
+    Rule 12/13: (13.4/4, lift 1.6)
+        credit_historyperfect <= 0
+        savings_balance500 - 1000 DM > 0
+        existing_loans_count > 1
+        ->  class yes  [0.674]
+
+    Rule 12/14: (36.5/12.5, lift 1.5)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar0 <= 0
+        purposeeducation <= 0
+        employment_duration> 7 years <= 0
+        other_creditnone <= 0
+        existing_loans_count <= 2
+        ->  class yes  [0.650]
+
+    Rule 12/15: (39/13.4, lift 1.5)
+        months_loan_duration > 33
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.648]
+
+    Rule 12/16: (40.6/18.2, lift 1.3)
+        credit_historyperfect > 0
+        ->  class yes  [0.550]
+
+    Rule 12/17: (3.5, lift 1.4)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.817]
+
+    Rule 12/18: (46.3/10.8, lift 1.3)
+        months_loan_duration <= 21
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        jobunskilled > 0
+        ->  class no  [0.755]
+
+    Rule 12/19: (859.4/355.6, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.586]
+
+    Default class: no
+
+    -----  Trial 13:  -----
+
+    Rules:
+
+    Rule 13/1: (15.7/2.9, lift 1.7)
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years <= 0
+        other_creditstore <= 0
+        housingown > 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        phoneTRUE > 0
+        ->  class yes  [0.779]
+
+    Rule 13/2: (50.6/11.8, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        percent_of_income > 1
+        other_creditstore <= 0
+        housingown > 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class yes  [0.757]
+
+    Rule 13/3: (44.9/16.6, lift 1.4)
+        checking_balanceunknown <= 0
+        housingown > 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.624]
+
+    Rule 13/4: (38.5/14.7, lift 1.4)
+        checking_balanceunknown <= 0
+        purposecar > 0
+        jobunskilled > 0
+        ->  class yes  [0.614]
+
+    Rule 13/5: (148.2/57.6, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        ->  class yes  [0.610]
+
+    Rule 13/6: (763.2/413.6, lift 1.0)
+        savings_balanceunknown <= 0
+        ->  class yes  [0.458]
+
+    Rule 13/7: (32.4/5.5, lift 1.5)
+        checking_balanceunknown <= 0
+        amount <= 7980
+        savings_balance500 - 1000 DM <= 0
+        employment_duration1 - 4 years > 0
+        housingown > 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        ->  class no  [0.811]
+
+    Rule 13/8: (38.6/7, lift 1.5)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.803]
+
+    Rule 13/9: (25.9/4.7, lift 1.4)
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        housingown > 0
+        existing_loans_count > 1
+        jobunskilled > 0
+        ->  class no  [0.795]
+
+    Rule 13/10: (26.4/6, lift 1.4)
+        savings_balanceunknown > 0
+        housingown > 0
+        existing_loans_count > 1
+        ->  class no  [0.753]
+
+    Rule 13/11: (100.1/26.3, lift 1.3)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.733]
+
+    Rule 13/12: (83.9/22.7, lift 1.3)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        ->  class no  [0.724]
+
+    Rule 13/13: (64.4/18.8, lift 1.3)
+        checking_balance1 - 200 DM > 0
+        credit_historyvery good <= 0
+        employment_duration1 - 4 years <= 0
+        housingown > 0
+        jobskilled > 0
+        ->  class no  [0.702]
+
+    Rule 13/14: (74.8/23.6, lift 1.2)
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        housingown > 0
+        jobunskilled > 0
+        ->  class no  [0.679]
+
+    Rule 13/15: (255.8/99.7, lift 1.1)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration <= 16
+        ->  class no  [0.609]
+
+    Default class: no
+
+    -----  Trial 14:  -----
+
+    Rules:
+
+    Rule 14/1: (12.9, lift 2.1)
+        amount > 1498
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        age <= 26
+        existing_loans_count > 1
+        ->  class yes  [0.933]
+
+    Rule 14/2: (8.7, lift 2.1)
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        age <= 22
+        phoneTRUE <= 0
+        ->  class yes  [0.906]
+
+    Rule 14/3: (7.3, lift 2.0)
+        credit_historyperfect > 0
+        purposerenovations <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        housingrent <= 0
+        ->  class yes  [0.892]
+
+    Rule 14/4: (20/2.2, lift 1.9)
+        months_loan_duration > 47
+        credit_historyvery good <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.852]
+
+    Rule 14/5: (16.5/3, lift 1.8)
+        months_loan_duration <= 47
+        amount > 11328
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.787]
+
+    Rule 14/6: (19/3.5, lift 1.8)
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        other_creditnone > 0
+        ->  class yes  [0.784]
+
+    Rule 14/7: (41.7/11.1, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historygood > 0
+        purposefurniture/appliances <= 0
+        amount <= 11328
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 45
+        housingown > 0
+        existing_loans_count <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.722]
+
+    Rule 14/8: (45.1/13.7, lift 1.6)
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingrent <= 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        phoneTRUE > 0
+        ->  class yes  [0.687]
+
+    Rule 14/9: (11.8/3.4, lift 1.6)
+        savings_balance500 - 1000 DM > 0
+        jobunskilled > 0
+        ->  class yes  [0.682]
+
+    Rule 14/10: (57.9/19.2, lift 1.5)
+        months_loan_duration > 15
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.663]
+
+    Rule 14/11: (73.6/26.2, lift 1.5)
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        years_at_residence > 1
+        other_creditnone <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.641]
+
+    Rule 14/12: (344.5/175, lift 1.1)
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        ->  class yes  [0.492]
+
+    Rule 14/13: (33/5.3, lift 1.5)
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        percent_of_income <= 2
+        housingrent <= 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class no  [0.820]
+
+    Rule 14/14: (41.2/9.6, lift 1.3)
+        savings_balance500 - 1000 DM > 0
+        existing_loans_count <= 2
+        jobunskilled <= 0
+        ->  class no  [0.753]
+
+    Rule 14/15: (46.1/11.8, lift 1.3)
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        phoneTRUE > 0
+        ->  class no  [0.734]
+
+    Rule 14/16: (87.5/26.1, lift 1.2)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        age > 22
+        other_creditnone > 0
+        ->  class no  [0.697]
+
+    Rule 14/17: (783.4/332.9, lift 1.0)
+        months_loan_duration <= 47
+        credit_historyvery good <= 0
+        ->  class no  [0.575]
+
+    Default class: no
+
+    -----  Trial 15:  -----
+
+    Rules:
+
+    Rule 15/1: (7.2, lift 1.9)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.892]
+
+    Rule 15/2: (9.2/0.8, lift 1.8)
+        checking_balanceunknown <= 0
+        amount <= 1275
+        employment_durationunemployed > 0
+        ->  class yes  [0.842]
+
+    Rule 15/3: (10.1/1, lift 1.8)
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count > 2
+        dependents <= 1
+        ->  class yes  [0.834]
+
+    Rule 15/4: (13.5/1.9, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historypoor <= 0
+        jobunskilled > 0
+        dependents > 1
+        ->  class yes  [0.811]
+
+    Rule 15/5: (14.9/2.7, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM > 0
+        jobskilled <= 0
+        ->  class yes  [0.780]
+
+    Rule 15/6: (140.2/53.5, lift 1.3)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class yes  [0.616]
+
+    Rule 15/7: (106.2/45.3, lift 1.2)
+        purposefurniture/appliances <= 0
+        savings_balanceunknown <= 0
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class yes  [0.571]
+
+    Rule 15/8: (572.5/288.9, lift 1.1)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        ->  class yes  [0.495]
+
+    Rule 15/9: (33.6/4, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        amount > 1275
+        employment_durationunemployed > 0
+        years_at_residence > 1
+        dependents <= 1
+        ->  class no  [0.859]
+
+    Rule 15/10: (32.4/6.8, lift 1.4)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.774]
+
+    Rule 15/11: (47.6/14.2, lift 1.3)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.694]
+
+    Rule 15/12: (799.2/360.1, lift 1.0)
+        credit_historyperfect <= 0
+        amount <= 7980
+        ->  class no  [0.549]
+
+    Default class: no
+
+    -----  Trial 16:  -----
+
+    Rules:
+
+    Rule 16/1: (6.4, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.881]
+
+    Rule 16/2: (13.3/1.8, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposefurniture/appliances <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        years_at_residence > 1
+        dependents <= 1
+        ->  class yes  [0.815]
+
+    Rule 16/3: (31.7/5.6, lift 1.7)
+        months_loan_duration > 47
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.804]
+
+    Rule 16/4: (28.7/5.9, lift 1.6)
+        months_loan_duration <= 47
+        credit_historypoor > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years <= 0
+        ->  class yes  [0.776]
+
+    Rule 16/5: (54.9/13.1, lift 1.6)
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount > 3905
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 2
+        dependents <= 1
+        ->  class yes  [0.753]
+
+    Rule 16/6: (43.5/12.8, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        years_at_residence <= 2
+        ->  class yes  [0.698]
+
+    Rule 16/7: (77.1/23.6, lift 1.4)
+        checking_balance> 200 DM <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years <= 0
+        years_at_residence > 1
+        years_at_residence <= 2
+        ->  class yes  [0.690]
+
+    Rule 16/8: (56.8/19.8, lift 1.4)
+        credit_historyvery good > 0
+        amount <= 7629
+        age > 23
+        ->  class yes  [0.647]
+
+    Rule 16/9: (41.9/15.4, lift 1.3)
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.626]
+
+    Rule 16/10: (6.2, lift 1.7)
+        months_loan_duration > 47
+        credit_historypoor > 0
+        purposeeducation <= 0
+        ->  class no  [0.879]
+
+    Rule 16/11: (6.3, lift 1.7)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.879]
+
+    Rule 16/12: (18.6/4.3, lift 1.4)
+        savings_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.742]
+
+    Rule 16/13: (117.9/45.6, lift 1.2)
+        savings_balanceunknown > 0
+        years_at_residence > 1
+        ->  class no  [0.611]
+
+    Rule 16/14: (780.1/361.3, lift 1.0)
+        months_loan_duration <= 47
+        credit_historyvery good <= 0
+        ->  class no  [0.537]
+
+    Default class: no
+
+    -----  Trial 17:  -----
+
+    Rules:
+
+    Rule 17/1: (4.5, lift 1.7)
+        checking_balanceunknown <= 0
+        percent_of_income > 2
+        existing_loans_count > 2
+        jobskilled > 0
+        ->  class yes  [0.846]
+
+    Rule 17/2: (29.2/4.3, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balanceunknown > 0
+        percent_of_income > 2
+        age <= 48
+        ->  class yes  [0.830]
+
+    Rule 17/3: (17.3/3.1, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        percent_of_income > 2
+        ->  class yes  [0.790]
+
+    Rule 17/4: (54.2/14.6, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        jobskilled > 0
+        ->  class yes  [0.722]
+
+    Rule 17/5: (763.4/379.2, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.503]
+
+    Rule 17/6: (10.7, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        amount <= 6187
+        age <= 32
+        phoneTRUE > 0
+        ->  class no  [0.921]
+
+    Rule 17/7: (9.5, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.913]
+
+    Rule 17/8: (8.9, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 7
+        purposefurniture/appliances > 0
+        housingrent <= 0
+        ->  class no  [0.908]
+
+    Rule 17/9: (8.4, lift 1.8)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 13
+        purposecar <= 0
+        percent_of_income <= 2
+        housingrent <= 0
+        ->  class no  [0.904]
+
+    Rule 17/10: (27.8/2.8, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        amount <= 2122
+        savings_balanceunknown <= 0
+        existing_loans_count <= 2
+        ->  class no  [0.873]
+
+    Rule 17/11: (5.1, lift 1.7)
+        checking_balanceunknown <= 0
+        savings_balanceunknown > 0
+        percent_of_income > 2
+        age > 48
+        ->  class no  [0.860]
+
+    Rule 17/12: (4.7, lift 1.7)
+        checking_balanceunknown > 0
+        percent_of_income <= 1
+        other_creditnone <= 0
+        ->  class no  [0.851]
+
+    Rule 17/13: (27.6/3.4, lift 1.7)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        age > 44
+        ->  class no  [0.851]
+
+    Rule 17/14: (15.8/1.7, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        years_at_residence <= 1
+        jobskilled > 0
+        ->  class no  [0.848]
+
+    Rule 17/15: (11.6/1.5, lift 1.6)
+        checking_balance> 200 DM > 0
+        credit_historygood <= 0
+        savings_balanceunknown <= 0
+        existing_loans_count <= 2
+        jobskilled > 0
+        ->  class no  [0.813]
+
+    Rule 17/16: (18.7/3.1, lift 1.6)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        other_creditnone > 0
+        dependents > 1
+        ->  class no  [0.801]
+
+    Rule 17/17: (34.6/6.7, lift 1.6)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.790]
+
+    Rule 17/18: (53.1/10.7, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        amount <= 6187
+        savings_balance> 1000 DM <= 0
+        other_creditnone > 0
+        ->  class no  [0.788]
+
+    Rule 17/19: (32.7/7.3, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposecar > 0
+        employment_duration> 7 years <= 0
+        percent_of_income <= 2
+        ->  class no  [0.760]
+
+    Rule 17/20: (24.3/5.5, lift 1.5)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.752]
+
+    Rule 17/21: (26.4/6.3, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor > 0
+        savings_balance> 1000 DM <= 0
+        existing_loans_count <= 3
+        ->  class no  [0.742]
+
+    Rule 17/22: (48.4/12.5, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances <= 0
+        amount <= 9857
+        employment_duration> 7 years <= 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.733]
+
+    Rule 17/23: (28/8.5, lift 1.3)
+        checking_balanceunknown > 0
+        purposefurniture/appliances > 0
+        other_creditnone <= 0
+        ->  class no  [0.683]
+
+    Default class: yes
+
+    -----  Trial 18:  -----
+
+    Rules:
+
+    Rule 18/1: (14.5/0.3, lift 2.1)
+        credit_historygood > 0
+        purposecar > 0
+        amount <= 1386
+        percent_of_income <= 2
+        jobunemployed <= 0
+        ->  class yes  [0.921]
+
+    Rule 18/2: (28.9/2, lift 2.0)
+        credit_historypoor > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        housingrent <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.902]
+
+    Rule 18/3: (6.3, lift 2.0)
+        months_loan_duration <= 22
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed > 0
+        ->  class yes  [0.880]
+
+    Rule 18/4: (18/1.6, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years > 0
+        percent_of_income > 1
+        years_at_residence <= 3
+        jobunskilled <= 0
+        ->  class yes  [0.872]
+
+    Rule 18/5: (20/2.1, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration > 14
+        purposecar <= 0
+        amount > 1901
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        other_creditstore <= 0
+        jobunskilled > 0
+        ->  class yes  [0.861]
+
+    Rule 18/6: (8.4/0.6, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM > 0
+        housingrent > 0
+        ->  class yes  [0.842]
+
+    Rule 18/7: (4.1, lift 1.9)
+        credit_historyvery good > 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        other_creditstore <= 0
+        jobunskilled > 0
+        ->  class yes  [0.835]
+
+    Rule 18/8: (3.9, lift 1.9)
+        purposerenovations > 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class yes  [0.829]
+
+    Rule 18/9: (12.6/2.5, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposecar > 0
+        percent_of_income > 2
+        housingrent > 0
+        ->  class yes  [0.759]
+
+    Rule 18/10: (20/4.8, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        amount > 7228
+        jobunemployed <= 0
+        ->  class yes  [0.735]
+
+    Rule 18/11: (33/8.5, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration1 - 4 years > 0
+        housingown <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.730]
+
+    Rule 18/12: (33.1/9.8, lift 1.5)
+        checking_balanceunknown > 0
+        months_loan_duration <= 22
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class yes  [0.691]
+
+    Rule 18/13: (659.3/355.5, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.461]
+
+    Rule 18/14: (33.9, lift 1.8)
+        purposecar > 0
+        amount > 1386
+        amount <= 7228
+        savings_balance100 - 500 DM <= 0
+        percent_of_income <= 2
+        age <= 52
+        other_creditnone > 0
+        jobunemployed <= 0
+        ->  class no  [0.972]
+
+    Rule 18/15: (18.6, lift 1.7)
+        credit_historygood <= 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income <= 2
+        other_creditnone > 0
+        jobunemployed <= 0
+        ->  class no  [0.951]
+
+    Rule 18/16: (9.4, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposecar > 0
+        age > 52
+        other_creditnone > 0
+        ->  class no  [0.908]
+
+    Rule 18/17: (13.9/1.1, lift 1.6)
+        purposecar > 0
+        amount > 1804
+        amount <= 2241
+        other_creditnone > 0
+        ->  class no  [0.869]
+
+    Rule 18/18: (7.2/0.6, lift 1.5)
+        credit_historypoor > 0
+        savings_balance500 - 1000 DM <= 0
+        jobunskilled > 0
+        ->  class no  [0.826]
+
+    Rule 18/19: (49.5/9.8, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class no  [0.791]
+
+    Rule 18/20: (25.8/5.6, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.763]
+
+    Rule 18/21: (25.2/6, lift 1.3)
+        credit_historypoor > 0
+        percent_of_income <= 2
+        ->  class no  [0.743]
+
+    Rule 18/22: (333.1/137, lift 1.1)
+        phoneTRUE > 0
+        ->  class no  [0.588]
+
+    Rule 18/23: (516.2/214.7, lift 1.1)
+        credit_historypoor <= 0
+        purposecar <= 0
+        savings_balance100 - 500 DM <= 0
+        ->  class no  [0.584]
+
+    Default class: yes
+
+    -----  Trial 19:  -----
+
+    Rules:
+
+    Rule 19/1: (11.7, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        percent_of_income > 3
+        ->  class yes  [0.927]
+
+    Rule 19/2: (10.5, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.920]
+
+    Rule 19/3: (31.8/3.3, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 27
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class yes  [0.872]
+
+    Rule 19/4: (7.5/0.4, lift 1.8)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 11
+        savings_balance500 - 1000 DM > 0
+        jobunskilled > 0
+        ->  class yes  [0.852]
+
+    Rule 19/5: (16/2.6, lift 1.7)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.799]
+
+    Rule 19/6: (20.5/4.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        jobskilled <= 0
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.769]
+
+    Rule 19/7: (23.7/6.2, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        housingown <= 0
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.721]
+
+    Rule 19/8: (52.8/17.6, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        other_creditnone <= 0
+        jobskilled > 0
+        ->  class yes  [0.661]
+
+    Rule 19/9: (135.2/47.1, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        jobskilled > 0
+        dependents <= 1
+        ->  class yes  [0.650]
+
+    Rule 19/10: (19.4/7.3, lift 1.3)
+        purposerenovations > 0
+        ->  class yes  [0.614]
+
+    Rule 19/11: (701.7/359, lift 1.0)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.488]
+
+    Rule 19/12: (12.5, lift 1.8)
+        checking_balanceunknown > 0
+        amount <= 3878
+        percent_of_income <= 1
+        ->  class no  [0.931]
+
+    Rule 19/13: (12.1, lift 1.8)
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years > 0
+        existing_loans_count <= 3
+        jobunskilled <= 0
+        ->  class no  [0.929]
+
+    Rule 19/14: (11.8, lift 1.8)
+        checking_balanceunknown > 0
+        months_loan_duration > 22
+        purposecar <= 0
+        purposeeducation <= 0
+        amount <= 3878
+        employment_duration> 7 years <= 0
+        ->  class no  [0.928]
+
+    Rule 19/15: (10, lift 1.7)
+        checking_balanceunknown > 0
+        purposeeducation <= 0
+        amount <= 3878
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.917]
+
+    Rule 19/16: (16.1/1.7, lift 1.6)
+        checking_balanceunknown > 0
+        amount <= 1098
+        employment_duration> 7 years <= 0
+        ->  class no  [0.852]
+
+    Rule 19/17: (60.1/16, lift 1.4)
+        checking_balanceunknown > 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.726]
+
+    Rule 19/18: (30.3/8.6, lift 1.3)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.704]
+
+    Rule 19/19: (71.2/22.1, lift 1.3)
+        checking_balanceunknown > 0
+        purposecar > 0
+        employment_duration4 - 7 years <= 0
+        ->  class no  [0.684]
+
+    Rule 19/20: (655.3/325.3, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class no  [0.504]
+
+    Default class: no
+
+    -----  Trial 20:  -----
+
+    Rules:
+
+    Rule 20/1: (16.9/1, lift 1.9)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances <= 0
+        amount <= 1103
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        ->  class yes  [0.895]
+
+    Rule 20/2: (7.3, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.893]
+
+    Rule 20/3: (12/0.6, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence <= 3
+        age <= 22
+        ->  class yes  [0.886]
+
+    Rule 20/4: (18.9/2.2, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        years_at_residence > 3
+        age > 26
+        age <= 32
+        ->  class yes  [0.848]
+
+    Rule 20/5: (7.4/0.6, lift 1.7)
+        checking_balance> 200 DM > 0
+        months_loan_duration > 9
+        dependents > 1
+        ->  class yes  [0.825]
+
+    Rule 20/6: (3, lift 1.7)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.801]
+
+    Rule 20/7: (2.9, lift 1.7)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.797]
+
+    Rule 20/8: (27.4/5.2, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 27
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        age > 23
+        ->  class yes  [0.791]
+
+    Rule 20/9: (37.3/8.8, lift 1.6)
+        checking_balanceunknown > 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 1
+        other_creditnone <= 0
+        ->  class yes  [0.750]
+
+    Rule 20/10: (14.5/3.4, lift 1.5)
+        savings_balanceunknown > 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence <= 1
+        ->  class yes  [0.731]
+
+    Rule 20/11: (101.3/30.7, lift 1.4)
+        checking_balanceunknown <= 0
+        months_loan_duration > 27
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        dependents <= 1
+        ->  class yes  [0.693]
+
+    Rule 20/12: (51.3/15.9, lift 1.4)
+        checking_balanceunknown <= 0
+        months_loan_duration > 9
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        dependents > 1
+        ->  class yes  [0.683]
+
+    Rule 20/13: (64.6/21.1, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        age > 30
+        other_creditstore <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.669]
+
+    Rule 20/14: (34.3/11.6, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.654]
+
+    Rule 20/15: (67.9/23.6, lift 1.3)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        dependents <= 1
+        ->  class yes  [0.648]
+
+    Rule 20/16: (114.7/42.6, lift 1.3)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        housingown > 0
+        dependents <= 1
+        ->  class yes  [0.626]
+
+    Rule 20/17: (24.3/2.7, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 21
+        months_loan_duration <= 27
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balanceunknown <= 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.860]
+
+    Rule 20/18: (24.1/4.3, lift 1.5)
+        purposeeducation <= 0
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.797]
+
+    Rule 20/19: (869.9/424.4, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.512]
+
+    Default class: no
+
+    -----  Trial 21:  -----
+
+    Rules:
+
+    Rule 21/1: (9.8, lift 2.0)
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        amount > 6872
+        other_creditnone > 0
+        ->  class yes  [0.915]
+
+    Rule 21/2: (8.9, lift 2.0)
+        checking_balance> 200 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years > 0
+        age > 30
+        age <= 32
+        other_creditnone > 0
+        jobunskilled <= 0
+        ->  class yes  [0.909]
+
+    Rule 21/3: (8.1, lift 2.0)
+        checking_balanceunknown <= 0
+        amount > 6948
+        employment_duration> 7 years > 0
+        age > 30
+        ->  class yes  [0.901]
+
+    Rule 21/4: (9.9/0.2, lift 2.0)
+        credit_historyvery good <= 0
+        amount <= 1028
+        employment_duration> 7 years > 0
+        other_creditnone <= 0
+        ->  class yes  [0.895]
+
+    Rule 21/5: (16.9/2.3, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        employment_duration1 - 4 years > 0
+        age <= 24
+        other_creditnone > 0
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.823]
+
+    Rule 21/6: (13/2, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.802]
+
+    Rule 21/7: (707.9/374.1, lift 1.0)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.472]
+
+    Rule 21/8: (19/0.2, lift 1.7)
+        amount <= 10875
+        employment_duration> 7 years > 0
+        age <= 30
+        other_creditnone > 0
+        ->  class no  [0.945]
+
+    Rule 21/9: (13, lift 1.7)
+        checking_balanceunknown > 0
+        purposecar > 0
+        savings_balance500 - 1000 DM <= 0
+        years_at_residence <= 2
+        other_creditnone > 0
+        ->  class no  [0.933]
+
+    Rule 21/10: (11.7, lift 1.7)
+        purposeeducation <= 0
+        employment_duration> 7 years <= 0
+        housingrent > 0
+        dependents > 1
+        ->  class no  [0.927]
+
+    Rule 21/11: (9, lift 1.7)
+        purposeeducation > 0
+        savings_balanceunknown > 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.909]
+
+    Rule 21/12: (21.4/1.5, lift 1.6)
+        checking_balanceunknown > 0
+        employment_duration> 7 years > 0
+        age > 32
+        other_creditnone > 0
+        ->  class no  [0.892]
+
+    Rule 21/13: (6.7, lift 1.6)
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        housingrent <= 0
+        ->  class no  [0.885]
+
+    Rule 21/14: (6.3, lift 1.6)
+        employment_durationunemployed > 0
+        age > 56
+        ->  class no  [0.879]
+
+    Rule 21/15: (4.8, lift 1.6)
+        purposecar0 > 0
+        employment_durationunemployed > 0
+        ->  class no  [0.853]
+
+    Rule 21/16: (24.9/3.1, lift 1.5)
+        credit_historyvery good <= 0
+        amount > 1028
+        amount <= 10875
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years > 0
+        other_creditnone <= 0
+        housingrent <= 0
+        ->  class no  [0.846]
+
+    Rule 21/17: (46.7/6.5, lift 1.5)
+        checking_balance> 200 DM <= 0
+        purposeeducation <= 0
+        amount <= 6948
+        employment_duration> 7 years > 0
+        years_at_residence > 3
+        age > 32
+        other_creditnone > 0
+        ->  class no  [0.845]
+
+    Rule 21/18: (26.9/3.6, lift 1.5)
+        purposecar > 0
+        amount <= 10875
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income <= 1
+        ->  class no  [0.840]
+
+    Rule 21/19: (11.1/1.6, lift 1.5)
+        checking_balance> 200 DM > 0
+        employment_duration> 7 years > 0
+        jobunskilled <= 0
+        ->  class no  [0.804]
+
+    Rule 21/20: (18.4/3.2, lift 1.5)
+        purposeeducation <= 0
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.792]
+
+    Rule 21/21: (2.5, lift 1.4)
+        savings_balance500 - 1000 DM > 0
+        employment_durationunemployed > 0
+        ->  class no  [0.777]
+
+    Rule 21/22: (436.2/172.8, lift 1.1)
+        months_loan_duration <= 36
+        credit_historypoor <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        amount <= 10875
+        employment_durationunemployed <= 0
+        ->  class no  [0.603]
+
+    Default class: yes
+
+    -----  Trial 22:  -----
+
+    Rules:
+
+    Rule 22/1: (9.2, lift 2.0)
+        credit_historyperfect > 0
+        savings_balance100 - 500 DM <= 0
+        housingown <= 0
+        ->  class yes  [0.911]
+
+    Rule 22/2: (7.8, lift 2.0)
+        amount > 9629
+        savings_balanceunknown <= 0
+        other_creditnone <= 0
+        ->  class yes  [0.898]
+
+    Rule 22/3: (12.5/0.5, lift 2.0)
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        other_creditnone <= 0
+        existing_loans_count <= 2
+        jobskilled > 0
+        ->  class yes  [0.896]
+
+    Rule 22/4: (12.5/0.6, lift 2.0)
+        amount <= 9629
+        percent_of_income > 1
+        age > 52
+        other_creditnone <= 0
+        housingrent <= 0
+        existing_loans_count <= 2
+        ->  class yes  [0.887]
+
+    Rule 22/5: (7.7/0.2, lift 1.9)
+        months_loan_duration > 16
+        purposefurniture/appliances > 0
+        amount <= 3399
+        employment_duration> 7 years <= 0
+        dependents > 1
+        ->  class yes  [0.871]
+
+    Rule 22/6: (4.6, lift 1.9)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances > 0
+        amount <= 3399
+        employment_durationunemployed > 0
+        ->  class yes  [0.848]
+
+    Rule 22/7: (23.5/3.5, lift 1.8)
+        months_loan_duration > 7
+        months_loan_duration <= 9
+        purposefurniture/appliances > 0
+        amount > 902
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        age <= 31
+        ->  class yes  [0.825]
+
+    Rule 22/8: (11.8/1.5, lift 1.8)
+        credit_historyperfect > 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 3
+        ->  class yes  [0.822]
+
+    Rule 22/9: (35.3/6.1, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        purposefurniture/appliances > 0
+        amount > 1138
+        amount <= 3399
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        other_creditnone > 0
+        ->  class yes  [0.809]
+
+    Rule 22/10: (3.2, lift 1.8)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.806]
+
+    Rule 22/11: (10.6/1.7, lift 1.7)
+        purposecar > 0
+        amount > 11054
+        other_creditnone > 0
+        ->  class yes  [0.788]
+
+    Rule 22/12: (20.2/3.7, lift 1.7)
+        credit_historyperfect <= 0
+        savings_balanceunknown <= 0
+        other_creditnone <= 0
+        housingrent > 0
+        ->  class yes  [0.786]
+
+    Rule 22/13: (28.1/6.3, lift 1.7)
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        other_creditnone <= 0
+        ->  class yes  [0.758]
+
+    Rule 22/14: (49.6/13.9, lift 1.6)
+        credit_historyperfect <= 0
+        purposefurniture/appliances > 0
+        amount > 4006
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        other_creditnone > 0
+        ->  class yes  [0.711]
+
+    Rule 22/15: (19.7/5.5, lift 1.6)
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM > 0
+        jobskilled <= 0
+        ->  class yes  [0.700]
+
+    Rule 22/16: (38.9/11.8, lift 1.5)
+        checking_balanceunknown <= 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 2
+        years_at_residence <= 2
+        housingown > 0
+        ->  class yes  [0.688]
+
+    Rule 22/17: (68.7/21.7, lift 1.5)
+        credit_historyperfect <= 0
+        purposecar <= 0
+        purposefurniture/appliances <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        ->  class yes  [0.679]
+
+    Rule 22/18: (57.6/15, lift 1.3)
+        savings_balance100 - 500 DM > 0
+        jobskilled > 0
+        ->  class no  [0.732]
+
+    Rule 22/19: (27.6/7.1, lift 1.3)
+        checking_balanceunknown > 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.725]
+
+    Rule 22/20: (811.3/374.5, lift 1.0)
+        savings_balance100 - 500 DM <= 0
+        ->  class no  [0.538]
+
+    Default class: no
+
+    -----  Trial 23:  -----
+
+    Rules:
+
+    Rule 23/1: (9, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration > 45
+        credit_historyperfect <= 0
+        savings_balanceunknown <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.909]
+
+    Rule 23/2: (8.6, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.905]
+
+    Rule 23/3: (10.1/0.3, lift 1.9)
+        checking_balanceunknown > 0
+        months_loan_duration <= 36
+        credit_historygood <= 0
+        amount > 6419
+        savings_balance> 1000 DM <= 0
+        age <= 30
+        ->  class yes  [0.891]
+
+    Rule 23/4: (40.3/8.6, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        age > 23
+        ->  class yes  [0.772]
+
+    Rule 23/5: (2.3, lift 1.6)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.767]
+
+    Rule 23/6: (41.1/12.9, lift 1.4)
+        checking_balance> 200 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        other_creditnone <= 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        ->  class yes  [0.678]
+
+    Rule 23/7: (65.2/23.4, lift 1.4)
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        years_at_residence > 1
+        other_creditnone <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.637]
+
+    Rule 23/8: (301.9/134.9, lift 1.2)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        years_at_residence > 1
+        existing_loans_count <= 1
+        ->  class yes  [0.553]
+
+    Rule 23/9: (298.6/139.7, lift 1.1)
+        credit_historygood > 0
+        age <= 44
+        phoneTRUE <= 0
+        ->  class yes  [0.532]
+
+    Rule 23/10: (20.1, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        amount > 1382
+        amount <= 1820
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        phoneTRUE <= 0
+        ->  class no  [0.955]
+
+    Rule 23/11: (19.3, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 16
+        amount > 1967
+        years_at_residence > 1
+        existing_loans_count <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.953]
+
+    Rule 23/12: (13.1, lift 1.8)
+        checking_balance> 200 DM <= 0
+        credit_historyvery good <= 0
+        amount <= 1158
+        savings_balance100 - 500 DM <= 0
+        phoneTRUE > 0
+        ->  class no  [0.934]
+
+    Rule 23/13: (8.9, lift 1.7)
+        checking_balance> 200 DM > 0
+        age <= 24
+        ->  class no  [0.908]
+
+    Rule 23/14: (5, lift 1.6)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.857]
+
+    Rule 23/15: (13.1/1.2, lift 1.6)
+        months_loan_duration <= 45
+        credit_historygood > 0
+        savings_balance100 - 500 DM <= 0
+        housingrent <= 0
+        existing_loans_count > 1
+        phoneTRUE <= 0
+        ->  class no  [0.855]
+
+    Rule 23/16: (7/0.3, lift 1.6)
+        months_loan_duration > 39
+        credit_historyvery good > 0
+        ->  class no  [0.855]
+
+    Rule 23/17: (30.2/4.7, lift 1.6)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        age > 44
+        ->  class no  [0.823]
+
+    Rule 23/18: (25.6/6.4, lift 1.4)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.734]
+
+    Rule 23/19: (872.1/414.8, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.524]
+
+    Default class: no
+
+    -----  Trial 24:  -----
+
+    Rules:
+
+    Rule 24/1: (29.5/3.5, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        amount > 7980
+        amount <= 15672
+        jobunskilled <= 0
+        ->  class yes  [0.857]
+
+    Rule 24/2: (22.7/3.5, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        ->  class yes  [0.817]
+
+    Rule 24/3: (36/6, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        amount > 629
+        amount <= 976
+        existing_loans_count <= 1
+        ->  class yes  [0.815]
+
+    Rule 24/4: (27.1/4.5, lift 1.8)
+        checking_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        percent_of_income <= 2
+        age <= 25
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class yes  [0.810]
+
+    Rule 24/5: (9.1/1.6, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        savings_balance500 - 1000 DM > 0
+        existing_loans_count > 1
+        ->  class yes  [0.771]
+
+    Rule 24/6: (27.6/6.1, lift 1.7)
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        housingown > 0
+        existing_loans_count <= 1
+        dependents > 1
+        ->  class yes  [0.759]
+
+    Rule 24/7: (48.3/12.4, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        purposeeducation <= 0
+        amount <= 7980
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        age > 30
+        housingown > 0
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class yes  [0.734]
+
+    Rule 24/8: (52.4/13.8, lift 1.6)
+        months_loan_duration > 8
+        credit_historyvery good <= 0
+        amount <= 7980
+        housingown <= 0
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class yes  [0.728]
+
+    Rule 24/9: (36.7/9.8, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 27
+        credit_historyvery good > 0
+        age > 23
+        ->  class yes  [0.722]
+
+    Rule 24/10: (47.2/14.6, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years <= 0
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class yes  [0.683]
+
+    Rule 24/11: (26.5/9.1, lift 1.4)
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.646]
+
+    Rule 24/12: (35.6/14.2, lift 1.3)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        ->  class yes  [0.597]
+
+    Rule 24/13: (54/10.9, lift 1.4)
+        months_loan_duration <= 8
+        credit_historyvery good <= 0
+        amount <= 7980
+        ->  class no  [0.788]
+
+    Rule 24/14: (859.3/378.8, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.559]
+
+    Default class: no
+
+    -----  Trial 25:  -----
+
+    Rules:
+
+    Rule 25/1: (15.5, lift 2.0)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 26
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        housingown > 0
+        ->  class yes  [0.943]
+
+    Rule 25/2: (8.3, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        percent_of_income > 3
+        ->  class yes  [0.903]
+
+    Rule 25/3: (7.8, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 30
+        amount > 5711
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 3
+        existing_loans_count <= 1
+        ->  class yes  [0.898]
+
+    Rule 25/4: (5.6, lift 1.9)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.868]
+
+    Rule 25/5: (14.3/1.2, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration > 42
+        credit_historypoor <= 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        ->  class yes  [0.867]
+
+    Rule 25/6: (30.2/3.9, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        purposecar <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        age > 28
+        other_creditnone > 0
+        housingown > 0
+        ->  class yes  [0.849]
+
+    Rule 25/7: (17.8/2.5, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 30
+        employment_durationunemployed <= 0
+        years_at_residence > 3
+        housingown > 0
+        ->  class yes  [0.822]
+
+    Rule 25/8: (26.8/4.4, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        amount <= 5045
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.813]
+
+    Rule 25/9: (27/5, lift 1.7)
+        checking_balanceunknown <= 0
+        amount <= 5045
+        savings_balance100 - 500 DM <= 0
+        other_creditnone > 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class yes  [0.792]
+
+    Rule 25/10: (16.2/2.8, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM > 0
+        housingown <= 0
+        ->  class yes  [0.789]
+
+    Rule 25/11: (25.6/4.9, lift 1.7)
+        checking_balanceunknown <= 0
+        amount <= 5045
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 2
+        other_creditnone > 0
+        housingown <= 0
+        dependents <= 1
+        ->  class yes  [0.787]
+
+    Rule 25/12: (16.5/3.1, lift 1.7)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        amount > 1295
+        other_creditnone > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class yes  [0.779]
+
+    Rule 25/13: (16.6/4.6, lift 1.5)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        ->  class yes  [0.697]
+
+    Rule 25/14: (63.7/21, lift 1.4)
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM <= 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        other_creditnone <= 0
+        ->  class yes  [0.665]
+
+    Rule 25/15: (3.8, lift 1.5)
+        checking_balanceunknown > 0
+        percent_of_income <= 1
+        other_creditnone <= 0
+        ->  class no  [0.829]
+
+    Rule 25/16: (26/8.4, lift 1.2)
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.666]
+
+    Rule 25/17: (874/407.1, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.534]
+
+    Default class: no
+
+    -----  Trial 26:  -----
+
+    Rules:
+
+    Rule 26/1: (718.5/347.9, lift 1.0)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.516]
+
+    Rule 26/2: (810/394.8, lift 1.0)
+        savings_balance100 - 500 DM <= 0
+        ->  class yes  [0.513]
+
+    Rule 26/3: (11.4, lift 1.9)
+        checking_balanceunknown > 0
+        amount <= 1098
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.926]
+
+    Rule 26/4: (11.2, lift 1.9)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        other_creditnone > 0
+        ->  class no  [0.924]
+
+    Rule 26/5: (26.7/1.2, lift 1.9)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposefurniture/appliances > 0
+        amount <= 4594
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        jobunskilled <= 0
+        ->  class no  [0.922]
+
+    Rule 26/6: (10, lift 1.8)
+        checking_balance> 200 DM > 0
+        credit_historypoor <= 0
+        employment_duration> 7 years > 0
+        dependents <= 1
+        ->  class no  [0.916]
+
+    Rule 26/7: (9.4, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        percent_of_income <= 1
+        ->  class no  [0.912]
+
+    Rule 26/8: (8.4, lift 1.8)
+        credit_historyperfect > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        housingown > 0
+        phoneTRUE <= 0
+        ->  class no  [0.904]
+
+    Rule 26/9: (7.6, lift 1.8)
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        amount <= 1126
+        savings_balance100 - 500 DM <= 0
+        housingown <= 0
+        dependents <= 1
+        ->  class no  [0.896]
+
+    Rule 26/10: (14.2/1.4, lift 1.7)
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.849]
+
+    Rule 26/11: (33.3/5.9, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 8648
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        age > 25
+        phoneTRUE > 0
+        ->  class no  [0.804]
+
+    Rule 26/12: (32.7/6.6, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 8648
+        savings_balanceunknown <= 0
+        years_at_residence > 3
+        other_creditnone > 0
+        housingown > 0
+        ->  class no  [0.782]
+
+    Rule 26/13: (2.6, lift 1.6)
+        purposerenovations > 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.781]
+
+    Rule 26/14: (38.1/8.8, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.755]
+
+    Rule 26/15: (30.7/7.2, lift 1.5)
+        purposeeducation <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        housingrent <= 0
+        jobskilled > 0
+        ->  class no  [0.748]
+
+    Rule 26/16: (24.5/5.7, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.747]
+
+    Rule 26/17: (9.6/2, lift 1.5)
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.742]
+
+    Rule 26/18: (34.9/10.5, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.690]
+
+    Rule 26/19: (840.6/417.7, lift 1.0)
+        credit_historyvery good <= 0
+        ->  class no  [0.503]
+
+    Default class: no
+
+    -----  Trial 27:  -----
+
+    Rules:
+
+    Rule 27/1: (16.5/1, lift 2.0)
+        purposeeducation <= 0
+        amount <= 1680
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        ->  class yes  [0.892]
+
+    Rule 27/2: (29.6/6.4, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 7
+        months_loan_duration <= 11
+        credit_historyvery good <= 0
+        amount > 909
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        age <= 30
+        ->  class yes  [0.767]
+
+    Rule 27/3: (40.9/9.2, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 47
+        credit_historyperfect <= 0
+        amount > 4042
+        amount <= 5190
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.763]
+
+    Rule 27/4: (46.7/17.5, lift 1.4)
+        checking_balance> 200 DM <= 0
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.621]
+
+    Rule 27/5: (770.2/411.8, lift 1.0)
+        months_loan_duration > 11
+        ->  class yes  [0.465]
+
+    Rule 27/6: (24.7, lift 1.8)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 12
+        months_loan_duration <= 16
+        purposecar <= 0
+        amount <= 4042
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        dependents <= 1
+        ->  class no  [0.963]
+
+    Rule 27/7: (22, lift 1.8)
+        months_loan_duration <= 11
+        credit_historyperfect <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        amount <= 3229
+        age > 30
+        ->  class no  [0.958]
+
+    Rule 27/8: (18.6, lift 1.7)
+        months_loan_duration <= 7
+        purposecar <= 0
+        purposeeducation <= 0
+        amount <= 3229
+        ->  class no  [0.951]
+
+    Rule 27/9: (12.3, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 11
+        purposeeducation <= 0
+        amount <= 4042
+        employment_duration> 7 years > 0
+        ->  class no  [0.930]
+
+    Rule 27/10: (27/1.3, lift 1.7)
+        months_loan_duration <= 47
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        amount > 3384
+        amount <= 4042
+        savings_balance100 - 500 DM <= 0
+        dependents <= 1
+        ->  class no  [0.921]
+
+    Rule 27/11: (10.6, lift 1.7)
+        months_loan_duration > 45
+        amount > 5866
+        savings_balanceunknown > 0
+        ->  class no  [0.921]
+
+    Rule 27/12: (19.5/1.1, lift 1.7)
+        credit_historyperfect <= 0
+        purposecar > 0
+        amount <= 4042
+        savings_balance100 - 500 DM <= 0
+        age > 47
+        ->  class no  [0.902]
+
+    Rule 27/13: (21.1/1.6, lift 1.6)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 7980
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.886]
+
+    Rule 27/14: (40.8/4, lift 1.6)
+        months_loan_duration <= 47
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount > 5190
+        amount <= 7980
+        savings_balanceunknown <= 0
+        ->  class no  [0.883]
+
+    Rule 27/15: (55.5/6.7, lift 1.6)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 11
+        months_loan_duration <= 16
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        amount <= 5190
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        age <= 56
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.867]
+
+    Rule 27/16: (46/7.9, lift 1.5)
+        purposeeducation <= 0
+        amount <= 5866
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years <= 0
+        ->  class no  [0.815]
+
+    Rule 27/17: (42.5/7.3, lift 1.5)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 16
+        months_loan_duration <= 47
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 4042
+        savings_balance100 - 500 DM <= 0
+        age > 35
+        dependents <= 1
+        ->  class no  [0.813]
+
+    Rule 27/18: (2.7, lift 1.4)
+        credit_historyperfect > 0
+        purposeeducation > 0
+        ->  class no  [0.788]
+
+    Rule 27/19: (10.2/1.6, lift 1.4)
+        purposeeducation > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.788]
+
+    Rule 27/20: (24.3/6.2, lift 1.3)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.725]
+
+    Rule 27/21: (63.8/21.3, lift 1.2)
+        checking_balance> 200 DM > 0
+        dependents <= 1
+        ->  class no  [0.661]
+
+    Default class: no
+
+    -----  Trial 28:  -----
+
+    Rules:
+
+    Rule 28/1: (15, lift 2.3)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        amount > 8086
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        ->  class yes  [0.941]
+
+    Rule 28/2: (8.9, lift 2.2)
+        months_loan_duration <= 16
+        credit_historypoor <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        age <= 22
+        jobskilled > 0
+        ->  class yes  [0.908]
+
+    Rule 28/3: (8, lift 2.2)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        percent_of_income <= 2
+        housingown <= 0
+        dependents <= 1
+        ->  class yes  [0.900]
+
+    Rule 28/4: (7.4, lift 2.2)
+        credit_historypoor > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        other_creditnone > 0
+        ->  class yes  [0.894]
+
+    Rule 28/5: (14.7/0.8, lift 2.2)
+        checking_balanceunknown <= 0
+        amount <= 2171
+        other_creditstore > 0
+        ->  class yes  [0.890]
+
+    Rule 28/6: (10.1/0.9, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 42
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        jobskilled <= 0
+        ->  class yes  [0.846]
+
+    Rule 28/7: (16.4/2.8, lift 1.9)
+        checking_balanceunknown <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        ->  class yes  [0.794]
+
+    Rule 28/8: (28.4/6.6, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 42
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        ->  class yes  [0.751]
+
+    Rule 28/9: (61.1/15.1, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        months_loan_duration <= 42
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        other_creditstore <= 0
+        jobskilled > 0
+        ->  class yes  [0.745]
+
+    Rule 28/10: (17.9/4.1, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years <= 0
+        percent_of_income <= 2
+        years_at_residence > 1
+        jobunskilled > 0
+        ->  class yes  [0.744]
+
+    Rule 28/11: (27.3/7.1, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        ->  class yes  [0.723]
+
+    Rule 28/12: (45.8/19.7, lift 1.4)
+        credit_historypoor > 0
+        purposecar <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.566]
+
+    Rule 28/13: (377.4/202.4, lift 1.1)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        ->  class yes  [0.464]
+
+    Rule 28/14: (11.1, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 42
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.924]
+
+    Rule 28/15: (8.5, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor > 0
+        purposecar > 0
+        ->  class no  [0.905]
+
+    Rule 28/16: (40.6/3.7, lift 1.5)
+        months_loan_duration <= 16
+        purposeeducation <= 0
+        purposerenovations <= 0
+        amount <= 2687
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        age > 22
+        jobskilled > 0
+        ->  class no  [0.889]
+
+    Rule 28/17: (17/1.3, lift 1.5)
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class no  [0.881]
+
+    Rule 28/18: (6.1, lift 1.5)
+        savings_balance500 - 1000 DM > 0
+        years_at_residence <= 1
+        ->  class no  [0.876]
+
+    Rule 28/19: (25.3/2.9, lift 1.5)
+        credit_historypoor > 0
+        percent_of_income <= 2
+        years_at_residence > 1
+        ->  class no  [0.856]
+
+    Rule 28/20: (23.6/3, lift 1.4)
+        months_loan_duration <= 42
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled <= 0
+        ->  class no  [0.845]
+
+    Rule 28/21: (75.2/18, lift 1.3)
+        credit_historypoor <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        years_at_residence <= 1
+        other_creditstore <= 0
+        housingrent <= 0
+        jobunemployed <= 0
+        ->  class no  [0.754]
+
+    Rule 28/22: (41/10.7, lift 1.2)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.727]
+
+    Rule 28/23: (219.3/68.1, lift 1.2)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        ->  class no  [0.688]
+
+    Rule 28/24: (258/88, lift 1.1)
+        months_loan_duration <= 42
+        percent_of_income <= 2
+        years_at_residence > 1
+        ->  class no  [0.657]
+
+    Default class: no
+
+    -----  Trial 29:  -----
+
+    Rules:
+
+    Rule 29/1: (10.2, lift 2.1)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        age > 33
+        ->  class yes  [0.918]
+
+    Rule 29/2: (12.8/1, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 33
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        amount > 7763
+        ->  class yes  [0.868]
+
+    Rule 29/3: (17.9/1.9, lift 2.0)
+        months_loan_duration <= 33
+        credit_historypoor <= 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        other_creditnone <= 0
+        housingown > 0
+        ->  class yes  [0.856]
+
+    Rule 29/4: (16/2.7, lift 1.8)
+        purposefurniture/appliances > 0
+        employment_duration> 7 years <= 0
+        age <= 22
+        housingown > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.792]
+
+    Rule 29/5: (37.8/8.3, lift 1.8)
+        checking_balance> 200 DM <= 0
+        amount > 1300
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        years_at_residence <= 3
+        age <= 26
+        other_creditnone > 0
+        housingrent <= 0
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.766]
+
+    Rule 29/6: (30.7/6.7, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 33
+        credit_historygood > 0
+        employment_durationunemployed <= 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class yes  [0.764]
+
+    Rule 29/7: (23.3/5.7, lift 1.7)
+        amount <= 1223
+        dependents > 1
+        ->  class yes  [0.737]
+
+    Rule 29/8: (31.4/8.1, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        purposefurniture/appliances > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        age > 29
+        housingrent <= 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.727]
+
+    Rule 29/9: (28.6/7.6, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 33
+        credit_historygood > 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        years_at_residence <= 3
+        housingown > 0
+        ->  class yes  [0.721]
+
+    Rule 29/10: (36.9/11.5, lift 1.6)
+        checking_balanceunknown > 0
+        amount > 1300
+        percent_of_income > 1
+        years_at_residence <= 2
+        other_creditnone <= 0
+        ->  class yes  [0.679]
+
+    Rule 29/11: (76.3/28.4, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        age <= 35
+        other_creditstore <= 0
+        ->  class yes  [0.625]
+
+    Rule 29/12: (121/51, lift 1.3)
+        checking_balance> 200 DM <= 0
+        credit_historypoor <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.577]
+
+    Rule 29/13: (649.9/357.6, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.450]
+
+    Rule 29/14: (40.2/6.4, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        housingown > 0
+        ->  class no  [0.824]
+
+    Rule 29/15: (17.6/2.8, lift 1.4)
+        checking_balanceunknown > 0
+        housingrent <= 0
+        jobunskilled > 0
+        dependents <= 1
+        ->  class no  [0.808]
+
+    Rule 29/16: (80.1/18.4, lift 1.4)
+        checking_balance> 200 DM <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        amount > 1223
+        dependents > 1
+        ->  class no  [0.763]
+
+    Rule 29/17: (20.5/5, lift 1.3)
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.735]
+
+    Rule 29/18: (62.9/20.5, lift 1.2)
+        checking_balance> 200 DM > 0
+        dependents <= 1
+        ->  class no  [0.668]
+
+    Rule 29/19: (729/308.5, lift 1.0)
+        housingrent <= 0
+        ->  class no  [0.577]
+
+    Default class: no
+
+    -----  Trial 30:  -----
+
+    Rules:
+
+    Rule 30/1: (6.2, lift 2.0)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        age > 51
+        ->  class yes  [0.878]
+
+    Rule 30/2: (13.8/1, lift 2.0)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        other_creditnone > 0
+        ->  class yes  [0.875]
+
+    Rule 30/3: (7.4/0.5, lift 1.9)
+        months_loan_duration > 22
+        employment_duration> 7 years <= 0
+        housingrent > 0
+        jobunskilled > 0
+        ->  class yes  [0.845]
+
+    Rule 30/4: (17.4/2.3, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        credit_historygood > 0
+        amount <= 1393
+        employment_duration1 - 4 years > 0
+        housingown > 0
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.831]
+
+    Rule 30/5: (36.5/7.3, lift 1.8)
+        credit_historyvery good <= 0
+        amount <= 2214
+        years_at_residence > 1
+        other_creditnone <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.784]
+
+    Rule 30/6: (2, lift 1.7)
+        credit_historyvery good > 0
+        purposecar0 > 0
+        ->  class yes  [0.752]
+
+    Rule 30/7: (30.1/7.8, lift 1.7)
+        months_loan_duration > 33
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        years_at_residence > 1
+        other_creditnone <= 0
+        ->  class yes  [0.727]
+
+    Rule 30/8: (32/9.8, lift 1.6)
+        months_loan_duration > 7
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.682]
+
+    Rule 30/9: (47.4/15.9, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        amount > 6148
+        other_creditnone > 0
+        housingrent <= 0
+        ->  class yes  [0.658]
+
+    Rule 30/10: (40.7/14.8, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        housingrent <= 0
+        ->  class yes  [0.631]
+
+    Rule 30/11: (36.7/16.8, lift 1.2)
+        credit_historyperfect > 0
+        ->  class yes  [0.541]
+
+    Rule 30/12: (17/1.8, lift 1.5)
+        credit_historyvery good <= 0
+        years_at_residence <= 1
+        other_creditnone <= 0
+        ->  class no  [0.853]
+
+    Rule 30/13: (184.6/65, lift 1.2)
+        checking_balanceunknown > 0
+        other_creditnone > 0
+        ->  class no  [0.646]
+
+    Rule 30/14: (863.3/375.3, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.565]
+
+    Default class: no
+
+    -----  Trial 31:  -----
+
+    Rules:
+
+    Rule 31/1: (17.7/1.5, lift 1.8)
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 1597
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        ->  class yes  [0.873]
+
+    Rule 31/2: (767.2/396, lift 1.0)
+        savings_balanceunknown <= 0
+        ->  class yes  [0.484]
+
+    Rule 31/3: (22.4, lift 1.8)
+        months_loan_duration <= 8
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        years_at_residence <= 3
+        ->  class no  [0.959]
+
+    Rule 31/4: (21.3, lift 1.8)
+        checking_balanceunknown > 0
+        months_loan_duration <= 47
+        credit_historygood > 0
+        purposeeducation <= 0
+        existing_loans_count <= 1
+        phoneTRUE > 0
+        ->  class no  [0.957]
+
+    Rule 31/5: (10.2, lift 1.7)
+        months_loan_duration <= 47
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        purposerenovations <= 0
+        employment_duration> 7 years <= 0
+        existing_loans_count <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.918]
+
+    Rule 31/6: (8.3, lift 1.7)
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        existing_loans_count <= 1
+        ->  class no  [0.903]
+
+    Rule 31/7: (7.5, lift 1.7)
+        checking_balance> 200 DM > 0
+        credit_historypoor <= 0
+        existing_loans_count <= 1
+        phoneTRUE > 0
+        ->  class no  [0.894]
+
+    Rule 31/8: (6.9, lift 1.7)
+        credit_historypoor > 0
+        savings_balance100 - 500 DM > 0
+        jobskilled > 0
+        ->  class no  [0.887]
+
+    Rule 31/9: (12.2/0.7, lift 1.7)
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        age > 60
+        ->  class no  [0.881]
+
+    Rule 31/10: (6.1, lift 1.7)
+        months_loan_duration > 47
+        credit_historypoor > 0
+        purposeeducation <= 0
+        ->  class no  [0.876]
+
+    Rule 31/11: (18/1.6, lift 1.7)
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        years_at_residence <= 1
+        ->  class no  [0.872]
+
+    Rule 31/12: (5.6, lift 1.6)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.868]
+
+    Rule 31/13: (47.7/7, lift 1.6)
+        checking_balance> 200 DM <= 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 1922
+        dependents <= 1
+        ->  class no  [0.839]
+
+    Rule 31/14: (6.1/0.5, lift 1.5)
+        credit_historypoor > 0
+        savings_balanceunknown <= 0
+        housingrent > 0
+        ->  class no  [0.815]
+
+    Rule 31/15: (19.4/3.1, lift 1.5)
+        months_loan_duration <= 47
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        dependents > 1
+        phoneTRUE > 0
+        ->  class no  [0.808]
+
+    Rule 31/16: (11.9/1.8, lift 1.5)
+        credit_historypoor > 0
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class no  [0.801]
+
+    Rule 31/17: (28.3/5.7, lift 1.5)
+        months_loan_duration <= 47
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        housingrent <= 0
+        existing_loans_count <= 1
+        ->  class no  [0.777]
+
+    Rule 31/18: (40.4/9.7, lift 1.4)
+        checking_balanceunknown > 0
+        months_loan_duration <= 47
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        dependents <= 1
+        ->  class no  [0.749]
+
+    Rule 31/19: (132.8/55.2, lift 1.1)
+        savings_balanceunknown > 0
+        ->  class no  [0.583]
+
+    Default class: no
+
+    -----  Trial 32:  -----
+
+    Rules:
+
+    Rule 32/1: (17.5, lift 2.2)
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        amount <= 983
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        age > 25
+        age <= 38
+        other_creditnone > 0
+        ->  class yes  [0.949]
+
+    Rule 32/2: (19.8/1.2, lift 2.1)
+        purposecar > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        age <= 25
+        ->  class yes  [0.901]
+
+    Rule 32/3: (7.3, lift 2.1)
+        months_loan_duration > 7
+        amount <= 1138
+        savings_balance500 - 1000 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.892]
+
+    Rule 32/4: (3.7, lift 1.9)
+        purposeeducation > 0
+        other_creditstore > 0
+        ->  class yes  [0.825]
+
+    Rule 32/5: (3.7, lift 1.9)
+        age > 53
+        other_creditstore > 0
+        ->  class yes  [0.823]
+
+    Rule 32/6: (8.9/1.1, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        ->  class yes  [0.807]
+
+    Rule 32/7: (14.5/2.3, lift 1.8)
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        other_creditnone > 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class yes  [0.801]
+
+    Rule 32/8: (24.8/4.5, lift 1.8)
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        amount > 10875
+        ->  class yes  [0.795]
+
+    Rule 32/9: (23/4.3, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        age > 31
+        age <= 38
+        other_creditnone > 0
+        housingrent <= 0
+        ->  class yes  [0.789]
+
+    Rule 32/10: (2.3, lift 1.8)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.770]
+
+    Rule 32/11: (22.4/4.8, lift 1.8)
+        credit_historypoor > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        other_creditstore <= 0
+        housingrent <= 0
+        ->  class yes  [0.761]
+
+    Rule 32/12: (47.5/13.1, lift 1.6)
+        months_loan_duration > 7
+        purposeeducation <= 0
+        amount <= 10875
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        percent_of_income <= 3
+        age <= 25
+        other_creditstore <= 0
+        ->  class yes  [0.714]
+
+    Rule 32/13: (13.6/3.6, lift 1.6)
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        existing_loans_count > 2
+        ->  class yes  [0.707]
+
+    Rule 32/14: (48.8/18.4, lift 1.4)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        savings_balance500 - 1000 DM <= 0
+        ->  class yes  [0.617]
+
+    Rule 32/15: (644.1/354.9, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.449]
+
+    Rule 32/16: (46/12.9, lift 1.3)
+        amount > 1138
+        savings_balance500 - 1000 DM > 0
+        ->  class no  [0.711]
+
+    Rule 32/17: (111.3/36.7, lift 1.2)
+        amount <= 10875
+        percent_of_income <= 1
+        ->  class no  [0.667]
+
+    Rule 32/18: (841.6/358.8, lift 1.0)
+        credit_historyvery good <= 0
+        ->  class no  [0.573]
+
+    Default class: no
+
+    -----  Trial 33:  -----
+
+    Rules:
+
+    Rule 33/1: (12.5, lift 1.9)
+        months_loan_duration > 39
+        credit_historygood > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.931]
+
+    Rule 33/2: (11.6, lift 1.9)
+        checking_balanceunknown <= 0
+        amount > 6948
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years > 0
+        ->  class yes  [0.927]
+
+    Rule 33/3: (7.9, lift 1.9)
+        months_loan_duration <= 16
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.899]
+
+    Rule 33/4: (6.1, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 14
+        savings_balance100 - 500 DM <= 0
+        jobunskilled > 0
+        dependents > 1
+        ->  class yes  [0.876]
+
+    Rule 33/5: (4.6, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years > 0
+        ->  class yes  [0.848]
+
+    Rule 33/6: (8.7/0.7, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        jobunskilled <= 0
+        ->  class yes  [0.837]
+
+    Rule 33/7: (26.6/4.4, lift 1.7)
+        checking_balanceunknown > 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        age <= 44
+        other_creditnone <= 0
+        ->  class yes  [0.810]
+
+    Rule 33/8: (17.7/2.8, lift 1.7)
+        checking_balance> 200 DM > 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        age > 25
+        jobunskilled <= 0
+        ->  class yes  [0.806]
+
+    Rule 33/9: (29.2/5.7, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class yes  [0.785]
+
+    Rule 33/10: (39.1/9.3, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        amount <= 1377
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        jobskilled > 0
+        ->  class yes  [0.749]
+
+    Rule 33/11: (41/10.9, lift 1.5)
+        checking_balanceunknown > 0
+        purposecar <= 0
+        purposeeducation <= 0
+        amount > 1474
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        ->  class yes  [0.722]
+
+    Rule 33/12: (25.4/6.7, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        savings_balanceunknown > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        jobskilled > 0
+        ->  class yes  [0.718]
+
+    Rule 33/13: (39/11.1, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 14
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        jobunskilled > 0
+        ->  class yes  [0.704]
+
+    Rule 33/14: (67.6/19.7, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years > 0
+        percent_of_income > 1
+        age > 28
+        jobunskilled <= 0
+        ->  class yes  [0.703]
+
+    Rule 33/15: (51.2/16.4, lift 1.4)
+        purposeeducation > 0
+        age <= 44
+        ->  class yes  [0.673]
+
+    Rule 33/16: (25.3/8.7, lift 1.2)
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.645]
+
+    Rule 33/17: (874.7/422.9, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.517]
+
+    Default class: no
+
+    -----  Trial 34:  -----
+
+    Rules:
+
+    Rule 34/1: (11.4/0.4, lift 1.8)
+        months_loan_duration <= 33
+        purposerenovations > 0
+        amount <= 3499
+        savings_balance100 - 500 DM <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.896]
+
+    Rule 34/2: (36.3/6.4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        amount > 3905
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 3
+        ->  class yes  [0.806]
+
+    Rule 34/3: (9.1/1.2, lift 1.6)
+        purposeeducation > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.804]
+
+    Rule 34/4: (23/3.9, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historyperfect <= 0
+        amount <= 3499
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class yes  [0.803]
+
+    Rule 34/5: (22.8/4.2, lift 1.6)
+        checking_balanceunknown <= 0
+        purposecar > 0
+        amount <= 3499
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class yes  [0.789]
+
+    Rule 34/6: (56.5/12.7, lift 1.6)
+        checking_balance> 200 DM <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount > 3905
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income <= 3
+        other_creditstore <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.765]
+
+    Rule 34/7: (48.1/14.9, lift 1.4)
+        purposecar0 <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed > 0
+        age <= 57
+        ->  class yes  [0.683]
+
+    Rule 34/8: (39.5/15.4, lift 1.2)
+        credit_historyperfect > 0
+        ->  class yes  [0.605]
+
+    Rule 34/9: (651/316.2, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.514]
+
+    Rule 34/10: (26, lift 1.9)
+        credit_historyperfect <= 0
+        amount > 3499
+        amount <= 3905
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class no  [0.964]
+
+    Rule 34/11: (14.6, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 22
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.940]
+
+    Rule 34/12: (14.1, lift 1.8)
+        months_loan_duration <= 8
+        credit_historygood > 0
+        amount <= 3905
+        years_at_residence <= 3
+        ->  class no  [0.938]
+
+    Rule 34/13: (10.8, lift 1.8)
+        credit_historyvery good > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income <= 3
+        years_at_residence > 1
+        ->  class no  [0.922]
+
+    Rule 34/14: (9.4, lift 1.8)
+        checking_balance> 200 DM <= 0
+        amount <= 3905
+        savings_balanceunknown > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class no  [0.912]
+
+    Rule 34/15: (9.2, lift 1.8)
+        employment_duration4 - 7 years > 0
+        age > 49
+        ->  class no  [0.911]
+
+    Rule 34/16: (6, lift 1.7)
+        employment_durationunemployed > 0
+        age > 57
+        ->  class no  [0.875]
+
+    Rule 34/17: (4.3, lift 1.6)
+        purposecar0 > 0
+        employment_durationunemployed > 0
+        ->  class no  [0.841]
+
+    Rule 34/18: (53.9/8.3, lift 1.6)
+        checking_balanceunknown > 0
+        months_loan_duration <= 33
+        purposerenovations <= 0
+        amount <= 3905
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        jobunskilled <= 0
+        ->  class no  [0.833]
+
+    Rule 34/19: (25.9/3.9, lift 1.6)
+        months_loan_duration <= 33
+        credit_historygood > 0
+        amount <= 3905
+        employment_durationunemployed <= 0
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class no  [0.825]
+
+    Rule 34/20: (20/3, lift 1.6)
+        credit_historygood > 0
+        amount <= 3905
+        employment_duration> 7 years > 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        dependents <= 1
+        ->  class no  [0.820]
+
+    Rule 34/21: (37.8/6.4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historygood > 0
+        purposecar <= 0
+        amount <= 3905
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 3
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.815]
+
+    Rule 34/22: (40.4/7.4, lift 1.6)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.803]
+
+    Rule 34/23: (42.8/8.4, lift 1.6)
+        credit_historyperfect <= 0
+        amount <= 1808
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count > 1
+        ->  class no  [0.791]
+
+    Rule 34/24: (22.4/4.1, lift 1.5)
+        amount <= 3905
+        savings_balance500 - 1000 DM > 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.790]
+
+    Rule 34/25: (38.1/8.9, lift 1.5)
+        months_loan_duration <= 33
+        amount <= 3905
+        employment_durationunemployed <= 0
+        jobunskilled <= 0
+        dependents > 1
+        ->  class no  [0.752]
+
+    Rule 34/26: (18.1/4.2, lift 1.5)
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.741]
+
+    Rule 34/27: (56/14.3, lift 1.4)
+        checking_balance> 200 DM <= 0
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income <= 3
+        jobunskilled > 0
+        ->  class no  [0.736]
+
+    Rule 34/28: (19.4/5, lift 1.4)
+        checking_balanceunknown > 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.720]
+
+    Default class: no
+
+    -----  Trial 35:  -----
+
+    Rules:
+
+    Rule 35/1: (18.1/0.5, lift 2.1)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        months_loan_duration <= 22
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        ->  class yes  [0.923]
+
+    Rule 35/2: (8.4, lift 2.0)
+        checking_balance1 - 200 DM > 0
+        credit_historygood > 0
+        amount > 9629
+        ->  class yes  [0.904]
+
+    Rule 35/3: (6, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 16
+        credit_historygood > 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class yes  [0.875]
+
+    Rule 35/4: (10/0.7, lift 1.9)
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.862]
+
+    Rule 35/5: (4.2, lift 1.9)
+        other_creditstore > 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class yes  [0.838]
+
+    Rule 35/6: (4, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        credit_historygood > 0
+        purposerenovations > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.833]
+
+    Rule 35/7: (15.2/1.9, lift 1.9)
+        months_loan_duration > 33
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.831]
+
+    Rule 35/8: (18.6/2.8, lift 1.8)
+        checking_balance> 200 DM <= 0
+        amount <= 2337
+        employment_duration4 - 7 years <= 0
+        other_creditstore > 0
+        ->  class yes  [0.817]
+
+    Rule 35/9: (19.7/3.3, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class yes  [0.801]
+
+    Rule 35/10: (48.9/9.7, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        other_creditstore <= 0
+        housingown > 0
+        ->  class yes  [0.790]
+
+    Rule 35/11: (12.5/2.1, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historygood > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        ->  class yes  [0.784]
+
+    Rule 35/12: (15.6/3.1, lift 1.7)
+        employment_duration4 - 7 years > 0
+        age <= 23
+        ->  class yes  [0.765]
+
+    Rule 35/13: (28.1/6.8, lift 1.7)
+        checking_balance> 200 DM <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar0 <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 60
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class yes  [0.741]
+
+    Rule 35/14: (22/5.6, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        employment_duration4 - 7 years <= 0
+        other_creditstore <= 0
+        dependents > 1
+        ->  class yes  [0.725]
+
+    Rule 35/15: (40.9/11, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        housingrent > 0
+        ->  class yes  [0.721]
+
+    Rule 35/16: (36.1/12.2, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        purposeeducation <= 0
+        employment_duration1 - 4 years > 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.653]
+
+    Rule 35/17: (69.4/22.3, lift 1.2)
+        checking_balance> 200 DM > 0
+        ->  class no  [0.674]
+
+    Rule 35/18: (830.6/378, lift 1.0)
+        checking_balance> 200 DM <= 0
+        ->  class no  [0.545]
+
+    Default class: no
+
+    -----  Trial 36:  -----
+
+    Rules:
+
+    Rule 36/1: (11/0.5, lift 1.8)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration <= 54
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        age <= 23
+        jobskilled > 0
+        ->  class yes  [0.881]
+
+    Rule 36/2: (19.2/2.2, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 3
+        age <= 32
+        housingrent <= 0
+        dependents <= 1
+        ->  class yes  [0.848]
+
+    Rule 36/3: (3.1, lift 1.7)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.805]
+
+    Rule 36/4: (40.3/9.1, lift 1.6)
+        credit_historygood > 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class yes  [0.762]
+
+    Rule 36/5: (41.9/10.1, lift 1.6)
+        months_loan_duration > 11
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.747]
+
+    Rule 36/6: (28.1/6.8, lift 1.5)
+        months_loan_duration > 47
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years <= 0
+        dependents <= 1
+        ->  class yes  [0.742]
+
+    Rule 36/7: (23/5.7, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled > 0
+        ->  class yes  [0.733]
+
+    Rule 36/8: (44.4/13.2, lift 1.4)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        age > 23
+        ->  class yes  [0.693]
+
+    Rule 36/9: (70.3/22.2, lift 1.4)
+        months_loan_duration > 15
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.679]
+
+    Rule 36/10: (105.9/34, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        months_loan_duration <= 24
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 5045
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class yes  [0.675]
+
+    Rule 36/11: (24/3.5, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        amount <= 5045
+        savings_balance500 - 1000 DM <= 0
+        employment_duration1 - 4 years > 0
+        years_at_residence <= 3
+        jobskilled <= 0
+        ->  class no  [0.825]
+
+    Rule 36/12: (26.4/6.4, lift 1.4)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.740]
+
+    Rule 36/13: (870.5/423.2, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.514]
+
+    Default class: no
+
+    -----  Trial 37:  -----
+
+    Rules:
+
+    Rule 37/1: (25.1/2, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        amount > 1213
+        amount <= 1377
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        dependents <= 1
+        ->  class yes  [0.887]
+
+    Rule 37/2: (3.7, lift 1.7)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.826]
+
+    Rule 37/3: (8.4/1.1, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM > 0
+        housingrent > 0
+        ->  class yes  [0.801]
+
+    Rule 37/4: (34.3/10.4, lift 1.4)
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        housingrent > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class yes  [0.687]
+
+    Rule 37/5: (37.7/11.7, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.680]
+
+    Rule 37/6: (728.2/360.5, lift 1.0)
+        housingrent <= 0
+        ->  class yes  [0.505]
+
+    Rule 37/7: (31/1.2, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 11816
+        other_creditnone > 0
+        ->  class no  [0.934]
+
+    Rule 37/8: (7.2, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 33
+        employment_durationunemployed > 0
+        ->  class no  [0.891]
+
+    Rule 37/9: (6.5, lift 1.7)
+        checking_balanceunknown <= 0
+        age > 42
+        housingown > 0
+        dependents > 1
+        ->  class no  [0.883]
+
+    Rule 37/10: (5.9, lift 1.7)
+        months_loan_duration > 45
+        housingown > 0
+        dependents > 1
+        ->  class no  [0.873]
+
+    Rule 37/11: (5.6, lift 1.7)
+        checking_balanceunknown > 0
+        percent_of_income <= 1
+        other_creditnone <= 0
+        ->  class no  [0.869]
+
+    Rule 37/12: (29.2/4.1, lift 1.7)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        age > 44
+        ->  class no  [0.838]
+
+    Rule 37/13: (4.1, lift 1.7)
+        employment_durationunemployed > 0
+        age > 57
+        ->  class no  [0.837]
+
+    Rule 37/14: (3.8, lift 1.6)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.827]
+
+    Rule 37/15: (17.9/2.5, lift 1.6)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        other_creditnone > 0
+        dependents > 1
+        ->  class no  [0.822]
+
+    Rule 37/16: (35.8/7.4, lift 1.5)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.777]
+
+    Rule 37/17: (62.3/14.9, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 11816
+        savings_balance500 - 1000 DM <= 0
+        other_creditnone > 0
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class no  [0.753]
+
+    Rule 37/18: (55.9/13.7, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        amount <= 1808
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        other_creditstore <= 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.745]
+
+    Rule 37/19: (24.4/6.2, lift 1.4)
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.727]
+
+    Rule 37/20: (50.8/15.2, lift 1.4)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 11
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        employment_durationunemployed <= 0
+        housingown > 0
+        ->  class no  [0.694]
+
+    Rule 37/21: (871.9/434.7, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.501]
+
+    Default class: no
+
+    -----  Trial 38:  -----
+
+    Rules:
+
+    Rule 38/1: (29.1/5.4, lift 1.7)
+        months_loan_duration <= 42
+        amount > 7980
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.795]
+
+    Rule 38/2: (25.1/7.1, lift 1.5)
+        credit_historypoor > 0
+        amount <= 5190
+        savings_balanceunknown <= 0
+        phoneTRUE > 0
+        ->  class yes  [0.700]
+
+    Rule 38/3: (31.1/9.5, lift 1.5)
+        months_loan_duration > 42
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.684]
+
+    Rule 38/4: (46.6/15, lift 1.5)
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        age <= 43
+        ->  class yes  [0.671]
+
+    Rule 38/5: (707.2/374.6, lift 1.0)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.470]
+
+    Rule 38/6: (22.8, lift 1.8)
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        amount <= 3914
+        age > 46
+        phoneTRUE > 0
+        ->  class no  [0.960]
+
+    Rule 38/7: (14.6, lift 1.7)
+        amount <= 3914
+        dependents > 1
+        phoneTRUE > 0
+        ->  class no  [0.940]
+
+    Rule 38/8: (13.7, lift 1.7)
+        credit_historyperfect <= 0
+        amount > 3448
+        amount <= 3914
+        phoneTRUE > 0
+        ->  class no  [0.936]
+
+    Rule 38/9: (12.3, lift 1.7)
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        amount <= 5190
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        phoneTRUE > 0
+        ->  class no  [0.930]
+
+    Rule 38/10: (11.3, lift 1.7)
+        credit_historypoor <= 0
+        purposeeducation > 0
+        savings_balance100 - 500 DM <= 0
+        age > 43
+        ->  class no  [0.925]
+
+    Rule 38/11: (10.4, lift 1.7)
+        months_loan_duration > 21
+        months_loan_duration <= 24
+        credit_historygood > 0
+        amount <= 7980
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        phoneTRUE <= 0
+        ->  class no  [0.920]
+
+    Rule 38/12: (45.1/4.5, lift 1.6)
+        months_loan_duration <= 42
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount > 5190
+        amount <= 7980
+        savings_balanceunknown <= 0
+        ->  class no  [0.883]
+
+    Rule 38/13: (23.9/3, lift 1.6)
+        months_loan_duration <= 42
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 2957
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        phoneTRUE > 0
+        ->  class no  [0.844]
+
+    Rule 38/14: (47.6/7.1, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration <= 16
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        other_creditnone > 0
+        phoneTRUE <= 0
+        ->  class no  [0.837]
+
+    Rule 38/15: (12.4/1.7, lift 1.5)
+        purposeeducation > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.812]
+
+    Rule 38/16: (3.2, lift 1.5)
+        purposecar0 > 0
+        employment_durationunemployed > 0
+        ->  class no  [0.806]
+
+    Rule 38/17: (33.5/6, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 5190
+        employment_durationunemployed <= 0
+        phoneTRUE > 0
+        ->  class no  [0.804]
+
+    Rule 38/18: (43.4/8.2, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown > 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.796]
+
+    Rule 38/19: (44.8/10.5, lift 1.4)
+        months_loan_duration <= 24
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        phoneTRUE <= 0
+        ->  class no  [0.755]
+
+    Rule 38/20: (72.8/23.4, lift 1.2)
+        purposeeducation <= 0
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years <= 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.674]
+
+    Rule 38/21: (100.2/34.8, lift 1.2)
+        months_loan_duration <= 42
+        employment_duration> 7 years > 0
+        phoneTRUE <= 0
+        ->  class no  [0.650]
+
+    Default class: yes
+
+    -----  Trial 39:  -----
+
+    Rules:
+
+    Rule 39/1: (12.1, lift 2.2)
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        months_loan_duration <= 33
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingrent > 0
+        ->  class yes  [0.929]
+
+    Rule 39/2: (7.4, lift 2.1)
+        employment_duration4 - 7 years > 0
+        percent_of_income > 3
+        age <= 22
+        ->  class yes  [0.893]
+
+    Rule 39/3: (6.5, lift 2.1)
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.882]
+
+    Rule 39/4: (9.1/0.6, lift 2.0)
+        checking_balance> 200 DM <= 0
+        purposeeducation > 0
+        employment_duration4 - 7 years <= 0
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.854]
+
+    Rule 39/5: (4.8, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingrent > 0
+        ->  class yes  [0.854]
+
+    Rule 39/6: (16.8/1.9, lift 2.0)
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 2
+        other_creditnone <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        ->  class yes  [0.848]
+
+    Rule 39/7: (3.4, lift 1.9)
+        credit_historypoor > 0
+        purposeeducation > 0
+        housingrent <= 0
+        ->  class yes  [0.815]
+
+    Rule 39/8: (3.3, lift 1.9)
+        checking_balanceunknown > 0
+        employment_durationunemployed > 0
+        housingrent > 0
+        ->  class yes  [0.810]
+
+    Rule 39/9: (13.9/2.1, lift 1.9)
+        months_loan_duration > 33
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.807]
+
+    Rule 39/10: (19.7/4.1, lift 1.8)
+        checking_balance> 200 DM <= 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        percent_of_income <= 3
+        other_creditstore <= 0
+        housingrent <= 0
+        ->  class yes  [0.766]
+
+    Rule 39/11: (12.7/2.5, lift 1.8)
+        purposefurniture/appliances <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        other_creditstore > 0
+        ->  class yes  [0.760]
+
+    Rule 39/12: (14.2/3.8, lift 1.7)
+        purposerenovations > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.704]
+
+    Rule 39/13: (26.1/7.9, lift 1.6)
+        purposecar > 0
+        percent_of_income > 2
+        other_creditstore <= 0
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class yes  [0.684]
+
+    Rule 39/14: (16.9/5.9, lift 1.5)
+        purposefurniture/appliances <= 0
+        existing_loans_count > 2
+        ->  class yes  [0.636]
+
+    Rule 39/15: (247.5/93.3, lift 1.1)
+        checking_balanceunknown > 0
+        ->  class no  [0.622]
+
+    Rule 39/16: (652.5/290.7, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class no  [0.554]
+
+    Default class: no
+
+    -----  Trial 40:  -----
+
+    Rules:
+
+    Rule 40/1: (21.4, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        amount > 4439
+        employment_durationunemployed <= 0
+        percent_of_income > 3
+        years_at_residence > 1
+        dependents <= 1
+        ->  class yes  [0.957]
+
+    Rule 40/2: (13.2/0.7, lift 1.8)
+        credit_historyvery good <= 0
+        purposecar > 0
+        amount > 11816
+        ->  class yes  [0.890]
+
+    Rule 40/3: (25.2/4.8, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 30
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        percent_of_income <= 3
+        age <= 31
+        ->  class yes  [0.789]
+
+    Rule 40/4: (43.3/8.9, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        credit_historyperfect <= 0
+        amount <= 1543
+        percent_of_income <= 3
+        age <= 42
+        ->  class yes  [0.781]
+
+    Rule 40/5: (49.4/13.9, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposecar > 0
+        percent_of_income > 3
+        years_at_residence > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.710]
+
+    Rule 40/6: (154/53.1, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        percent_of_income > 3
+        years_at_residence > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.653]
+
+    Rule 40/7: (767.7/387.6, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.495]
+
+    Rule 40/8: (18.7, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 16
+        purposecar <= 0
+        amount > 1543
+        percent_of_income <= 3
+        age <= 42
+        ->  class no  [0.952]
+
+    Rule 40/9: (18.3, lift 1.8)
+        months_loan_duration <= 7
+        credit_historyvery good <= 0
+        amount <= 1543
+        percent_of_income <= 3
+        ->  class no  [0.951]
+
+    Rule 40/10: (17.5, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 30
+        amount > 5190
+        amount <= 10722
+        percent_of_income <= 3
+        age <= 31
+        ->  class no  [0.949]
+
+    Rule 40/11: (13.4, lift 1.8)
+        checking_balance> 200 DM > 0
+        credit_historypoor <= 0
+        age > 40
+        dependents <= 1
+        ->  class no  [0.935]
+
+    Rule 40/12: (36.5/2.3, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        amount <= 11816
+        employment_duration4 - 7 years <= 0
+        age > 27
+        age <= 66
+        ->  class no  [0.915]
+
+    Rule 40/13: (37.6/2.6, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 30
+        purposecar <= 0
+        amount > 1543
+        amount <= 5190
+        percent_of_income <= 3
+        age > 26
+        age <= 42
+        jobunskilled <= 0
+        ->  class no  [0.910]
+
+    Rule 40/14: (28.8/1.8, lift 1.8)
+        amount > 1543
+        amount <= 10722
+        savings_balanceunknown > 0
+        percent_of_income <= 3
+        age <= 42
+        ->  class no  [0.908]
+
+    Rule 40/15: (8.8, lift 1.7)
+        checking_balanceunknown > 0
+        purposecar > 0
+        percent_of_income <= 1
+        ->  class no  [0.907]
+
+    Rule 40/16: (7.9, lift 1.7)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        amount <= 3599
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.899]
+
+    Rule 40/17: (7.8, lift 1.7)
+        checking_balance> 200 DM > 0
+        age <= 24
+        ->  class no  [0.898]
+
+    Rule 40/18: (7.3, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        employment_durationunemployed > 0
+        percent_of_income > 3
+        phoneTRUE > 0
+        ->  class no  [0.893]
+
+    Rule 40/19: (7.3, lift 1.7)
+        checking_balanceunknown > 0
+        credit_historypoor > 0
+        purposecar > 0
+        ->  class no  [0.892]
+
+    Rule 40/20: (4.4, lift 1.6)
+        checking_balance> 200 DM > 0
+        purposecar <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.843]
+
+    Rule 40/21: (58.8/10.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        amount > 1543
+        amount <= 10722
+        percent_of_income <= 3
+        age > 31
+        age <= 42
+        ->  class no  [0.816]
+
+    Rule 40/22: (9.3/1.3, lift 1.5)
+        checking_balance> 200 DM > 0
+        purposecar > 0
+        dependents <= 1
+        ->  class no  [0.800]
+
+    Rule 40/23: (35/7.8, lift 1.5)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.763]
+
+    Rule 40/24: (57.1/14.6, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        amount <= 3599
+        savings_balance100 - 500 DM <= 0
+        jobunskilled <= 0
+        ->  class no  [0.737]
+
+    Rule 40/25: (55.5/14.3, lift 1.4)
+        months_loan_duration <= 33
+        credit_historypoor <= 0
+        percent_of_income > 3
+        years_at_residence > 2
+        phoneTRUE > 0
+        ->  class no  [0.734]
+
+    Rule 40/26: (42.5/11.2, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        ->  class no  [0.725]
+
+    Default class: no
+
+    -----  Trial 41:  -----
+
+    Rules:
+
+    Rule 41/1: (14, lift 2.2)
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        amount <= 7980
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        other_creditnone <= 0
+        jobskilled > 0
+        ->  class yes  [0.937]
+
+    Rule 41/2: (13.5/0.2, lift 2.1)
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        age > 34
+        age <= 45
+        other_creditstore <= 0
+        jobskilled > 0
+        ->  class yes  [0.924]
+
+    Rule 41/3: (26.6/2.9, lift 2.0)
+        checking_balance> 200 DM <= 0
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        age <= 23
+        other_creditnone > 0
+        jobunskilled <= 0
+        ->  class yes  [0.863]
+
+    Rule 41/4: (16.2/1.7, lift 2.0)
+        credit_historypoor <= 0
+        percent_of_income > 3
+        jobunskilled > 0
+        dependents > 1
+        ->  class yes  [0.852]
+
+    Rule 41/5: (22.1/2.7, lift 1.9)
+        credit_historypoor > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        jobunskilled <= 0
+        ->  class yes  [0.846]
+
+    Rule 41/6: (3.3, lift 1.9)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.813]
+
+    Rule 41/7: (3.1, lift 1.8)
+        other_creditstore > 0
+        housingown <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.802]
+
+    Rule 41/8: (2.9, lift 1.8)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.794]
+
+    Rule 41/9: (21.5/4.6, lift 1.8)
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        age <= 38
+        other_creditstore <= 0
+        jobunskilled > 0
+        ->  class yes  [0.762]
+
+    Rule 41/10: (25.1/5.5, lift 1.7)
+        checking_balance> 200 DM <= 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class yes  [0.760]
+
+    Rule 41/11: (36.3/9.1, lift 1.7)
+        amount > 7980
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        other_creditstore <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.736]
+
+    Rule 41/12: (59.3/22.3, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 2
+        ->  class yes  [0.620]
+
+    Rule 41/13: (26.5/3.7, lift 1.5)
+        purposeeducation <= 0
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.836]
+
+    Rule 41/14: (868/382.4, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.559]
+
+    Default class: yes
+
+    -----  Trial 42:  -----
+
+    Rules:
+
+    Rule 42/1: (26.1/1.8, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration > 36
+        purposefurniture/appliances > 0
+        ->  class yes  [0.902]
+
+    Rule 42/2: (7.2, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        purposefurniture/appliances <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        housingown <= 0
+        housingrent <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.892]
+
+    Rule 42/3: (24.1/2.9, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        amount > 7409
+        jobunskilled <= 0
+        phoneTRUE > 0
+        ->  class yes  [0.851]
+
+    Rule 42/4: (16.2/1.7, lift 1.8)
+        months_loan_duration > 24
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.851]
+
+    Rule 42/5: (9.3/0.9, lift 1.7)
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed > 0
+        housingrent <= 0
+        ->  class yes  [0.830]
+
+    Rule 42/6: (18.2/2.6, lift 1.7)
+        credit_historyvery good <= 0
+        amount <= 2337
+        other_creditstore > 0
+        ->  class yes  [0.823]
+
+    Rule 42/7: (23.2/4.1, lift 1.7)
+        purposefurniture/appliances > 0
+        amount > 763
+        savings_balance> 1000 DM <= 0
+        years_at_residence <= 3
+        housingrent <= 0
+        existing_loans_count > 1
+        phoneTRUE > 0
+        ->  class yes  [0.796]
+
+    Rule 42/8: (2.9, lift 1.7)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.794]
+
+    Rule 42/9: (33.7/7.7, lift 1.6)
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class yes  [0.756]
+
+    Rule 42/10: (46.2/12.8, lift 1.5)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        age > 23
+        ->  class yes  [0.714]
+
+    Rule 42/11: (47.9/13.4, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration <= 36
+        credit_historyvery good <= 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        housingrent <= 0
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.712]
+
+    Rule 42/12: (88.6/27.3, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        amount > 763
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        years_at_residence > 1
+        other_creditstore <= 0
+        jobskilled > 0
+        ->  class yes  [0.687]
+
+    Rule 42/13: (51.1/17.3, lift 1.4)
+        credit_historygood <= 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        other_creditstore <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.655]
+
+    Rule 42/14: (14.7/2, lift 1.6)
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.820]
+
+    Rule 42/15: (28.8/9.3, lift 1.3)
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.665]
+
+    Rule 42/16: (871.2/421.4, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.516]
+
+    Default class: no
+
+    -----  Trial 43:  -----
+
+    Rules:
+
+    Rule 43/1: (12.4, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        amount > 5866
+        employment_duration> 7 years > 0
+        ->  class yes  [0.931]
+
+    Rule 43/2: (11/0.5, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposefurniture/appliances <= 0
+        other_creditnone <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.882]
+
+    Rule 43/3: (6.3, lift 1.8)
+        months_loan_duration > 8
+        purposerenovations > 0
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.880]
+
+    Rule 43/4: (25.1/2.7, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 16
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        years_at_residence > 1
+        age <= 33
+        other_creditnone > 0
+        ->  class yes  [0.863]
+
+    Rule 43/5: (14.4/1.7, lift 1.7)
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        amount > 6967
+        years_at_residence > 1
+        other_creditnone > 0
+        ->  class yes  [0.835]
+
+    Rule 43/6: (11.3/1.5, lift 1.7)
+        months_loan_duration > 8
+        savings_balance500 - 1000 DM > 0
+        jobunskilled > 0
+        ->  class yes  [0.813]
+
+    Rule 43/7: (2.6, lift 1.6)
+        credit_historypoor > 0
+        purposerenovations > 0
+        ->  class yes  [0.783]
+
+    Rule 43/8: (46.6/11, lift 1.5)
+        credit_historygood > 0
+        purposeeducation <= 0
+        amount > 1188
+        existing_loans_count > 1
+        ->  class yes  [0.753]
+
+    Rule 43/9: (15.1/3.3, lift 1.5)
+        credit_historyvery good > 0
+        other_creditnone > 0
+        ->  class yes  [0.746]
+
+    Rule 43/10: (35.2/9.3, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposefurniture/appliances <= 0
+        employment_durationunemployed <= 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.723]
+
+    Rule 43/11: (16.5/4.2, lift 1.5)
+        credit_historyperfect <= 0
+        savings_balance500 - 1000 DM > 0
+        existing_loans_count > 1
+        ->  class yes  [0.719]
+
+    Rule 43/12: (42.5/11.9, lift 1.5)
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.710]
+
+    Rule 43/13: (59.2/19.3, lift 1.4)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration > 8
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        other_creditnone <= 0
+        ->  class yes  [0.669]
+
+    Rule 43/14: (33.3/10.7, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        savings_balance100 - 500 DM > 0
+        ->  class yes  [0.668]
+
+    Rule 43/15: (65.1/21.9, lift 1.3)
+        checking_balance> 200 DM <= 0
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income <= 2
+        dependents <= 1
+        ->  class yes  [0.660]
+
+    Rule 43/16: (37.9/12.8, lift 1.3)
+        credit_historyperfect > 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.654]
+
+    Rule 43/17: (114.3/41.1, lift 1.3)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historygood > 0
+        percent_of_income > 2
+        age > 28
+        existing_loans_count <= 1
+        ->  class yes  [0.639]
+
+    Rule 43/18: (498.9/243.8, lift 1.0)
+        credit_historygood > 0
+        ->  class yes  [0.511]
+
+    Rule 43/19: (43/5.9, lift 1.7)
+        months_loan_duration <= 8
+        purposeeducation <= 0
+        amount <= 3380
+        ->  class no  [0.847]
+
+    Rule 43/20: (34/6.7, lift 1.5)
+        credit_historygood > 0
+        purposeeducation <= 0
+        amount <= 5866
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years > 0
+        years_at_residence > 2
+        ->  class no  [0.786]
+
+    Rule 43/21: (52.6/14.8, lift 1.4)
+        checking_balanceunknown > 0
+        months_loan_duration > 8
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class no  [0.711]
+
+    Rule 43/22: (835.7/402.6, lift 1.0)
+        purposeeducation <= 0
+        ->  class no  [0.518]
+
+    Default class: no
+
+    -----  Trial 44:  -----
+
+    Rules:
+
+    Rule 44/1: (19.3, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        amount <= 1007
+        savings_balance> 1000 DM <= 0
+        years_at_residence <= 3
+        ->  class yes  [0.953]
+
+    Rule 44/2: (7.9, lift 1.9)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        housingown > 0
+        ->  class yes  [0.899]
+
+    Rule 44/3: (5.6, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        purposeeducation <= 0
+        years_at_residence <= 1
+        ->  class yes  [0.868]
+
+    Rule 44/4: (5.6/0.3, lift 1.8)
+        years_at_residence <= 1
+        jobunemployed > 0
+        ->  class yes  [0.832]
+
+    Rule 44/5: (38.1/7.2, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 33
+        employment_durationunemployed <= 0
+        years_at_residence > 3
+        housingrent <= 0
+        ->  class yes  [0.795]
+
+    Rule 44/6: (2.8, lift 1.7)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.791]
+
+    Rule 44/7: (51.9/10.9, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        purposefurniture/appliances > 0
+        amount > 1659
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        other_creditnone > 0
+        dependents <= 1
+        ->  class yes  [0.779]
+
+    Rule 44/8: (17.8/3.6, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        housingrent <= 0
+        ->  class yes  [0.768]
+
+    Rule 44/9: (29.5/6.4, lift 1.6)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years <= 0
+        housingrent > 0
+        ->  class yes  [0.764]
+
+    Rule 44/10: (36.3/8.5, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        other_creditnone <= 0
+        housingrent <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.753]
+
+    Rule 44/11: (37.2/9, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        other_creditnone > 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class yes  [0.746]
+
+    Rule 44/12: (28.7/7.2, lift 1.6)
+        checking_balanceunknown > 0
+        months_loan_duration <= 22
+        credit_historygood <= 0
+        purposefurniture/appliances <= 0
+        amount > 1516
+        ->  class yes  [0.734]
+
+    Rule 44/13: (90.8/36.8, lift 1.3)
+        checking_balance1 - 200 DM <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        housingrent > 0
+        ->  class yes  [0.592]
+
+    Rule 44/14: (18.2, lift 1.8)
+        months_loan_duration <= 8
+        employment_durationunemployed <= 0
+        years_at_residence <= 3
+        other_creditnone > 0
+        ->  class no  [0.950]
+
+    Rule 44/15: (25.1/6.2, lift 1.4)
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.734]
+
+    Rule 44/16: (872.1/413.6, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.526]
+
+    Default class: no
+
+    -----  Trial 45:  -----
+
+    Rules:
+
+    Rule 45/1: (7, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.889]
+
+    Rule 45/2: (6.9, lift 1.8)
+        savings_balanceunknown <= 0
+        employment_durationunemployed > 0
+        dependents > 1
+        ->  class yes  [0.887]
+
+    Rule 45/3: (29.3/3.1, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        amount > 1204
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        ->  class yes  [0.870]
+
+    Rule 45/4: (4.4, lift 1.7)
+        credit_historyvery good > 0
+        employment_duration4 - 7 years > 0
+        age <= 29
+        ->  class yes  [0.843]
+
+    Rule 45/5: (20.5/3.2, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 33
+        credit_historygood > 0
+        purposecar <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.813]
+
+    Rule 45/6: (24.6/4.3, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar <= 0
+        purposeeducation <= 0
+        amount <= 1388
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        jobunskilled <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.800]
+
+    Rule 45/7: (26.1/5, lift 1.6)
+        amount > 11054
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.785]
+
+    Rule 45/8: (29/6.3, lift 1.6)
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        years_at_residence <= 2
+        age <= 29
+        ->  class yes  [0.765]
+
+    Rule 45/9: (36.7/9.3, lift 1.5)
+        months_loan_duration <= 24
+        credit_historygood > 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.734]
+
+    Rule 45/10: (31.9/8.9, lift 1.4)
+        credit_historygood > 0
+        purposecar <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        dependents > 1
+        ->  class yes  [0.707]
+
+    Rule 45/11: (65.5/22.9, lift 1.3)
+        checking_balance> 200 DM <= 0
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balanceunknown > 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.645]
+
+    Rule 45/12: (111.7/42.6, lift 1.3)
+        months_loan_duration > 16
+        credit_historygood <= 0
+        purposerenovations <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.617]
+
+    Rule 45/13: (130.9/50.3, lift 1.3)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        age > 22
+        jobunskilled <= 0
+        ->  class yes  [0.614]
+
+    Rule 45/14: (11.3, lift 1.8)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 11054
+        employment_durationunemployed <= 0
+        existing_loans_count > 1
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class no  [0.925]
+
+    Rule 45/15: (9.8, lift 1.8)
+        credit_historygood <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 22
+        ->  class no  [0.916]
+
+    Rule 45/16: (67.8/17.9, lift 1.4)
+        employment_duration4 - 7 years > 0
+        age > 29
+        ->  class no  [0.729]
+
+    Rule 45/17: (869.7/417.3, lift 1.0)
+        amount <= 11054
+        ->  class no  [0.520]
+
+    Default class: no
+
+    -----  Trial 46:  -----
+
+    Rules:
+
+    Rule 46/1: (12.5/0.4, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 36
+        amount > 3931
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 3
+        other_creditnone > 0
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class yes  [0.907]
+
+    Rule 46/2: (8.4, lift 1.9)
+        amount > 9857
+        savings_balanceunknown <= 0
+        other_creditnone <= 0
+        ->  class yes  [0.904]
+
+    Rule 46/3: (6, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        other_creditnone > 0
+        existing_loans_count <= 1
+        ->  class yes  [0.876]
+
+    Rule 46/4: (5.8, lift 1.8)
+        checking_balanceunknown <= 0
+        employment_durationunemployed > 0
+        dependents > 1
+        ->  class yes  [0.872]
+
+    Rule 46/5: (5.4, lift 1.8)
+        checking_balanceunknown <= 0
+        amount > 7308
+        employment_duration4 - 7 years <= 0
+        dependents > 1
+        ->  class yes  [0.864]
+
+    Rule 46/6: (16.4/1.6, lift 1.8)
+        checking_balanceunknown <= 0
+        amount <= 2171
+        other_creditstore > 0
+        ->  class yes  [0.857]
+
+    Rule 46/7: (22.3/2.6, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        years_at_residence > 1
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class yes  [0.851]
+
+    Rule 46/8: (25.5/3.2, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingown <= 0
+        dependents <= 1
+        ->  class yes  [0.846]
+
+    Rule 46/9: (10.3/1.2, lift 1.7)
+        checking_balance> 200 DM > 0
+        dependents > 1
+        ->  class yes  [0.825]
+
+    Rule 46/10: (31.2/5.3, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 36
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        employment_durationunemployed <= 0
+        dependents <= 1
+        ->  class yes  [0.809]
+
+    Rule 46/11: (3.2, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        dependents > 1
+        ->  class yes  [0.806]
+
+    Rule 46/12: (12.9/2, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balanceunknown > 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingown <= 0
+        ->  class yes  [0.796]
+
+    Rule 46/13: (51.8/12.6, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 36
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingown > 0
+        dependents <= 1
+        ->  class yes  [0.747]
+
+    Rule 46/14: (19.6/4.6, lift 1.6)
+        employment_durationunemployed > 0
+        years_at_residence <= 2
+        other_creditnone > 0
+        ->  class yes  [0.740]
+
+    Rule 46/15: (40/11.7, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        amount <= 1680
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class yes  [0.698]
+
+    Rule 46/16: (87.5/33.6, lift 1.3)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        age > 30
+        jobunskilled <= 0
+        ->  class yes  [0.613]
+
+    Rule 46/17: (335.2/164.3, lift 1.1)
+        jobskilled <= 0
+        ->  class yes  [0.510]
+
+    Rule 46/18: (17.6, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        employment_duration> 7 years > 0
+        age <= 30
+        other_creditnone > 0
+        ->  class no  [0.949]
+
+    Rule 46/19: (10.3, lift 1.7)
+        checking_balance> 200 DM <= 0
+        employment_duration> 7 years > 0
+        other_creditnone > 0
+        jobunskilled > 0
+        ->  class no  [0.919]
+
+    Rule 46/20: (9.3, lift 1.7)
+        checking_balance> 200 DM > 0
+        credit_historypoor <= 0
+        employment_duration> 7 years > 0
+        dependents <= 1
+        ->  class no  [0.911]
+
+    Rule 46/21: (6.2, lift 1.7)
+        checking_balance> 200 DM > 0
+        other_creditnone <= 0
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.878]
+
+    Rule 46/22: (29/3.4, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration <= 36
+        credit_historyperfect <= 0
+        amount > 1680
+        other_creditnone > 0
+        housingown > 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        dependents <= 1
+        ->  class no  [0.859]
+
+    Rule 46/23: (10.8/0.8, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balanceunknown > 0
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class no  [0.859]
+
+    Rule 46/24: (11.1/1, lift 1.6)
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class no  [0.850]
+
+    Rule 46/25: (19/2.4, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        employment_durationunemployed > 0
+        years_at_residence > 2
+        dependents <= 1
+        ->  class no  [0.838]
+
+    Rule 46/26: (11.4/1.2, lift 1.6)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        other_creditnone > 0
+        dependents > 1
+        ->  class no  [0.835]
+
+    Rule 46/27: (20/2.7, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration <= 36
+        credit_historypoor <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingown > 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class no  [0.833]
+
+    Rule 46/28: (50.6/9.9, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration <= 36
+        credit_historypoor <= 0
+        amount <= 3931
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        other_creditnone > 0
+        housingown > 0
+        dependents <= 1
+        ->  class no  [0.793]
+
+    Rule 46/29: (62.1/15, lift 1.4)
+        months_loan_duration <= 36
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingown > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class no  [0.751]
+
+    Rule 46/30: (33.9/8.2, lift 1.4)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.743]
+
+    Rule 46/31: (157.4/58.5, lift 1.2)
+        checking_balanceunknown > 0
+        employment_durationunemployed <= 0
+        jobskilled > 0
+        ->  class no  [0.626]
+
+    Rule 46/32: (459.2/204.7, lift 1.1)
+        percent_of_income <= 3
+        ->  class no  [0.554]
+
+    Default class: no
+
+    -----  Trial 47:  -----
+
+    Rules:
+
+    Rule 47/1: (8.6, lift 1.9)
+        checking_balanceunknown <= 0
+        amount > 7763
+        employment_duration> 7 years > 0
+        ->  class yes  [0.905]
+
+    Rule 47/2: (25/7.3, lift 1.5)
+        months_loan_duration <= 16
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.694]
+
+    Rule 47/3: (696.5/346.4, lift 1.1)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.503]
+
+    Rule 47/4: (14.5, lift 1.8)
+        checking_balanceunknown > 0
+        months_loan_duration > 16
+        purposefurniture/appliances > 0
+        employment_duration> 7 years <= 0
+        years_at_residence > 1
+        housingrent <= 0
+        jobskilled > 0
+        ->  class no  [0.940]
+
+    Rule 47/5: (13.9, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 16
+        credit_historyperfect <= 0
+        years_at_residence <= 1
+        housingrent <= 0
+        ->  class no  [0.937]
+
+    Rule 47/6: (11, lift 1.8)
+        months_loan_duration > 16
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.923]
+
+    Rule 47/7: (10.5, lift 1.8)
+        months_loan_duration <= 12
+        amount > 1922
+        employment_duration1 - 4 years > 0
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class no  [0.920]
+
+    Rule 47/8: (9.8, lift 1.7)
+        months_loan_duration <= 12
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        age > 53
+        ->  class no  [0.915]
+
+    Rule 47/9: (7.1, lift 1.7)
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        housingrent <= 0
+        ->  class no  [0.890]
+
+    Rule 47/10: (34/3.2, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 12
+        months_loan_duration <= 16
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.884]
+
+    Rule 47/11: (26.1/3.8, lift 1.6)
+        months_loan_duration <= 16
+        employment_duration> 7 years <= 0
+        dependents > 1
+        ->  class no  [0.828]
+
+    Rule 47/12: (17.8/2.5, lift 1.6)
+        checking_balance> 200 DM > 0
+        months_loan_duration <= 12
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        ->  class no  [0.820]
+
+    Rule 47/13: (44.9/8.2, lift 1.5)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 16
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        existing_loans_count > 1
+        ->  class no  [0.805]
+
+    Rule 47/14: (2.8, lift 1.5)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.793]
+
+    Rule 47/15: (20.4/4.8, lift 1.4)
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.740]
+
+    Rule 47/16: (51.8/14, lift 1.4)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration > 16
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        housingrent <= 0
+        jobskilled <= 0
+        dependents <= 1
+        ->  class no  [0.721]
+
+    Rule 47/17: (74.4/23.5, lift 1.3)
+        credit_historypoor <= 0
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.679]
+
+    Rule 47/18: (29.6/10.1, lift 1.2)
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.649]
+
+    Rule 47/19: (203.5/77.5, lift 1.2)
+        employment_duration> 7 years > 0
+        ->  class no  [0.618]
+
+    Default class: no
+
+    -----  Trial 48:  -----
+
+    Rules:
+
+    Rule 48/1: (36.1/3.4, lift 1.9)
+        checking_balance> 200 DM <= 0
+        credit_historygood > 0
+        amount <= 7980
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age <= 23
+        jobunskilled <= 0
+        ->  class yes  [0.884]
+
+    Rule 48/2: (24.5/2.8, lift 1.9)
+        months_loan_duration > 47
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.856]
+
+    Rule 48/3: (4.9, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 33
+        savings_balanceunknown > 0
+        ->  class yes  [0.855]
+
+    Rule 48/4: (30/4.8, lift 1.8)
+        months_loan_duration <= 36
+        amount > 7980
+        savings_balanceunknown <= 0
+        ->  class yes  [0.820]
+
+    Rule 48/5: (26.4/4.6, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        years_at_residence <= 3
+        age > 23
+        other_creditnone > 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class yes  [0.804]
+
+    Rule 48/6: (2.4, lift 1.7)
+        purposecar0 > 0
+        savings_balanceunknown > 0
+        ->  class yes  [0.771]
+
+    Rule 48/7: (17.7/3.7, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        other_creditnone > 0
+        ->  class yes  [0.759]
+
+    Rule 48/8: (38.1/10, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        purposerenovations <= 0
+        amount > 1893
+        amount <= 4933
+        savings_balanceunknown <= 0
+        other_creditnone > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class yes  [0.726]
+
+    Rule 48/9: (36.6/10.9, lift 1.5)
+        months_loan_duration <= 47
+        credit_historyvery good > 0
+        savings_balanceunknown <= 0
+        age > 23
+        ->  class yes  [0.691]
+
+    Rule 48/10: (62.1/20, lift 1.5)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 8
+        credit_historygood > 0
+        purposefurniture/appliances <= 0
+        amount <= 4933
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        years_at_residence <= 3
+        dependents <= 1
+        ->  class yes  [0.673]
+
+    Rule 48/11: (37.1/12.5, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.656]
+
+    Rule 48/12: (76.4/26.6, lift 1.4)
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        amount <= 4933
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class yes  [0.648]
+
+    Rule 48/13: (140.1/61.4, lift 1.2)
+        months_loan_duration > 8
+        credit_historyvery good <= 0
+        other_creditnone <= 0
+        ->  class yes  [0.561]
+
+    Rule 48/14: (23.9, lift 1.8)
+        checking_balanceunknown > 0
+        purposefurniture/appliances > 0
+        percent_of_income > 1
+        age > 23
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.961]
+
+    Rule 48/15: (15.8/0.5, lift 1.7)
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 7980
+        savings_balanceunknown <= 0
+        age > 26
+        age <= 29
+        other_creditnone <= 0
+        ->  class no  [0.915]
+
+    Rule 48/16: (47.7/10.1, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.776]
+
+    Rule 48/17: (856.1/387.6, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.547]
+
+    Default class: no
+
+    -----  Trial 49:  -----
+
+    Rules:
+
+    Rule 49/1: (12.5, lift 2.1)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        amount <= 1103
+        savings_balance> 1000 DM <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.931]
+
+    Rule 49/2: (11.7, lift 2.1)
+        months_loan_duration > 42
+        housingown <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.927]
+
+    Rule 49/3: (8.7, lift 2.1)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        amount > 888
+        amount <= 999
+        housingown > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.907]
+
+    Rule 49/4: (6.4, lift 2.0)
+        checking_balance> 200 DM <= 0
+        credit_historyperfect > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.880]
+
+    Rule 49/5: (11.4/0.7, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.872]
+
+    Rule 49/6: (4.3, lift 1.9)
+        credit_historyvery good > 0
+        housingown > 0
+        existing_loans_count > 1
+        ->  class yes  [0.840]
+
+    Rule 49/7: (8.9/0.9, lift 1.9)
+        credit_historygood > 0
+        purposeeducation <= 0
+        amount > 7582
+        employment_duration4 - 7 years <= 0
+        housingown <= 0
+        ->  class yes  [0.829]
+
+    Rule 49/8: (25.7/4.1, lift 1.9)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        purposecar <= 0
+        amount > 3599
+        housingown > 0
+        ->  class yes  [0.816]
+
+    Rule 49/9: (18.6/3.3, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 2
+        housingown > 0
+        ->  class yes  [0.790]
+
+    Rule 49/10: (14.5/2.6, lift 1.8)
+        credit_historygood > 0
+        housingown <= 0
+        existing_loans_count > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.784]
+
+    Rule 49/11: (23.4/5.2, lift 1.7)
+        months_loan_duration > 16
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class yes  [0.756]
+
+    Rule 49/12: (31.5/8.7, lift 1.6)
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        housingown <= 0
+        existing_loans_count <= 2
+        dependents <= 1
+        phoneTRUE > 0
+        ->  class yes  [0.710]
+
+    Rule 49/13: (89.8/29.8, lift 1.5)
+        amount <= 2718
+        savings_balance500 - 1000 DM <= 0
+        age <= 57
+        housingown <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.665]
+
+    Rule 49/14: (772.2/426, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.449]
+
+    Rule 49/15: (224.6/87.2, lift 1.1)
+        housingown > 0
+        existing_loans_count > 1
+        ->  class no  [0.611]
+
+    Rule 49/16: (879.5/381.1, lift 1.0)
+        purposerenovations <= 0
+        ->  class no  [0.567]
+
+    Default class: no
+
+    -----  Trial 50:  -----
+
+    Rules:
+
+    Rule 50/1: (10.6, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        employment_durationunemployed <= 0
+        other_creditnone <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.921]
+
+    Rule 50/2: (9.9, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 30
+        credit_historyperfect <= 0
+        amount > 3448
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 3
+        other_creditnone > 0
+        dependents <= 1
+        ->  class yes  [0.916]
+
+    Rule 50/3: (9.1, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.910]
+
+    Rule 50/4: (12.1/0.7, lift 1.9)
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        age <= 23
+        phoneTRUE <= 0
+        ->  class yes  [0.878]
+
+    Rule 50/5: (5.1, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.859]
+
+    Rule 50/6: (19.8/2.3, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income <= 3
+        existing_loans_count > 1
+        ->  class yes  [0.848]
+
+    Rule 50/7: (24.6/4.2, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        savings_balanceunknown > 0
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        ->  class yes  [0.804]
+
+    Rule 50/8: (24.1/5, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 2
+        other_creditnone <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.771]
+
+    Rule 50/9: (25.9/6.1, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historypoor > 0
+        purposecar <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        ->  class yes  [0.748]
+
+    Rule 50/10: (34.3/9.5, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 30
+        credit_historyvery good > 0
+        age > 23
+        ->  class yes  [0.711]
+
+    Rule 50/11: (76.3/23.6, lift 1.4)
+        checking_balanceunknown <= 0
+        amount > 1108
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        housingown <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.686]
+
+    Rule 50/12: (90.1/28, lift 1.4)
+        checking_balanceunknown <= 0
+        months_loan_duration > 30
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        housingrent <= 0
+        ->  class yes  [0.685]
+
+    Rule 50/13: (97.4/33.7, lift 1.4)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        employment_duration1 - 4 years <= 0
+        other_creditnone > 0
+        housingown > 0
+        dependents <= 1
+        ->  class yes  [0.651]
+
+    Rule 50/14: (67.8/25.8, lift 1.3)
+        months_loan_duration <= 30
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.617]
+
+    Rule 50/15: (661.7/334.2, lift 1.0)
+        savings_balance100 - 500 DM <= 0
+        age <= 44
+        ->  class yes  [0.495]
+
+    Rule 50/16: (21.3/2.2, lift 1.6)
+        months_loan_duration <= 30
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        phoneTRUE > 0
+        ->  class no  [0.863]
+
+    Rule 50/17: (22/3.1, lift 1.6)
+        months_loan_duration > 30
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        age > 25
+        ->  class no  [0.831]
+
+    Rule 50/18: (29.1/5.1, lift 1.5)
+        checking_balanceunknown <= 0
+        amount > 1275
+        employment_durationunemployed > 0
+        years_at_residence > 1
+        dependents <= 1
+        ->  class no  [0.804]
+
+    Rule 50/19: (30.6/5.8, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.791]
+
+    Rule 50/20: (81.2/20.5, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        other_creditstore <= 0
+        ->  class no  [0.742]
+
+    Rule 50/21: (145.9/61.7, lift 1.1)
+        savings_balanceunknown > 0
+        ->  class no  [0.576]
+
+    Rule 50/22: (685.7/310.9, lift 1.0)
+        months_loan_duration <= 30
+        employment_durationunemployed <= 0
+        ->  class no  [0.547]
+
+    Default class: no
+
+    -----  Trial 51:  -----
+
+    Rules:
+
+    Rule 51/1: (9.6, lift 2.0)
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        age <= 23
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.914]
+
+    Rule 51/2: (14.7/1.6, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        jobskilled > 0
+        ->  class yes  [0.847]
+
+    Rule 51/3: (4.1, lift 1.8)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.837]
+
+    Rule 51/4: (3.9, lift 1.8)
+        checking_balance> 200 DM > 0
+        percent_of_income > 1
+        dependents > 1
+        ->  class yes  [0.831]
+
+    Rule 51/5: (31.9/7.3, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        jobskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.756]
+
+    Rule 51/6: (2, lift 1.6)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.752]
+
+    Rule 51/7: (21.1/5.4, lift 1.6)
+        checking_balanceunknown <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled > 0
+        phoneTRUE > 0
+        ->  class yes  [0.721]
+
+    Rule 51/8: (76.9/23.1, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        credit_historygood > 0
+        purposecar <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        housingrent <= 0
+        jobskilled > 0
+        ->  class yes  [0.694]
+
+    Rule 51/9: (49.4/14.7, lift 1.5)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age <= 44
+        other_creditnone <= 0
+        ->  class yes  [0.693]
+
+    Rule 51/10: (59.2/20.5, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.649]
+
+    Rule 51/11: (136.9/58.9, lift 1.2)
+        checking_balance> 200 DM <= 0
+        credit_historygood > 0
+        purposecar <= 0
+        employment_duration4 - 7 years <= 0
+        age > 30
+        ->  class yes  [0.568]
+
+    Rule 51/12: (32.6/1.9, lift 1.7)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        age > 44
+        age <= 66
+        ->  class no  [0.915]
+
+    Rule 51/13: (8.3, lift 1.7)
+        credit_historygood > 0
+        age > 42
+        housingrent > 0
+        existing_loans_count <= 1
+        ->  class no  [0.903]
+
+    Rule 51/14: (26.4/3.7, lift 1.5)
+        purposeeducation <= 0
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.833]
+
+    Rule 51/15: (867.4/404.1, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.534]
+
+    Default class: no
+
+    -----  Trial 52:  -----
+
+    Rules:
+
+    Rule 52/1: (8.8, lift 1.9)
+        checking_balanceunknown <= 0
+        amount > 6948
+        employment_duration> 7 years > 0
+        housingrent <= 0
+        ->  class yes  [0.908]
+
+    Rule 52/2: (12.4/0.8, lift 1.9)
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.875]
+
+    Rule 52/3: (12.9/1, lift 1.8)
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        employment_duration> 7 years > 0
+        age > 28
+        housingrent > 0
+        ->  class yes  [0.865]
+
+    Rule 52/4: (32.7/8.2, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration > 9
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        amount <= 2360
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years > 0
+        ->  class yes  [0.734]
+
+    Rule 52/5: (39/11.7, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years > 0
+        years_at_residence <= 3
+        jobunskilled <= 0
+        ->  class yes  [0.691]
+
+    Rule 52/6: (53.9/19.6, lift 1.3)
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        ->  class yes  [0.632]
+
+    Rule 52/7: (687.1/354.1, lift 1.0)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.485]
+
+    Rule 52/8: (16.6, lift 1.8)
+        checking_balanceunknown > 0
+        months_loan_duration > 16
+        purposecar > 0
+        employment_duration> 7 years <= 0
+        other_creditnone > 0
+        housingrent <= 0
+        ->  class no  [0.946]
+
+    Rule 52/9: (14.7, lift 1.8)
+        months_loan_duration <= 9
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 6948
+        employment_duration> 7 years > 0
+        ->  class no  [0.940]
+
+    Rule 52/10: (12.7, lift 1.8)
+        months_loan_duration <= 12
+        credit_historyperfect <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        age > 47
+        ->  class no  [0.932]
+
+    Rule 52/11: (27.1/1.2, lift 1.7)
+        months_loan_duration <= 16
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        employment_duration> 7 years <= 0
+        dependents > 1
+        ->  class no  [0.925]
+
+    Rule 52/12: (7.9, lift 1.7)
+        checking_balanceunknown > 0
+        months_loan_duration > 16
+        savings_balance500 - 1000 DM > 0
+        other_creditnone > 0
+        ->  class no  [0.899]
+
+    Rule 52/13: (6.7, lift 1.7)
+        checking_balance> 200 DM > 0
+        purposefurniture/appliances > 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.885]
+
+    Rule 52/14: (22.6/2.5, lift 1.6)
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        amount > 2360
+        amount <= 6948
+        employment_duration> 7 years > 0
+        age > 28
+        housingrent <= 0
+        ->  class no  [0.858]
+
+    Rule 52/15: (32.9/4.4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 12
+        months_loan_duration <= 16
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.846]
+
+    Rule 52/16: (14.6/1.7, lift 1.6)
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.839]
+
+    Rule 52/17: (36.8/5.3, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        employment_duration> 7 years > 0
+        years_at_residence > 3
+        ->  class no  [0.837]
+
+    Rule 52/18: (36.1/5.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 16
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        age <= 47
+        ->  class no  [0.836]
+
+    Rule 52/19: (19.5/2.6, lift 1.6)
+        checking_balanceunknown > 0
+        months_loan_duration > 16
+        employment_duration> 7 years <= 0
+        years_at_residence > 3
+        other_creditstore <= 0
+        housingrent <= 0
+        ->  class no  [0.833]
+
+    Rule 52/20: (23.8/3.4, lift 1.6)
+        months_loan_duration <= 16
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years <= 0
+        dependents <= 1
+        ->  class no  [0.831]
+
+    Rule 52/21: (20.4/2.9, lift 1.6)
+        months_loan_duration > 16
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income <= 1
+        housingrent <= 0
+        existing_loans_count <= 1
+        ->  class no  [0.828]
+
+    Rule 52/22: (11.2/1.7, lift 1.5)
+        purposeeducation > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.797]
+
+    Rule 52/23: (14.2/3, lift 1.4)
+        savings_balance500 - 1000 DM > 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.750]
+
+    Rule 52/24: (95.3/25, lift 1.4)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 16
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 3
+        age <= 47
+        ->  class no  [0.733]
+
+    Rule 52/25: (46.9/13.3, lift 1.3)
+        checking_balanceunknown > 0
+        credit_historyvery good <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.707]
+
+    Rule 52/26: (29.3/9.7, lift 1.2)
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.657]
+
+    Default class: no
+
+    -----  Trial 53:  -----
+
+    Rules:
+
+    Rule 53/1: (9.8, lift 2.1)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.916]
+
+    Rule 53/2: (15.1/0.7, lift 2.1)
+        checking_balanceunknown <= 0
+        months_loan_duration > 33
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        employment_duration1 - 4 years <= 0
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class yes  [0.898]
+
+    Rule 53/3: (11.7/1, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        amount <= 1620
+        employment_duration1 - 4 years <= 0
+        percent_of_income <= 2
+        jobskilled > 0
+        ->  class yes  [0.857]
+
+    Rule 53/4: (21.8/3.8, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        amount <= 8648
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        age > 27
+        other_creditnone > 0
+        jobunskilled > 0
+        dependents <= 1
+        ->  class yes  [0.797]
+
+    Rule 53/5: (28.8/5.4, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        amount > 8648
+        ->  class yes  [0.794]
+
+    Rule 53/6: (26.9/8, lift 1.6)
+        checking_balanceunknown > 0
+        months_loan_duration > 9
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.689]
+
+    Rule 53/7: (36.7/11.8, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.669]
+
+    Rule 53/8: (77.8/29.5, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historygood > 0
+        percent_of_income > 2
+        years_at_residence > 1
+        other_creditnone > 0
+        jobskilled > 0
+        ->  class yes  [0.618]
+
+    Rule 53/9: (72/28.5, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        employment_duration1 - 4 years > 0
+        other_creditstore <= 0
+        jobskilled > 0
+        ->  class yes  [0.601]
+
+    Rule 53/10: (644.6/350.3, lift 1.1)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.457]
+
+    Rule 53/11: (68.9/22, lift 1.2)
+        checking_balance> 200 DM > 0
+        ->  class no  [0.676]
+
+    Rule 53/12: (831.2/367.5, lift 1.0)
+        checking_balance> 200 DM <= 0
+        ->  class no  [0.558]
+
+    Default class: no
+
+    -----  Trial 54:  -----
+
+    Rules:
+
+    Rule 54/1: (22.2, lift 2.1)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 7
+        amount <= 1386
+        savings_balance500 - 1000 DM <= 0
+        age > 28
+        age <= 37
+        existing_loans_count <= 1
+        ->  class yes  [0.959]
+
+    Rule 54/2: (30.9/1.8, lift 2.0)
+        checking_balance> 200 DM <= 0
+        amount > 1204
+        amount <= 1386
+        employment_duration> 7 years <= 0
+        age <= 37
+        existing_loans_count <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.914]
+
+    Rule 54/3: (7.3, lift 1.9)
+        months_loan_duration > 7
+        credit_historygood > 0
+        amount <= 1386
+        other_creditnone > 0
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.892]
+
+    Rule 54/4: (14.7/1, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        amount > 1386
+        age <= 23
+        other_creditnone > 0
+        housingown > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.882]
+
+    Rule 54/5: (9.4/0.6, lift 1.9)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 7
+        credit_historygood > 0
+        amount <= 1386
+        savings_balance500 - 1000 DM > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.862]
+
+    Rule 54/6: (16.7/2.1, lift 1.8)
+        credit_historyvery good <= 0
+        amount <= 2171
+        other_creditstore > 0
+        ->  class yes  [0.835]
+
+    Rule 54/7: (24.3/3.4, lift 1.8)
+        credit_historygood > 0
+        percent_of_income <= 2
+        other_creditnone > 0
+        existing_loans_count > 1
+        ->  class yes  [0.834]
+
+    Rule 54/8: (3.4, lift 1.8)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.816]
+
+    Rule 54/9: (28.8/5.2, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        amount > 409
+        age > 23
+        phoneTRUE <= 0
+        ->  class yes  [0.799]
+
+    Rule 54/10: (42.6/9.3, lift 1.7)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar0 <= 0
+        purposeeducation <= 0
+        amount > 7966
+        other_creditstore <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.769]
+
+    Rule 54/11: (4.9/0.6, lift 1.7)
+        other_creditstore > 0
+        housingown <= 0
+        ->  class yes  [0.766]
+
+    Rule 54/12: (30.1/6.6, lift 1.7)
+        credit_historypoor > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        other_creditstore <= 0
+        ->  class yes  [0.764]
+
+    Rule 54/13: (35/7.9, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 7966
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        age <= 43
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class yes  [0.759]
+
+    Rule 54/14: (39.2/10.8, lift 1.5)
+        credit_historyvery good <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.713]
+
+    Rule 54/15: (34.3/9.6, lift 1.5)
+        credit_historyvery good <= 0
+        purposecar > 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class yes  [0.709]
+
+    Rule 54/16: (31.8/10, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        purposeeducation <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.675]
+
+    Rule 54/17: (775.8/409, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.473]
+
+    Rule 54/18: (22.8, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        purposeeducation <= 0
+        other_creditnone > 0
+        existing_loans_count <= 1
+        phoneTRUE > 0
+        ->  class no  [0.960]
+
+    Rule 54/19: (12.3, lift 1.7)
+        credit_historyvery good <= 0
+        years_at_residence <= 1
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class no  [0.930]
+
+    Rule 54/20: (6.9, lift 1.7)
+        amount <= 409
+        ->  class no  [0.888]
+
+    Rule 54/21: (4.8, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historyvery good > 0
+        amount <= 4530
+        ->  class no  [0.854]
+
+    Rule 54/22: (4.8, lift 1.6)
+        credit_historyvery good > 0
+        amount > 7629
+        ->  class no  [0.853]
+
+    Rule 54/23: (4.5, lift 1.6)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.846]
+
+    Rule 54/24: (109.2/33, lift 1.3)
+        credit_historygood > 0
+        purposeeducation <= 0
+        amount <= 7966
+        existing_loans_count <= 1
+        phoneTRUE > 0
+        ->  class no  [0.694]
+
+    Rule 54/25: (836.3/379.1, lift 1.0)
+        credit_historyvery good <= 0
+        ->  class no  [0.547]
+
+    Default class: no
+
+    -----  Trial 55:  -----
+
+    Rules:
+
+    Rule 55/1: (8.1, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.901]
+
+    Rule 55/2: (646/303.7, lift 1.1)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.530]
+
+    Rule 55/3: (20.3, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 18
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        amount <= 8648
+        employment_durationunemployed <= 0
+        percent_of_income <= 2
+        dependents <= 1
+        ->  class no  [0.955]
+
+    Rule 55/4: (12.2, lift 1.8)
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        percent_of_income > 2
+        ->  class no  [0.930]
+
+    Rule 55/5: (20.3/2.5, lift 1.6)
+        credit_historypoor > 0
+        percent_of_income <= 2
+        years_at_residence > 1
+        ->  class no  [0.843]
+
+    Rule 55/6: (16.5/3.1, lift 1.5)
+        checking_balance> 200 DM > 0
+        age > 40
+        ->  class no  [0.777]
+
+    Rule 55/7: (21.6/5, lift 1.5)
+        credit_historyperfect <= 0
+        employment_durationunemployed > 0
+        percent_of_income <= 2
+        years_at_residence > 1
+        ->  class no  [0.748]
+
+    Rule 55/8: (48.2/11.8, lift 1.5)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 11
+        purposeeducation <= 0
+        amount <= 6289
+        employment_durationunemployed <= 0
+        years_at_residence > 3
+        housingrent <= 0
+        phoneTRUE > 0
+        ->  class no  [0.745]
+
+    Rule 55/9: (34.9/8.7, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        years_at_residence <= 1
+        ->  class no  [0.737]
+
+    Rule 55/10: (24.1/7.2, lift 1.3)
+        credit_historyperfect > 0
+        percent_of_income <= 2
+        ->  class no  [0.684]
+
+    Rule 55/11: (254/96.7, lift 1.2)
+        checking_balanceunknown > 0
+        ->  class no  [0.619]
+
+    Default class: no
+
+    -----  Trial 56:  -----
+
+    Rules:
+
+    Rule 56/1: (32.8/8.8, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        age <= 29
+        dependents <= 1
+        ->  class yes  [0.718]
+
+    Rule 56/2: (770.2/399, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.482]
+
+    Rule 56/3: (13.8, lift 1.8)
+        checking_balanceunknown > 0
+        months_loan_duration <= 24
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence <= 2
+        age <= 35
+        other_creditnone > 0
+        housingrent <= 0
+        ->  class no  [0.937]
+
+    Rule 56/4: (13.2, lift 1.8)
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount > 1258
+        percent_of_income <= 1
+        age <= 50
+        dependents > 1
+        ->  class no  [0.934]
+
+    Rule 56/5: (12.4, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 24
+        months_loan_duration <= 40
+        savings_balance500 - 1000 DM <= 0
+        employment_duration1 - 4 years > 0
+        age <= 35
+        other_creditnone > 0
+        housingrent <= 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class no  [0.931]
+
+    Rule 56/6: (11.1, lift 1.7)
+        months_loan_duration <= 8
+        credit_historyvery good <= 0
+        years_at_residence <= 2
+        jobskilled > 0
+        ->  class no  [0.924]
+
+    Rule 56/7: (10.8, lift 1.7)
+        checking_balance> 200 DM <= 0
+        credit_historyvery good <= 0
+        amount > 1258
+        savings_balanceunknown > 0
+        age <= 50
+        dependents > 1
+        ->  class no  [0.922]
+
+    Rule 56/8: (15.8/1, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 11
+        credit_historyvery good <= 0
+        dependents > 1
+        ->  class no  [0.887]
+
+    Rule 56/9: (8/0.2, lift 1.6)
+        months_loan_duration <= 24
+        credit_historypoor > 0
+        housingrent > 0
+        ->  class no  [0.875]
+
+    Rule 56/10: (10.3/0.8, lift 1.6)
+        months_loan_duration <= 40
+        purposeeducation <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration1 - 4 years > 0
+        housingown > 0
+        ->  class no  [0.851]
+
+    Rule 56/11: (23.4/3, lift 1.6)
+        months_loan_duration <= 40
+        purposeeducation <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration1 - 4 years > 0
+        years_at_residence > 2
+        age <= 35
+        housingrent <= 0
+        jobskilled > 0
+        ->  class no  [0.843]
+
+    Rule 56/12: (33.2/4.7, lift 1.6)
+        months_loan_duration <= 22
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditnone <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.839]
+
+    Rule 56/13: (50.5/10.3, lift 1.5)
+        months_loan_duration <= 40
+        employment_duration4 - 7 years <= 0
+        age > 35
+        other_creditnone > 0
+        housingown > 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class no  [0.784]
+
+    Rule 56/14: (34.9/7.1, lift 1.5)
+        purposeeducation <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence <= 2
+        age <= 35
+        other_creditnone > 0
+        housingrent <= 0
+        jobskilled > 0
+        ->  class no  [0.780]
+
+    Rule 56/15: (83.8/26.1, lift 1.3)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        jobskilled <= 0
+        jobunemployed <= 0
+        dependents <= 1
+        ->  class no  [0.684]
+
+    Rule 56/16: (59.4/18.7, lift 1.3)
+        checking_balance> 200 DM > 0
+        dependents <= 1
+        ->  class no  [0.679]
+
+    Rule 56/17: (129.8/49.1, lift 1.2)
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.620]
+
+    Default class: no
+
+    -----  Trial 57:  -----
+
+    Rules:
+
+    Rule 57/1: (9.5, lift 2.1)
+        months_loan_duration > 15
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        age <= 26
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.906]
+
+    Rule 57/2: (6.3, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 45
+        employment_duration> 7 years > 0
+        ->  class yes  [0.879]
+
+    Rule 57/3: (31.6/4.2, lift 1.9)
+        months_loan_duration > 15
+        amount > 951
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditstore <= 0
+        jobunskilled > 0
+        ->  class yes  [0.845]
+
+    Rule 57/4: (3.8, lift 1.9)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.827]
+
+    Rule 57/5: (11.8/1.5, lift 1.9)
+        months_loan_duration > 15
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        jobskilled <= 0
+        dependents > 1
+        ->  class yes  [0.819]
+
+    Rule 57/6: (3.5, lift 1.9)
+        savings_balance> 1000 DM > 0
+        existing_loans_count > 2
+        ->  class yes  [0.817]
+
+    Rule 57/7: (19.4/3.1, lift 1.8)
+        months_loan_duration <= 15
+        amount > 3949
+        savings_balanceunknown <= 0
+        ->  class yes  [0.809]
+
+    Rule 57/8: (31.3/7.1, lift 1.7)
+        months_loan_duration > 15
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        other_creditnone <= 0
+        other_creditstore <= 0
+        jobskilled > 0
+        ->  class yes  [0.755]
+
+    Rule 57/9: (41.4/12.9, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration > 9
+        savings_balanceunknown > 0
+        percent_of_income > 3
+        age <= 42
+        ->  class yes  [0.680]
+
+    Rule 57/10: (22.2/7.7, lift 1.5)
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.639]
+
+    Rule 57/11: (58.5/20.9, lift 1.5)
+        months_loan_duration > 7
+        credit_historygood > 0
+        purposecar > 0
+        amount <= 2659
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.638]
+
+    Rule 57/12: (155.1/63.3, lift 1.3)
+        months_loan_duration > 15
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        other_creditstore <= 0
+        jobskilled > 0
+        ->  class yes  [0.591]
+
+    Rule 57/13: (14.9, lift 1.7)
+        checking_balance> 200 DM > 0
+        savings_balanceunknown <= 0
+        percent_of_income <= 3
+        housingrent <= 0
+        jobunskilled <= 0
+        ->  class no  [0.941]
+
+    Rule 57/14: (13.2/0.8, lift 1.6)
+        months_loan_duration > 15
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.880]
+
+    Rule 57/15: (28.4/3.8, lift 1.5)
+        months_loan_duration > 15
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        percent_of_income <= 3
+        other_creditnone > 0
+        housingrent <= 0
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class no  [0.844]
+
+    Rule 57/16: (42.6/7.3, lift 1.4)
+        checking_balanceunknown > 0
+        months_loan_duration > 15
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        other_creditnone > 0
+        housingrent <= 0
+        jobskilled > 0
+        ->  class no  [0.815]
+
+    Rule 57/17: (125.8/36.2, lift 1.3)
+        months_loan_duration <= 15
+        credit_historyvery good <= 0
+        amount <= 3949
+        savings_balance> 1000 DM <= 0
+        age > 27
+        jobunskilled <= 0
+        ->  class no  [0.709]
+
+    Rule 57/18: (140.3/50.5, lift 1.1)
+        savings_balanceunknown > 0
+        ->  class no  [0.638]
+
+    Rule 57/19: (759.7/343.5, lift 1.0)
+        savings_balanceunknown <= 0
+        ->  class no  [0.548]
+
+    Default class: no
+
+    -----  Trial 58:  -----
+
+    Rules:
+
+    Rule 58/1: (14.2, lift 2.0)
+        checking_balanceunknown <= 0
+        amount > 2255
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        other_creditnone > 0
+        jobunskilled > 0
+        dependents <= 1
+        ->  class yes  [0.938]
+
+    Rule 58/2: (14.3/0.5, lift 1.9)
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.906]
+
+    Rule 58/3: (7.7, lift 1.9)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.897]
+
+    Rule 58/4: (22/1.6, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration > 36
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 7980
+        employment_durationunemployed <= 0
+        dependents <= 1
+        ->  class yes  [0.890]
+
+    Rule 58/5: (14.4/1.1, lift 1.8)
+        credit_historyperfect > 0
+        percent_of_income > 3
+        ->  class yes  [0.869]
+
+    Rule 58/6: (4.6, lift 1.8)
+        purposerenovations > 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class yes  [0.849]
+
+    Rule 58/7: (21.4/2.7, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        amount > 1521
+        employment_duration4 - 7 years <= 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.843]
+
+    Rule 58/8: (4.1, lift 1.8)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.837]
+
+    Rule 58/9: (3.4, lift 1.7)
+        checking_balanceunknown <= 0
+        employment_durationunemployed > 0
+        dependents > 1
+        ->  class yes  [0.814]
+
+    Rule 58/10: (16.7/3, lift 1.7)
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        ->  class yes  [0.788]
+
+    Rule 58/11: (34.3/7, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount > 1175
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        phoneTRUE > 0
+        ->  class yes  [0.778]
+
+    Rule 58/12: (24/4.8, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        purposeeducation <= 0
+        amount > 1175
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.778]
+
+    Rule 58/13: (39.3/9, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historyperfect <= 0
+        amount > 1521
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count > 1
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.757]
+
+    Rule 58/14: (36.6/9.3, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        amount <= 7980
+        savings_balance> 1000 DM <= 0
+        age > 23
+        ->  class yes  [0.732]
+
+    Rule 58/15: (31/8.2, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.721]
+
+    Rule 58/16: (644.4/317.5, lift 1.1)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.507]
+
+    Rule 58/17: (12.8/0.9, lift 1.7)
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        amount <= 7980
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.869]
+
+    Rule 58/18: (76.8/14.2, lift 1.5)
+        checking_balanceunknown > 0
+        months_loan_duration > 9
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.808]
+
+    Rule 58/19: (827.6/385.9, lift 1.0)
+        amount <= 7980
+        ->  class no  [0.534]
+
+    Default class: no
+
+    -----  Trial 59:  -----
+
+    Rules:
+
+    Rule 59/1: (646.1/295.5, lift 1.1)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.543]
+
+    Rule 59/2: (25.1/0.4, lift 1.9)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        amount <= 1901
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        other_creditstore <= 0
+        jobskilled <= 0
+        dependents <= 1
+        ->  class no  [0.947]
+
+    Rule 59/3: (15.6, lift 1.9)
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        percent_of_income > 2
+        percent_of_income <= 3
+        jobskilled <= 0
+        ->  class no  [0.943]
+
+    Rule 59/4: (15.5, lift 1.9)
+        checking_balanceunknown <= 0
+        purposecar0 <= 0
+        purposefurniture/appliances <= 0
+        amount > 1381
+        employment_duration> 7 years <= 0
+        percent_of_income <= 2
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class no  [0.943]
+
+    Rule 59/5: (10.3, lift 1.9)
+        credit_historyperfect <= 0
+        purposecar <= 0
+        percent_of_income > 2
+        age > 44
+        jobskilled > 0
+        phoneTRUE > 0
+        ->  class no  [0.919]
+
+    Rule 59/6: (17.5/1.5, lift 1.8)
+        purposecar <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        percent_of_income > 2
+        age <= 59
+        other_creditstore <= 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.873]
+
+    Rule 59/7: (5.9, lift 1.8)
+        checking_balanceunknown <= 0
+        savings_balanceunknown > 0
+        percent_of_income > 2
+        age > 48
+        ->  class no  [0.873]
+
+    Rule 59/8: (51.7/6.4, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        amount > 1381
+        amount <= 11054
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income <= 2
+        other_creditstore <= 0
+        ->  class no  [0.863]
+
+    Rule 59/9: (9.3/0.6, lift 1.8)
+        purposecar > 0
+        savings_balanceunknown <= 0
+        age > 53
+        other_creditnone > 0
+        ->  class no  [0.862]
+
+    Rule 59/10: (9.2/1, lift 1.7)
+        credit_historyperfect <= 0
+        purposecar > 0
+        savings_balance100 - 500 DM > 0
+        percent_of_income > 2
+        other_creditnone > 0
+        ->  class no  [0.822]
+
+    Rule 59/11: (23/3.8, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown > 0
+        percent_of_income > 2
+        ->  class no  [0.808]
+
+    Rule 59/12: (26.5/7.8, lift 1.4)
+        credit_historypoor > 0
+        percent_of_income <= 2
+        ->  class no  [0.690]
+
+    Rule 59/13: (253.9/109.5, lift 1.2)
+        checking_balanceunknown > 0
+        ->  class no  [0.568]
+
+    Default class: yes
+
+    -----  Trial 60:  -----
+
+    Rules:
+
+    Rule 60/1: (3.6, lift 1.7)
+        checking_balance> 200 DM > 0
+        other_creditnone > 0
+        existing_loans_count > 2
+        dependents <= 1
+        ->  class yes  [0.821]
+
+    Rule 60/2: (2.8, lift 1.6)
+        checking_balance> 200 DM > 0
+        credit_historypoor > 0
+        other_creditnone > 0
+        ->  class yes  [0.793]
+
+    Rule 60/3: (40.1/14.8, lift 1.3)
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.626]
+
+    Rule 60/4: (828.9/419.8, lift 1.0)
+        checking_balance> 200 DM <= 0
+        ->  class yes  [0.494]
+
+    Rule 60/5: (21.6, lift 1.9)
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        years_at_residence > 1
+        age > 32
+        other_creditnone > 0
+        housingown > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class no  [0.958]
+
+    Rule 60/6: (9.5, lift 1.8)
+        checking_balance> 200 DM <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        years_at_residence <= 1
+        ->  class no  [0.913]
+
+    Rule 60/7: (6.2, lift 1.7)
+        purposecar <= 0
+        purposeeducation <= 0
+        other_creditnone <= 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class no  [0.879]
+
+    Rule 60/8: (5.6, lift 1.7)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM > 0
+        other_creditnone > 0
+        housingown <= 0
+        ->  class no  [0.869]
+
+    Rule 60/9: (11.1/0.7, lift 1.7)
+        purposecar <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        other_creditnone <= 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.868]
+
+    Rule 60/10: (5.4, lift 1.7)
+        credit_historygood > 0
+        purposeeducation > 0
+        existing_loans_count > 1
+        ->  class no  [0.865]
+
+    Rule 60/11: (24.6/2.6, lift 1.7)
+        checking_balance> 200 DM <= 0
+        credit_historygood > 0
+        purposecar <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        age > 23
+        age <= 28
+        other_creditnone > 0
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class no  [0.863]
+
+    Rule 60/12: (10.6/0.9, lift 1.7)
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        housingrent > 0
+        dependents > 1
+        ->  class no  [0.850]
+
+    Rule 60/13: (22.2/3.3, lift 1.6)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        other_creditnone > 0
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class no  [0.821]
+
+    Rule 60/14: (30.9/5.3, lift 1.6)
+        credit_historygood > 0
+        percent_of_income <= 2
+        other_creditnone > 0
+        housingrent > 0
+        existing_loans_count <= 1
+        ->  class no  [0.809]
+
+    Rule 60/15: (18.3/3, lift 1.6)
+        purposecar <= 0
+        years_at_residence <= 1
+        other_creditnone <= 0
+        ->  class no  [0.803]
+
+    Rule 60/16: (2.9, lift 1.5)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.796]
+
+    Rule 60/17: (30.7/5.8, lift 1.5)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 33
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        other_creditnone > 0
+        housingown <= 0
+        dependents <= 1
+        ->  class no  [0.793]
+
+    Rule 60/18: (65.9/16.4, lift 1.4)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 6
+        credit_historygood > 0
+        amount > 1505
+        employment_duration> 7 years <= 0
+        percent_of_income <= 2
+        housingrent <= 0
+        existing_loans_count <= 1
+        ->  class no  [0.743]
+
+    Rule 60/19: (24.3/5.8, lift 1.4)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        other_creditnone > 0
+        dependents > 1
+        ->  class no  [0.741]
+
+    Rule 60/20: (40.6/10.5, lift 1.4)
+        credit_historygood > 0
+        purposecar <= 0
+        savings_balance500 - 1000 DM <= 0
+        age > 23
+        other_creditnone > 0
+        housingown <= 0
+        existing_loans_count <= 1
+        ->  class no  [0.730]
+
+    Rule 60/21: (25.8/6.8, lift 1.4)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.720]
+
+    Rule 60/22: (44.8/12.3, lift 1.4)
+        checking_balance> 200 DM > 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        other_creditnone > 0
+        existing_loans_count <= 2
+        dependents <= 1
+        ->  class no  [0.716]
+
+    Rule 60/23: (29.4/8.8, lift 1.3)
+        credit_historygood <= 0
+        savings_balanceunknown > 0
+        other_creditnone > 0
+        ->  class no  [0.689]
+
+    Rule 60/24: (41.9/12.7, lift 1.3)
+        credit_historygood > 0
+        employment_duration> 7 years > 0
+        other_creditnone > 0
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class no  [0.689]
+
+    Default class: yes
+
+    -----  Trial 61:  -----
+
+    Rules:
+
+    Rule 61/1: (25.2/2.3, lift 1.9)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        age > 32
+        age <= 44
+        other_creditnone <= 0
+        housingrent <= 0
+        ->  class yes  [0.878]
+
+    Rule 61/2: (5.8, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        years_at_residence > 3
+        ->  class yes  [0.872]
+
+    Rule 61/3: (21.6/2.3, lift 1.9)
+        months_loan_duration > 24
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.861]
+
+    Rule 61/4: (12/1.5, lift 1.8)
+        employment_duration4 - 7 years > 0
+        age <= 22
+        ->  class yes  [0.818]
+
+    Rule 61/5: (15.5/3.2, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        percent_of_income > 1
+        ->  class yes  [0.758]
+
+    Rule 61/6: (27.6/6.8, lift 1.6)
+        amount > 11054
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.737]
+
+    Rule 61/7: (57.5/17, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 13
+        credit_historygood > 0
+        amount <= 4308
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        years_at_residence <= 3
+        ->  class yes  [0.697]
+
+    Rule 61/8: (49.6/15.7, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 7
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class yes  [0.675]
+
+    Rule 61/9: (22.1/6.9, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        employment_duration4 - 7 years <= 0
+        dependents > 1
+        ->  class yes  [0.673]
+
+    Rule 61/10: (79.4/31.2, lift 1.3)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        age <= 47
+        housingrent > 0
+        ->  class yes  [0.604]
+
+    Rule 61/11: (639.3/339.4, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.469]
+
+    Rule 61/12: (24.7/2.9, lift 1.6)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        age > 22
+        ->  class no  [0.855]
+
+    Rule 61/13: (17.3/2, lift 1.5)
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        age > 22
+        ->  class no  [0.844]
+
+    Rule 61/14: (21.8/3.7, lift 1.5)
+        months_loan_duration <= 24
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        housingrent > 0
+        jobunskilled <= 0
+        phoneTRUE > 0
+        ->  class no  [0.802]
+
+    Rule 61/15: (96.3/27, lift 1.3)
+        credit_historyvery good <= 0
+        amount <= 8858
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        age > 22
+        ->  class no  [0.715]
+
+    Rule 61/16: (765.8/357.2, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class no  [0.534]
+
+    Default class: no
+
+    -----  Trial 62:  -----
+
+    Rules:
+
+    Rule 62/1: (7.5, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 10
+        purposefurniture/appliances <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 3
+        ->  class yes  [0.895]
+
+    Rule 62/2: (20.2/5.2, lift 1.5)
+        credit_historyvery good > 0
+        purposefurniture/appliances <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.720]
+
+    Rule 62/3: (80.5/27.6, lift 1.4)
+        purposefurniture/appliances > 0
+        amount > 4042
+        other_creditstore <= 0
+        ->  class yes  [0.653]
+
+    Rule 62/4: (848.3/430, lift 1.0)
+        months_loan_duration > 7
+        ->  class yes  [0.493]
+
+    Rule 62/5: (28, lift 1.9)
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        amount <= 1175
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.967]
+
+    Rule 62/6: (25.9, lift 1.9)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposefurniture/appliances > 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        dependents <= 1
+        ->  class no  [0.964]
+
+    Rule 62/7: (17, lift 1.8)
+        purposefurniture/appliances > 0
+        amount <= 1264
+        savings_balance100 - 500 DM <= 0
+        existing_loans_count > 1
+        ->  class no  [0.947]
+
+    Rule 62/8: (15.4, lift 1.8)
+        credit_historyvery good <= 0
+        amount > 1175
+        amount <= 3556
+        employment_duration4 - 7 years > 0
+        percent_of_income > 2
+        age > 23
+        existing_loans_count <= 1
+        ->  class no  [0.942]
+
+    Rule 62/9: (12.8, lift 1.8)
+        amount <= 4042
+        savings_balance> 1000 DM > 0
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.932]
+
+    Rule 62/10: (30.2/1.5, lift 1.8)
+        purposefurniture/appliances > 0
+        amount > 3556
+        amount <= 4042
+        savings_balance100 - 500 DM <= 0
+        ->  class no  [0.924]
+
+    Rule 62/11: (10.8, lift 1.8)
+        credit_historyvery good <= 0
+        purposerenovations <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed > 0
+        percent_of_income <= 2
+        other_creditstore <= 0
+        ->  class no  [0.922]
+
+    Rule 62/12: (10.2, lift 1.8)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 33
+        purposefurniture/appliances <= 0
+        purposerenovations <= 0
+        percent_of_income > 3
+        age > 50
+        other_creditnone > 0
+        ->  class no  [0.918]
+
+    Rule 62/13: (8.9, lift 1.8)
+        purposefurniture/appliances <= 0
+        amount > 4351
+        employment_duration4 - 7 years > 0
+        phoneTRUE <= 0
+        ->  class no  [0.908]
+
+    Rule 62/14: (7.7, lift 1.7)
+        purposefurniture/appliances > 0
+        amount <= 4042
+        employment_duration4 - 7 years > 0
+        percent_of_income <= 2
+        ->  class no  [0.897]
+
+    Rule 62/15: (23.3/2, lift 1.7)
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        amount <= 3556
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        years_at_residence <= 1
+        dependents <= 1
+        ->  class no  [0.880]
+
+    Rule 62/16: (19/2, lift 1.7)
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        amount <= 4042
+        employment_duration> 7 years > 0
+        other_creditstore <= 0
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class no  [0.857]
+
+    Rule 62/17: (51.3/8.3, lift 1.6)
+        checking_balance> 200 DM <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances <= 0
+        amount > 1388
+        amount <= 8613
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income <= 2
+        other_creditstore <= 0
+        existing_loans_count <= 2
+        ->  class no  [0.826]
+
+    Rule 62/18: (20.1/2.9, lift 1.6)
+        months_loan_duration <= 7
+        purposefurniture/appliances > 0
+        amount <= 4042
+        ->  class no  [0.825]
+
+    Rule 62/19: (19.9/3.3, lift 1.6)
+        checking_balance> 200 DM <= 0
+        purposefurniture/appliances <= 0
+        employment_duration4 - 7 years > 0
+        other_creditstore <= 0
+        phoneTRUE > 0
+        ->  class no  [0.803]
+
+    Rule 62/20: (22.1/5, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        purposefurniture/appliances <= 0
+        savings_balanceunknown > 0
+        ->  class no  [0.753]
+
+    Rule 62/21: (26.8/7.1, lift 1.4)
+        credit_historypoor <= 0
+        purposefurniture/appliances > 0
+        other_creditstore > 0
+        ->  class no  [0.718]
+
+    Default class: no
+
+    -----  Trial 63:  -----
+
+    Rules:
+
+    Rule 63/1: (24.8/0.7, lift 2.2)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount > 7980
+        amount <= 15672
+        jobunskilled <= 0
+        ->  class yes  [0.935]
+
+    Rule 63/2: (9.4, lift 2.2)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.913]
+
+    Rule 63/3: (6.3, lift 2.1)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        age <= 20
+        dependents <= 1
+        ->  class yes  [0.879]
+
+    Rule 63/4: (8.7/0.3, lift 2.1)
+        checking_balance> 200 DM > 0
+        purposecar <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 3
+        age > 24
+        ->  class yes  [0.874]
+
+    Rule 63/5: (22.9/3.3, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposecar > 0
+        amount <= 7980
+        employment_durationunemployed <= 0
+        years_at_residence <= 2
+        dependents <= 1
+        ->  class yes  [0.829]
+
+    Rule 63/6: (3.7, lift 2.0)
+        checking_balanceunknown <= 0
+        employment_durationunemployed > 0
+        dependents > 1
+        ->  class yes  [0.824]
+
+    Rule 63/7: (6.5/0.9, lift 1.9)
+        checking_balanceunknown > 0
+        purposecar <= 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.781]
+
+    Rule 63/8: (29.9/6.1, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 27
+        credit_historyvery good <= 0
+        purposecar <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        age > 31
+        dependents <= 1
+        ->  class yes  [0.778]
+
+    Rule 63/9: (35.8/7.8, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 27
+        credit_historyperfect <= 0
+        amount <= 7980
+        employment_durationunemployed <= 0
+        dependents <= 1
+        ->  class yes  [0.768]
+
+    Rule 63/10: (28.3/8.7, lift 1.6)
+        purposecar > 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 25
+        ->  class yes  [0.678]
+
+    Rule 63/11: (26.6/9.5, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposeeducation > 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.632]
+
+    Rule 63/12: (10.8, lift 1.6)
+        checking_balance> 200 DM > 0
+        age <= 24
+        ->  class no  [0.922]
+
+    Rule 63/13: (71.1/24.8, lift 1.1)
+        checking_balance> 200 DM > 0
+        ->  class no  [0.647]
+
+    Rule 63/14: (828.9/353.7, lift 1.0)
+        checking_balance> 200 DM <= 0
+        ->  class no  [0.573]
+
+    Default class: no
+
+    -----  Trial 64:  -----
+
+    Rules:
+
+    Rule 64/1: (6.8, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 21
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        other_creditstore <= 0
+        jobunskilled > 0
+        ->  class yes  [0.886]
+
+    Rule 64/2: (34.5/4.6, lift 1.8)
+        checking_balanceunknown > 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        age <= 44
+        other_creditnone <= 0
+        ->  class yes  [0.846]
+
+    Rule 64/3: (4, lift 1.8)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.832]
+
+    Rule 64/4: (13.9/1.8, lift 1.7)
+        months_loan_duration <= 36
+        amount > 11816
+        ->  class yes  [0.821]
+
+    Rule 64/5: (23.2/3.6, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        jobskilled <= 0
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.819]
+
+    Rule 64/6: (20.1/4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.776]
+
+    Rule 64/7: (42.2/8.9, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        purposefurniture/appliances <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        jobskilled > 0
+        ->  class yes  [0.775]
+
+    Rule 64/8: (36/8.6, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        age <= 38
+        jobunskilled > 0
+        ->  class yes  [0.748]
+
+    Rule 64/9: (29/7, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        age <= 44
+        other_creditnone > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.742]
+
+    Rule 64/10: (159.9/68.1, lift 1.2)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        jobskilled > 0
+        ->  class yes  [0.573]
+
+    Rule 64/11: (62.5/28, lift 1.2)
+        credit_historyvery good > 0
+        ->  class yes  [0.551]
+
+    Rule 64/12: (5.7, lift 1.7)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.870]
+
+    Rule 64/13: (26.4/3.4, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 16
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        jobskilled > 0
+        ->  class no  [0.845]
+
+    Rule 64/14: (26/5.8, lift 1.4)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.757]
+
+    Rule 64/15: (870/417.4, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.520]
+
+    Default class: no
+
+    -----  Trial 65:  -----
+
+    Rules:
+
+    Rule 65/1: (7.2, lift 1.9)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.892]
+
+    Rule 65/2: (39.7/8.8, lift 1.6)
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class yes  [0.765]
+
+    Rule 65/3: (22.4/5.4, lift 1.5)
+        amount > 10722
+        employment_duration4 - 7 years <= 0
+        age <= 44
+        ->  class yes  [0.738]
+
+    Rule 65/4: (49/15.1, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        housingrent <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.684]
+
+    Rule 65/5: (756.1/387.2, lift 1.0)
+        savings_balanceunknown <= 0
+        ->  class yes  [0.488]
+
+    Rule 65/6: (17.4, lift 1.8)
+        months_loan_duration <= 39
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        years_at_residence > 1
+        age > 45
+        other_creditnone > 0
+        housingown > 0
+        ->  class no  [0.949]
+
+    Rule 65/7: (14.5, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        amount > 1264
+        amount <= 2528
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        dependents > 1
+        ->  class no  [0.940]
+
+    Rule 65/8: (8.6, lift 1.7)
+        months_loan_duration <= 8
+        savings_balance> 1000 DM <= 0
+        dependents > 1
+        ->  class no  [0.906]
+
+    Rule 65/9: (29.4/2, lift 1.7)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        age > 44
+        housingrent <= 0
+        ->  class no  [0.904]
+
+    Rule 65/10: (50.3/4.1, lift 1.7)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        amount <= 10722
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        other_creditnone > 0
+        housingrent <= 0
+        jobunskilled <= 0
+        ->  class no  [0.903]
+
+    Rule 65/11: (12.1/1.2, lift 1.6)
+        purposeeducation > 0
+        age > 43
+        ->  class no  [0.845]
+
+    Rule 65/12: (21.4/2.9, lift 1.6)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled <= 0
+        ->  class no  [0.833]
+
+    Rule 65/13: (11.2/1.2, lift 1.6)
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        housingrent > 0
+        dependents > 1
+        ->  class no  [0.830]
+
+    Rule 65/14: (17.7/2.6, lift 1.6)
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.820]
+
+    Rule 65/15: (16.6/2.4, lift 1.6)
+        checking_balanceunknown > 0
+        months_loan_duration <= 24
+        housingrent > 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.816]
+
+    Rule 65/16: (35.3/6.4, lift 1.5)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        employment_duration4 - 7 years > 0
+        age > 23
+        phoneTRUE <= 0
+        ->  class no  [0.802]
+
+    Rule 65/17: (21.3/3.8, lift 1.5)
+        checking_balanceunknown > 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.795]
+
+    Rule 65/18: (20.7/4.3, lift 1.5)
+        savings_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.767]
+
+    Rule 65/19: (51.2/12.7, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 1
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.742]
+
+    Rule 65/20: (23.7/6.4, lift 1.4)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.713]
+
+    Rule 65/21: (92.1/28.8, lift 1.3)
+        months_loan_duration <= 39
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        other_creditnone > 0
+        housingown > 0
+        existing_loans_count > 1
+        ->  class no  [0.684]
+
+    Default class: yes
+
+    -----  Trial 66:  -----
+
+    Rules:
+
+    Rule 66/1: (17.5/1.5, lift 2.0)
+        purposeeducation <= 0
+        amount <= 1680
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        ->  class yes  [0.872]
+
+    Rule 66/2: (24.6/4, lift 1.9)
+        months_loan_duration > 47
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.812]
+
+    Rule 66/3: (13/2.3, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        other_creditnone > 0
+        existing_loans_count > 1
+        ->  class yes  [0.783]
+
+    Rule 66/4: (22.2/4.3, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 27
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.780]
+
+    Rule 66/5: (30/6.2, lift 1.8)
+        credit_historypoor <= 0
+        amount > 7824
+        savings_balanceunknown <= 0
+        phoneTRUE > 0
+        ->  class yes  [0.775]
+
+    Rule 66/6: (51.6/14.8, lift 1.6)
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 2779
+        savings_balance500 - 1000 DM <= 0
+        other_creditnone <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.705]
+
+    Rule 66/7: (37/11.1, lift 1.6)
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        age <= 43
+        ->  class yes  [0.691]
+
+    Rule 66/8: (30.8/9.7, lift 1.6)
+        months_loan_duration <= 45
+        amount > 5866
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years <= 0
+        ->  class yes  [0.675]
+
+    Rule 66/9: (51.5/19.2, lift 1.4)
+        credit_historypoor > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        housingrent <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.623]
+
+    Rule 66/10: (65.8/24.8, lift 1.4)
+        checking_balanceunknown <= 0
+        months_loan_duration > 10
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        savings_balanceunknown <= 0
+        existing_loans_count > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.620]
+
+    Rule 66/11: (89.4/37.8, lift 1.3)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        savings_balanceunknown <= 0
+        existing_loans_count > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.576]
+
+    Rule 66/12: (23.1, lift 1.7)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        other_creditnone > 0
+        phoneTRUE <= 0
+        ->  class no  [0.960]
+
+    Rule 66/13: (15.2/1.4, lift 1.5)
+        months_loan_duration > 45
+        savings_balanceunknown > 0
+        ->  class no  [0.857]
+
+    Rule 66/14: (10.3/1, lift 1.5)
+        credit_historypoor <= 0
+        purposeeducation > 0
+        age > 43
+        ->  class no  [0.840]
+
+    Rule 66/15: (9.9/1.1, lift 1.5)
+        credit_historypoor > 0
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class no  [0.827]
+
+    Rule 66/16: (50.4/9, lift 1.4)
+        purposeeducation <= 0
+        amount <= 5866
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years <= 0
+        ->  class no  [0.809]
+
+    Rule 66/17: (14.1/2.3, lift 1.4)
+        purposeeducation > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.797]
+
+    Rule 66/18: (160.6/46.9, lift 1.2)
+        months_loan_duration <= 47
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 7824
+        savings_balanceunknown <= 0
+        phoneTRUE > 0
+        ->  class no  [0.706]
+
+    Rule 66/19: (449.4/172.5, lift 1.1)
+        months_loan_duration <= 47
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        other_creditnone > 0
+        ->  class no  [0.616]
+
+    Rule 66/20: (459.3/184.8, lift 1.1)
+        months_loan_duration <= 27
+        existing_loans_count <= 1
+        ->  class no  [0.597]
+
+    Default class: no
+
+    -----  Trial 67:  -----
+
+    Rules:
+
+    Rule 67/1: (10.6, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        amount > 7758
+        employment_durationunemployed <= 0
+        housingown <= 0
+        dependents <= 1
+        ->  class yes  [0.920]
+
+    Rule 67/2: (9.4, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.912]
+
+    Rule 67/3: (8.2, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        age <= 25
+        housingown > 0
+        ->  class yes  [0.902]
+
+    Rule 67/4: (7.4, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        amount > 6527
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years > 0
+        housingown > 0
+        ->  class yes  [0.893]
+
+    Rule 67/5: (6.5, lift 1.9)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.882]
+
+    Rule 67/6: (12/0.9, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        jobskilled <= 0
+        ->  class yes  [0.864]
+
+    Rule 67/7: (15.8/2.4, lift 1.8)
+        checking_balance> 200 DM <= 0
+        credit_historygood > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        age > 42
+        housingown > 0
+        jobskilled <= 0
+        ->  class yes  [0.806]
+
+    Rule 67/8: (29.2/5.1, lift 1.8)
+        checking_balanceunknown > 0
+        purposecar <= 0
+        amount > 4153
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.804]
+
+    Rule 67/9: (10/1.5, lift 1.7)
+        checking_balance> 200 DM > 0
+        age <= 40
+        jobunskilled > 0
+        ->  class yes  [0.796]
+
+    Rule 67/10: (11/1.9, lift 1.7)
+        checking_balance> 200 DM > 0
+        dependents > 1
+        ->  class yes  [0.777]
+
+    Rule 67/11: (6.2/0.8, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        dependents > 1
+        ->  class yes  [0.775]
+
+    Rule 67/12: (47.2/11.6, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        age > 22
+        housingown <= 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class yes  [0.743]
+
+    Rule 67/13: (44.1/14.2, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historypoor <= 0
+        employment_duration4 - 7 years <= 0
+        dependents > 1
+        ->  class yes  [0.670]
+
+    Rule 67/14: (194.6/86.3, lift 1.2)
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        jobskilled > 0
+        ->  class yes  [0.556]
+
+    Rule 67/15: (786/420.5, lift 1.0)
+        percent_of_income > 1
+        ->  class yes  [0.465]
+
+    Rule 67/16: (14, lift 1.7)
+        checking_balanceunknown > 0
+        amount <= 1098
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.938]
+
+    Rule 67/17: (14.1, lift 1.7)
+        checking_balanceunknown > 0
+        amount <= 4153
+        percent_of_income <= 1
+        ->  class no  [0.938]
+
+    Rule 67/18: (10.8, lift 1.7)
+        checking_balance> 200 DM > 0
+        age <= 25
+        jobunskilled <= 0
+        ->  class no  [0.922]
+
+    Rule 67/19: (10.2, lift 1.7)
+        checking_balance> 200 DM > 0
+        credit_historypoor <= 0
+        employment_duration> 7 years > 0
+        dependents <= 1
+        ->  class no  [0.918]
+
+    Rule 67/20: (28/3.1, lift 1.6)
+        checking_balance> 200 DM <= 0
+        purposefurniture/appliances > 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        age <= 29
+        housingown > 0
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class no  [0.863]
+
+    Rule 67/21: (37.6/6.9, lift 1.5)
+        checking_balanceunknown > 0
+        purposefurniture/appliances > 0
+        amount <= 4153
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.801]
+
+    Rule 67/22: (32.8/7.4, lift 1.4)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.760]
+
+    Rule 67/23: (58/15.5, lift 1.3)
+        checking_balanceunknown > 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.726]
+
+    Rule 67/24: (54.2/15.8, lift 1.3)
+        checking_balanceunknown > 0
+        purposecar > 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.702]
+
+    Rule 67/25: (648.6/311.1, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class no  [0.520]
+
+    Default class: no
+
+    -----  Trial 68:  -----
+
+    Rules:
+
+    Rule 68/1: (12.3, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        age > 33
+        ->  class yes  [0.930]
+
+    Rule 68/2: (8.9, lift 2.0)
+        checking_balanceunknown <= 0
+        savings_balance> 1000 DM <= 0
+        age > 52
+        age <= 61
+        existing_loans_count > 1
+        ->  class yes  [0.902]
+
+    Rule 68/3: (7.9, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.899]
+
+    Rule 68/4: (7.7, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        housingown <= 0
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class yes  [0.897]
+
+    Rule 68/5: (4.3, lift 1.8)
+        checking_balanceunknown > 0
+        employment_durationunemployed > 0
+        age <= 32
+        other_creditnone > 0
+        ->  class yes  [0.842]
+
+    Rule 68/6: (28.1/5, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        amount > 2993
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence <= 3
+        other_creditnone > 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class yes  [0.800]
+
+    Rule 68/7: (2.8, lift 1.7)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.793]
+
+    Rule 68/8: (21.2/4.4, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 33
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        jobskilled > 0
+        ->  class yes  [0.769]
+
+    Rule 68/9: (52.4/11.6, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        amount <= 1386
+        savings_balance> 1000 DM <= 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.768]
+
+    Rule 68/10: (17.7/3.6, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class yes  [0.764]
+
+    Rule 68/11: (22.3/5, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        employment_duration> 7 years > 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class yes  [0.752]
+
+    Rule 68/12: (20.4/5.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        employment_duration4 - 7 years <= 0
+        jobunskilled > 0
+        ->  class yes  [0.724]
+
+    Rule 68/13: (33.9/9.1, lift 1.6)
+        checking_balanceunknown > 0
+        purposecar0 <= 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 1
+        other_creditnone <= 0
+        ->  class yes  [0.718]
+
+    Rule 68/14: (32.8/9.6, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.696]
+
+    Rule 68/15: (651.5/334.4, lift 1.1)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.487]
+
+    Rule 68/16: (6, lift 1.6)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.875]
+
+    Rule 68/17: (5.5, lift 1.6)
+        checking_balanceunknown > 0
+        percent_of_income <= 1
+        other_creditnone <= 0
+        ->  class no  [0.868]
+
+    Rule 68/18: (4.3, lift 1.6)
+        credit_historyvery good > 0
+        amount > 8072
+        ->  class no  [0.842]
+
+    Rule 68/19: (24.1/6.5, lift 1.3)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.711]
+
+    Rule 68/20: (835.2/380.1, lift 1.0)
+        credit_historyvery good <= 0
+        ->  class no  [0.545]
+
+    Default class: no
+
+    -----  Trial 69:  -----
+
+    Rules:
+
+    Rule 69/1: (6.9, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.887]
+
+    Rule 69/2: (9/0.9, lift 1.7)
+        months_loan_duration <= 8
+        amount > 3380
+        ->  class yes  [0.825]
+
+    Rule 69/3: (846.4/415.1, lift 1.0)
+        months_loan_duration > 8
+        ->  class yes  [0.510]
+
+    Rule 69/4: (33.9/1, lift 1.9)
+        checking_balanceunknown > 0
+        months_loan_duration > 10
+        purposerenovations <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        years_at_residence > 2
+        housingrent <= 0
+        ->  class no  [0.944]
+
+    Rule 69/5: (12.7, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 11
+        purposeeducation <= 0
+        housingrent <= 0
+        jobskilled > 0
+        ->  class no  [0.932]
+
+    Rule 69/6: (9.8, lift 1.8)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        years_at_residence <= 1
+        housingrent <= 0
+        ->  class no  [0.916]
+
+    Rule 69/7: (9.8, lift 1.8)
+        checking_balanceunknown > 0
+        months_loan_duration > 27
+        employment_duration> 7 years > 0
+        ->  class no  [0.915]
+
+    Rule 69/8: (24.3/1.5, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        age > 44
+        housingrent <= 0
+        ->  class no  [0.906]
+
+    Rule 69/9: (8.4, lift 1.8)
+        checking_balanceunknown <= 0
+        savings_balanceunknown > 0
+        existing_loans_count <= 1
+        jobunskilled > 0
+        ->  class no  [0.904]
+
+    Rule 69/10: (6.6, lift 1.8)
+        checking_balanceunknown > 0
+        years_at_residence <= 2
+        age <= 39
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class no  [0.884]
+
+    Rule 69/11: (6.5, lift 1.8)
+        checking_balance> 200 DM > 0
+        credit_historypoor <= 0
+        years_at_residence > 3
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.883]
+
+    Rule 69/12: (6.4, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.881]
+
+    Rule 69/13: (5.9, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        months_loan_duration <= 13
+        credit_historypoor > 0
+        ->  class no  [0.873]
+
+    Rule 69/14: (17.2/2, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        years_at_residence > 3
+        age > 58
+        ->  class no  [0.846]
+
+    Rule 69/15: (28.1/3.7, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        purposerenovations <= 0
+        amount > 1549
+        percent_of_income <= 1
+        years_at_residence <= 3
+        ->  class no  [0.844]
+
+    Rule 69/16: (4, lift 1.7)
+        months_loan_duration > 8
+        savings_balanceunknown > 0
+        jobunemployed > 0
+        ->  class no  [0.834]
+
+    Rule 69/17: (3.7, lift 1.6)
+        checking_balanceunknown > 0
+        housingrent > 0
+        dependents > 1
+        ->  class no  [0.825]
+
+    Rule 69/18: (3.7, lift 1.6)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.824]
+
+    Rule 69/19: (3.5, lift 1.6)
+        checking_balanceunknown > 0
+        employment_duration> 7 years > 0
+        housingrent > 0
+        ->  class no  [0.819]
+
+    Rule 69/20: (41.7/7.5, lift 1.6)
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 1
+        age <= 32
+        housingrent <= 0
+        ->  class no  [0.805]
+
+    Rule 69/21: (3.1, lift 1.6)
+        credit_historypoor > 0
+        purposecar0 > 0
+        ->  class no  [0.805]
+
+    Rule 69/22: (44.5/8.1, lift 1.6)
+        months_loan_duration <= 8
+        amount <= 3380
+        ->  class no  [0.803]
+
+    Rule 69/23: (36.3/7, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence <= 2
+        age <= 39
+        housingrent <= 0
+        ->  class no  [0.790]
+
+    Rule 69/24: (2.6, lift 1.6)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.785]
+
+    Rule 69/25: (94.5/25.5, lift 1.4)
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 5866
+        years_at_residence > 3
+        age > 20
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.725]
+
+    Default class: no
+
+    -----  Trial 70:  -----
+
+    Rules:
+
+    Rule 70/1: (8.7, lift 2.0)
+        checking_balanceunknown <= 0
+        amount > 6948
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years > 0
+        ->  class yes  [0.907]
+
+    Rule 70/2: (5.4, lift 1.9)
+        purposecar > 0
+        amount > 9629
+        employment_duration> 7 years <= 0
+        percent_of_income <= 3
+        jobunskilled <= 0
+        ->  class yes  [0.865]
+
+    Rule 70/3: (30/4.7, lift 1.8)
+        purposecar <= 0
+        amount > 4020
+        employment_duration> 7 years <= 0
+        percent_of_income <= 3
+        age > 25
+        housingown > 0
+        jobunskilled <= 0
+        phoneTRUE > 0
+        ->  class yes  [0.821]
+
+    Rule 70/4: (17/2.6, lift 1.8)
+        purposecar > 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income <= 3
+        age > 25
+        age <= 29
+        housingrent <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.809]
+
+    Rule 70/5: (38.6/8.1, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 3
+        age > 26
+        jobskilled > 0
+        ->  class yes  [0.777]
+
+    Rule 70/6: (12.5/2.4, lift 1.7)
+        months_loan_duration > 16
+        purposeeducation > 0
+        percent_of_income > 3
+        jobunskilled <= 0
+        ->  class yes  [0.767]
+
+    Rule 70/7: (93/22.3, lift 1.7)
+        checking_balance> 200 DM <= 0
+        purposeeducation <= 0
+        amount > 1175
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        age <= 25
+        jobunskilled <= 0
+        ->  class yes  [0.755]
+
+    Rule 70/8: (17.2/3.9, lift 1.7)
+        checking_balance> 200 DM > 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 3
+        age > 25
+        ->  class yes  [0.743]
+
+    Rule 70/9: (60.4/22.5, lift 1.4)
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 3
+        jobunskilled > 0
+        ->  class yes  [0.623]
+
+    Rule 70/10: (72.8/27.3, lift 1.4)
+        savings_balance> 1000 DM <= 0
+        percent_of_income <= 3
+        housingrent > 0
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.622]
+
+    Rule 70/11: (661.9/356.7, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.461]
+
+    Rule 70/12: (17.9/0.4, lift 1.7)
+        employment_duration> 7 years > 0
+        age <= 28
+        ->  class no  [0.929]
+
+    Rule 70/13: (29/4.4, lift 1.5)
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        existing_loans_count <= 2
+        ->  class no  [0.825]
+
+    Rule 70/14: (864.6/390.2, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.549]
+
+    Default class: no
+
+    -----  Trial 71:  -----
+
+    Rules:
+
+    Rule 71/1: (8.9, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        percent_of_income > 3
+        ->  class yes  [0.908]
+
+    Rule 71/2: (13.3/0.4, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        credit_historygood <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        ->  class yes  [0.907]
+
+    Rule 71/3: (10.3/0.6, lift 1.9)
+        months_loan_duration <= 15
+        amount > 3878
+        employment_duration4 - 7 years <= 0
+        housingown > 0
+        dependents <= 1
+        ->  class yes  [0.872]
+
+    Rule 71/4: (11.1/0.8, lift 1.9)
+        months_loan_duration > 45
+        credit_historyvery good <= 0
+        amount <= 7721
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.866]
+
+    Rule 71/5: (30.3/5.1, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        dependents <= 1
+        ->  class yes  [0.811]
+
+    Rule 71/6: (18.2/3, lift 1.7)
+        months_loan_duration <= 15
+        other_creditnone > 0
+        housingown <= 0
+        housingrent <= 0
+        ->  class yes  [0.802]
+
+    Rule 71/7: (34.7/8.5, lift 1.6)
+        credit_historyvery good > 0
+        amount <= 7629
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        age > 23
+        ->  class yes  [0.742]
+
+    Rule 71/8: (31.3/7.7, lift 1.6)
+        months_loan_duration > 15
+        employment_duration4 - 7 years <= 0
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.737]
+
+    Rule 71/9: (59.9/15.8, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration > 15
+        months_loan_duration <= 33
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 45
+        other_creditstore <= 0
+        housingown > 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.729]
+
+    Rule 71/10: (46.7/12.3, lift 1.6)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        amount > 7721
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.728]
+
+    Rule 71/11: (64.9/18.4, lift 1.5)
+        months_loan_duration > 15
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.710]
+
+    Rule 71/12: (27/8, lift 1.5)
+        credit_historypoor > 0
+        employment_duration4 - 7 years <= 0
+        dependents <= 1
+        phoneTRUE > 0
+        ->  class yes  [0.689]
+
+    Rule 71/13: (47.1/17.5, lift 1.4)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 12
+        other_creditnone <= 0
+        ->  class yes  [0.623]
+
+    Rule 71/14: (657/340.1, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.482]
+
+    Rule 71/15: (5.5, lift 1.6)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.867]
+
+    Rule 71/16: (25.5/4.7, lift 1.5)
+        purposeeducation <= 0
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.791]
+
+    Rule 71/17: (868.9/404.6, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.534]
+
+    Default class: no
+
+    -----  Trial 72:  -----
+
+    Rules:
+
+    Rule 72/1: (9, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historypoor <= 0
+        purposecar > 0
+        amount > 1175
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class yes  [0.909]
+
+    Rule 72/2: (8.3, lift 1.9)
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        purposefurniture/appliances > 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        age <= 41
+        housingrent > 0
+        ->  class yes  [0.903]
+
+    Rule 72/3: (49.1/7.3, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        purposeeducation <= 0
+        amount > 629
+        amount <= 983
+        housingrent <= 0
+        ->  class yes  [0.838]
+
+    Rule 72/4: (7.9/0.6, lift 1.8)
+        credit_historygood > 0
+        purposerenovations > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.836]
+
+    Rule 72/5: (24.8/4.6, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        amount > 1175
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        housingrent <= 0
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.790]
+
+    Rule 72/6: (25.5/4.9, lift 1.7)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances > 0
+        amount > 1829
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 1
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class yes  [0.786]
+
+    Rule 72/7: (25.1/5.4, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 47
+        credit_historyvery good > 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        age > 23
+        ->  class yes  [0.764]
+
+    Rule 72/8: (28.8/6.9, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        amount > 409
+        savings_balanceunknown <= 0
+        ->  class yes  [0.742]
+
+    Rule 72/9: (31/9.1, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.693]
+
+    Rule 72/10: (32.9/10.1, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        savings_balanceunknown > 0
+        housingrent <= 0
+        ->  class yes  [0.682]
+
+    Rule 72/11: (149.4/57.8, lift 1.3)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        housingrent <= 0
+        jobskilled > 0
+        ->  class yes  [0.612]
+
+    Rule 72/12: (64.4/27.2, lift 1.2)
+        credit_historygood > 0
+        existing_loans_count > 1
+        ->  class yes  [0.575]
+
+    Rule 72/13: (21.4/0.3, lift 1.8)
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount > 983
+        amount <= 1175
+        savings_balanceunknown <= 0
+        housingrent <= 0
+        ->  class no  [0.943]
+
+    Rule 72/14: (12.4, lift 1.7)
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 629
+        housingrent <= 0
+        ->  class no  [0.931]
+
+    Rule 72/15: (11.7/1, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 47
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.857]
+
+    Rule 72/16: (4.6, lift 1.6)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.850]
+
+    Rule 72/17: (3.2, lift 1.5)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.807]
+
+    Rule 72/18: (82.4/19.4, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        other_creditnone > 0
+        ->  class no  [0.758]
+
+    Rule 72/19: (38.3/9.3, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.745]
+
+    Rule 72/20: (860.9/394.3, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.542]
+
+    Default class: yes
+
+    -----  Trial 73:  -----
+
+    Rules:
+
+    Rule 73/1: (14, lift 2.0)
+        checking_balanceunknown > 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        age > 32
+        age <= 44
+        other_creditnone <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        ->  class yes  [0.937]
+
+    Rule 73/2: (5.6, lift 1.8)
+        credit_historyvery good > 0
+        employment_duration4 - 7 years <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        jobskilled > 0
+        ->  class yes  [0.868]
+
+    Rule 73/3: (15.4/1.9, lift 1.8)
+        months_loan_duration > 33
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.833]
+
+    Rule 73/4: (17.9/2.8, lift 1.7)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 3
+        age <= 32
+        housingrent <= 0
+        ->  class yes  [0.807]
+
+    Rule 73/5: (25.4/4.3, lift 1.7)
+        amount <= 2337
+        employment_duration4 - 7 years <= 0
+        other_creditstore > 0
+        ->  class yes  [0.805]
+
+    Rule 73/6: (3, lift 1.7)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.800]
+
+    Rule 73/7: (12.8/2.1, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        dependents > 1
+        ->  class yes  [0.790]
+
+    Rule 73/8: (12.8/2.2, lift 1.7)
+        employment_duration4 - 7 years > 0
+        age <= 22
+        ->  class yes  [0.782]
+
+    Rule 73/9: (46.4/11.7, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 13
+        credit_historygood > 0
+        amount > 1795
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        other_creditnone > 0
+        housingown > 0
+        ->  class yes  [0.738]
+
+    Rule 73/10: (72.7/25.2, lift 1.4)
+        checking_balance> 200 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income <= 3
+        housingrent > 0
+        ->  class yes  [0.649]
+
+    Rule 73/11: (55.7/19.5, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        purposecar <= 0
+        purposeeducation <= 0
+        employment_duration1 - 4 years > 0
+        other_creditnone > 0
+        ->  class yes  [0.645]
+
+    Rule 73/12: (39.1/15, lift 1.3)
+        employment_durationunemployed > 0
+        housingown > 0
+        ->  class yes  [0.610]
+
+    Rule 73/13: (74.4/30.2, lift 1.3)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        ->  class yes  [0.592]
+
+    Rule 73/14: (645.7/330.2, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.489]
+
+    Rule 73/15: (19.3, lift 1.8)
+        checking_balanceunknown > 0
+        purposecar <= 0
+        employment_duration4 - 7 years > 0
+        age > 22
+        ->  class no  [0.953]
+
+    Rule 73/16: (36.8/1.2, lift 1.8)
+        months_loan_duration <= 22
+        purposecar <= 0
+        employment_duration4 - 7 years > 0
+        age > 22
+        ->  class no  [0.943]
+
+    Rule 73/17: (13.4/0.4, lift 1.7)
+        months_loan_duration > 22
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.909]
+
+    Rule 73/18: (52.2/6.1, lift 1.6)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        age > 32
+        other_creditnone > 0
+        housingrent <= 0
+        ->  class no  [0.869]
+
+    Rule 73/19: (762.9/369.2, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class no  [0.516]
+
+    Default class: no
+
+    -----  Trial 74:  -----
+
+    Rules:
+
+    Rule 74/1: (6.2, lift 1.9)
+        percent_of_income <= 2
+        years_at_residence <= 1
+        housingrent > 0
+        ->  class yes  [0.878]
+
+    Rule 74/2: (9.9/0.5, lift 1.9)
+        checking_balance> 200 DM <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        age > 50
+        dependents > 1
+        ->  class yes  [0.874]
+
+    Rule 74/3: (5.8, lift 1.9)
+        purposeeducation <= 0
+        employment_durationunemployed > 0
+        dependents > 1
+        ->  class yes  [0.872]
+
+    Rule 74/4: (5.2, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.861]
+
+    Rule 74/5: (21.4/2.4, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 39
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.856]
+
+    Rule 74/6: (31.9/6.1, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 39
+        credit_historypoor <= 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 2
+        housingrent <= 0
+        ->  class yes  [0.790]
+
+    Rule 74/7: (13.6/2.8, lift 1.6)
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        existing_loans_count > 2
+        dependents <= 1
+        ->  class yes  [0.755]
+
+    Rule 74/8: (41.4/9.7, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        amount > 900
+        amount <= 2012
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.753]
+
+    Rule 74/9: (27/6.4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        housingown <= 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class yes  [0.746]
+
+    Rule 74/10: (14.6/3.3, lift 1.6)
+        purposerenovations > 0
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.742]
+
+    Rule 74/11: (50.3/12.9, lift 1.6)
+        checking_balance> 200 DM <= 0
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        other_creditnone > 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.734]
+
+    Rule 74/12: (36.8/9.5, lift 1.6)
+        checking_balance> 200 DM <= 0
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 2
+        ->  class yes  [0.731]
+
+    Rule 74/13: (35.4/9.8, lift 1.5)
+        months_loan_duration > 11
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        housingown > 0
+        existing_loans_count <= 2
+        dependents > 1
+        ->  class yes  [0.711]
+
+    Rule 74/14: (36.5/10.3, lift 1.5)
+        checking_balance> 200 DM <= 0
+        credit_historypoor > 0
+        purposecar0 <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent <= 0
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.707]
+
+    Rule 74/15: (22.1/6.1, lift 1.5)
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        other_creditnone <= 0
+        housingrent > 0
+        dependents <= 1
+        ->  class yes  [0.704]
+
+    Rule 74/16: (27.5/7.7, lift 1.5)
+        purposeeducation <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        existing_loans_count > 1
+        dependents <= 1
+        ->  class yes  [0.704]
+
+    Rule 74/17: (132.7/47.3, lift 1.2)
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.641]
+
+    Rule 74/18: (767.3/373, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class no  [0.514]
+
+    Default class: no
+
+    -----  Trial 75:  -----
+
+    Rules:
+
+    Rule 75/1: (10, lift 1.9)
+        months_loan_duration <= 26
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        other_creditnone > 0
+        ->  class yes  [0.916]
+
+    Rule 75/2: (18.1/1, lift 1.9)
+        months_loan_duration <= 26
+        credit_historygood > 0
+        purposecar <= 0
+        percent_of_income <= 3
+        existing_loans_count > 1
+        jobunskilled <= 0
+        ->  class yes  [0.899]
+
+    Rule 75/3: (12/1, lift 1.8)
+        checking_balanceunknown <= 0
+        age > 45
+        other_creditnone > 0
+        dependents > 1
+        ->  class yes  [0.856]
+
+    Rule 75/4: (27/3.6, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 26
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        purposecar <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        age > 25
+        other_creditnone > 0
+        existing_loans_count <= 2
+        dependents <= 1
+        ->  class yes  [0.840]
+
+    Rule 75/5: (3.2, lift 1.7)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.808]
+
+    Rule 75/6: (43.1/8.4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 26
+        credit_historygood > 0
+        purposecar > 0
+        amount <= 1455
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        dependents <= 1
+        ->  class yes  [0.792]
+
+    Rule 75/7: (27.4/5.1, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 26
+        credit_historygood > 0
+        purposecar <= 0
+        savings_balance500 - 1000 DM <= 0
+        percent_of_income <= 3
+        age <= 25
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.791]
+
+    Rule 75/8: (82/18.6, lift 1.6)
+        months_loan_duration > 26
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 3
+        years_at_residence > 1
+        dependents <= 1
+        ->  class yes  [0.766]
+
+    Rule 75/9: (27.8/6.8, lift 1.5)
+        savings_balance> 1000 DM <= 0
+        age <= 42
+        other_creditnone <= 0
+        dependents > 1
+        ->  class yes  [0.738]
+
+    Rule 75/10: (45/13.1, lift 1.4)
+        checking_balance> 200 DM <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar0 <= 0
+        savings_balanceunknown <= 0
+        other_creditnone <= 0
+        dependents <= 1
+        ->  class yes  [0.700]
+
+    Rule 75/11: (68.1/21.5, lift 1.4)
+        months_loan_duration > 26
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.679]
+
+    Rule 75/12: (651.6/321, lift 1.1)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.507]
+
+    Rule 75/13: (15.1/1.6, lift 1.6)
+        months_loan_duration > 26
+        savings_balanceunknown > 0
+        percent_of_income <= 3
+        ->  class no  [0.847]
+
+    Rule 75/14: (855.3/405.5, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.526]
+
+    Default class: no
+
+    -----  Trial 76:  -----
+
+    Rules:
+
+    Rule 76/1: (36.3/5.7, lift 1.7)
+        credit_historypoor <= 0
+        amount > 10875
+        ->  class yes  [0.824]
+
+    Rule 76/2: (23.6/3.9, lift 1.6)
+        checking_balanceunknown <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.810]
+
+    Rule 76/3: (39.4/7.7, lift 1.6)
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 3
+        age <= 55
+        other_creditnone > 0
+        dependents <= 1
+        phoneTRUE > 0
+        ->  class yes  [0.791]
+
+    Rule 76/4: (49.4/11.4, lift 1.5)
+        checking_balanceunknown <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        years_at_residence > 1
+        other_creditnone <= 0
+        ->  class yes  [0.758]
+
+    Rule 76/5: (62.5/14.9, lift 1.5)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        age > 22
+        age <= 48
+        phoneTRUE <= 0
+        ->  class yes  [0.753]
+
+    Rule 76/6: (30.4/8.5, lift 1.4)
+        checking_balanceunknown <= 0
+        amount > 5152
+        percent_of_income > 3
+        ->  class yes  [0.708]
+
+    Rule 76/7: (696.2/339.2, lift 1.0)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.513]
+
+    Rule 76/8: (15.1, lift 1.9)
+        employment_duration4 - 7 years > 0
+        percent_of_income <= 3
+        housingown <= 0
+        ->  class no  [0.942]
+
+    Rule 76/9: (12.5, lift 1.8)
+        checking_balanceunknown > 0
+        amount <= 1098
+        employment_duration> 7 years <= 0
+        employment_durationunemployed <= 0
+        ->  class no  [0.931]
+
+    Rule 76/10: (11.7, lift 1.8)
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        amount <= 10875
+        age > 55
+        dependents <= 1
+        phoneTRUE > 0
+        ->  class no  [0.927]
+
+    Rule 76/11: (11.2, lift 1.8)
+        checking_balanceunknown <= 0
+        amount > 2002
+        amount <= 5152
+        savings_balanceunknown > 0
+        percent_of_income > 3
+        ->  class no  [0.924]
+
+    Rule 76/12: (9.2, lift 1.8)
+        savings_balanceunknown <= 0
+        percent_of_income > 3
+        years_at_residence <= 1
+        other_creditnone <= 0
+        ->  class no  [0.911]
+
+    Rule 76/13: (7.5, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.895]
+
+    Rule 76/14: (31.6/2.7, lift 1.8)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        savings_balance100 - 500 DM <= 0
+        existing_loans_count > 1
+        phoneTRUE <= 0
+        ->  class no  [0.888]
+
+    Rule 76/15: (30.5/4, lift 1.7)
+        checking_balanceunknown <= 0
+        purposefurniture/appliances > 0
+        amount <= 1882
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 3
+        age <= 48
+        other_creditnone > 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.845]
+
+    Rule 76/16: (34.2/4.7, lift 1.7)
+        checking_balanceunknown > 0
+        months_loan_duration > 18
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM <= 0
+        phoneTRUE <= 0
+        ->  class no  [0.842]
+
+    Rule 76/17: (19.3/2.4, lift 1.7)
+        amount <= 10875
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        dependents > 1
+        phoneTRUE > 0
+        ->  class no  [0.839]
+
+    Rule 76/18: (32.2/5.9, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        amount <= 10875
+        percent_of_income <= 3
+        age > 26
+        other_creditnone <= 0
+        ->  class no  [0.798]
+
+    Rule 76/19: (28.8/5.3, lift 1.6)
+        amount <= 10875
+        savings_balanceunknown > 0
+        employment_durationunemployed <= 0
+        percent_of_income <= 3
+        existing_loans_count <= 1
+        ->  class no  [0.794]
+
+    Rule 76/20: (57/12.5, lift 1.5)
+        checking_balanceunknown > 0
+        amount <= 10875
+        employment_duration> 7 years > 0
+        ->  class no  [0.771]
+
+    Rule 76/21: (44.1/12.2, lift 1.4)
+        credit_historyvery good <= 0
+        amount <= 10875
+        percent_of_income <= 3
+        other_creditnone > 0
+        dependents > 1
+        ->  class no  [0.713]
+
+    Rule 76/22: (54.7/15.4, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        amount <= 10875
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        phoneTRUE > 0
+        ->  class no  [0.711]
+
+    Rule 76/23: (73.2/22.2, lift 1.4)
+        amount <= 3931
+        employment_duration4 - 7 years <= 0
+        percent_of_income <= 3
+        years_at_residence > 1
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class no  [0.691]
+
+    Rule 76/24: (53.6/16.9, lift 1.3)
+        purposeeducation <= 0
+        employment_duration> 7 years > 0
+        other_creditnone > 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.677]
+
+    Rule 76/25: (26/8.6, lift 1.3)
+        checking_balanceunknown > 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.658]
+
+    Default class: yes
+
+    -----  Trial 77:  -----
+
+    Rules:
+
+    Rule 77/1: (13.9, lift 2.0)
+        months_loan_duration <= 39
+        amount > 8648
+        employment_duration4 - 7 years <= 0
+        percent_of_income <= 1
+        ->  class yes  [0.937]
+
+    Rule 77/2: (12.5, lift 2.0)
+        checking_balanceunknown <= 0
+        amount > 7127
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years > 0
+        ->  class yes  [0.931]
+
+    Rule 77/3: (6.6, lift 1.9)
+        credit_historyperfect > 0
+        purposerenovations <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        existing_loans_count > 1
+        ->  class yes  [0.883]
+
+    Rule 77/4: (7.4/0.4, lift 1.9)
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class yes  [0.853]
+
+    Rule 77/5: (3.6, lift 1.8)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.823]
+
+    Rule 77/6: (29.5/4.8, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years > 0
+        percent_of_income > 1
+        years_at_residence <= 3
+        jobunskilled <= 0
+        ->  class yes  [0.815]
+
+    Rule 77/7: (17.3/2.6, lift 1.8)
+        purposefurniture/appliances > 0
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        other_creditnone > 0
+        housingown > 0
+        existing_loans_count <= 1
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.811]
+
+    Rule 77/8: (13/2.1, lift 1.7)
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        age <= 22
+        ->  class yes  [0.792]
+
+    Rule 77/9: (2.7, lift 1.7)
+        savings_balance> 1000 DM > 0
+        existing_loans_count > 2
+        ->  class yes  [0.788]
+
+    Rule 77/10: (48.5/11.2, lift 1.6)
+        months_loan_duration > 16
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        housingown <= 0
+        ->  class yes  [0.758]
+
+    Rule 77/11: (2, lift 1.6)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.753]
+
+    Rule 77/12: (26.7/6.1, lift 1.6)
+        months_loan_duration > 42
+        amount <= 11054
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        ->  class yes  [0.752]
+
+    Rule 77/13: (26/6.8, lift 1.6)
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditnone <= 0
+        other_creditstore <= 0
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class yes  [0.721]
+
+    Rule 77/14: (31.5/8.6, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled > 0
+        ->  class yes  [0.713]
+
+    Rule 77/15: (26.7/7.6, lift 1.5)
+        credit_historyvery good <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditstore > 0
+        jobunskilled <= 0
+        ->  class yes  [0.698]
+
+    Rule 77/16: (69.1/22.7, lift 1.4)
+        months_loan_duration > 7
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        age <= 31
+        housingown <= 0
+        ->  class yes  [0.666]
+
+    Rule 77/17: (24.3/1.9, lift 1.6)
+        purposeeducation <= 0
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        existing_loans_count <= 2
+        ->  class no  [0.891]
+
+    Rule 77/18: (867.3/403.3, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.535]
+
+    Default class: no
+
+    -----  Trial 78:  -----
+
+    Rules:
+
+    Rule 78/1: (26.2/4.5, lift 1.6)
+        credit_historyvery good <= 0
+        amount > 11054
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.804]
+
+    Rule 78/2: (46.9/11.8, lift 1.5)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        age > 23
+        ->  class yes  [0.737]
+
+    Rule 78/3: (851.2/428.3, lift 1.0)
+        months_loan_duration > 7
+        ->  class yes  [0.497]
+
+    Rule 78/4: (17.6, lift 1.9)
+        months_loan_duration > 7
+        months_loan_duration <= 15
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        percent_of_income <= 2
+        ->  class no  [0.949]
+
+    Rule 78/5: (22/1, lift 1.8)
+        months_loan_duration > 16
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        amount <= 11054
+        savings_balanceunknown > 0
+        employment_duration4 - 7 years <= 0
+        ->  class no  [0.915]
+
+    Rule 78/6: (21.8/1.3, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        amount > 1386
+        employment_duration1 - 4 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        years_at_residence <= 1
+        existing_loans_count <= 1
+        ->  class no  [0.902]
+
+    Rule 78/7: (32.3/3.1, lift 1.7)
+        months_loan_duration > 7
+        months_loan_duration <= 15
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 2186
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class no  [0.880]
+
+    Rule 78/8: (4.9, lift 1.7)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.856]
+
+    Rule 78/9: (8.9/0.6, lift 1.7)
+        credit_historyvery good <= 0
+        purposecar <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        other_creditnone <= 0
+        ->  class no  [0.854]
+
+    Rule 78/10: (19.3/2.2, lift 1.7)
+        credit_historygood > 0
+        amount <= 1386
+        phoneTRUE > 0
+        ->  class no  [0.849]
+
+    Rule 78/11: (4.2, lift 1.6)
+        credit_historyvery good <= 0
+        purposeeducation > 0
+        employment_duration4 - 7 years > 0
+        housingrent <= 0
+        ->  class no  [0.838]
+
+    Rule 78/12: (26/3.6, lift 1.6)
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 1386
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 3
+        age <= 27
+        phoneTRUE <= 0
+        ->  class no  [0.834]
+
+    Rule 78/13: (25/3.9, lift 1.6)
+        credit_historyvery good <= 0
+        purposecar <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years > 0
+        years_at_residence > 3
+        ->  class no  [0.819]
+
+    Rule 78/14: (41.3/7.1, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration > 15
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 11054
+        savings_balance500 - 1000 DM <= 0
+        other_creditnone > 0
+        ->  class no  [0.814]
+
+    Rule 78/15: (11.1/1.5, lift 1.6)
+        checking_balanceunknown > 0
+        purposeeducation > 0
+        savings_balance100 - 500 DM <= 0
+        other_creditstore <= 0
+        ->  class no  [0.807]
+
+    Rule 78/16: (60.9/11.6, lift 1.6)
+        months_loan_duration <= 39
+        credit_historygood > 0
+        amount > 1386
+        employment_duration1 - 4 years > 0
+        age > 22
+        age <= 35
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class no  [0.799]
+
+    Rule 78/17: (6.4/0.7, lift 1.6)
+        months_loan_duration > 39
+        credit_historyvery good > 0
+        ->  class no  [0.799]
+
+    Rule 78/18: (19.4/3.4, lift 1.6)
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence <= 1
+        ->  class no  [0.794]
+
+    Rule 78/19: (18.1/3.4, lift 1.5)
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.780]
+
+    Rule 78/20: (35.4/7.3, lift 1.5)
+        months_loan_duration <= 7
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount <= 11054
+        ->  class no  [0.779]
+
+    Rule 78/21: (44/9.6, lift 1.5)
+        months_loan_duration > 7
+        amount > 1386
+        amount <= 11054
+        percent_of_income <= 1
+        existing_loans_count <= 1
+        ->  class no  [0.770]
+
+    Rule 78/22: (47.6/12.2, lift 1.4)
+        checking_balanceunknown > 0
+        months_loan_duration > 7
+        credit_historygood > 0
+        purposeeducation <= 0
+        amount > 1386
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        ->  class no  [0.733]
+
+    Rule 78/23: (25.6/6.4, lift 1.4)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.731]
+
+    Default class: yes
+
+    -----  Trial 79:  -----
+
+    Rules:
+
+    Rule 79/1: (13.4/1, lift 1.9)
+        months_loan_duration <= 24
+        amount > 6361
+        employment_duration> 7 years > 0
+        ->  class yes  [0.871]
+
+    Rule 79/2: (35.4/4.8, lift 1.9)
+        checking_balanceunknown <= 0
+        amount > 7980
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.846]
+
+    Rule 79/3: (56.1/14.6, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        amount <= 4530
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        phoneTRUE <= 0
+        ->  class yes  [0.732]
+
+    Rule 79/4: (37.8/13.1, lift 1.4)
+        checking_balanceunknown <= 0
+        months_loan_duration > 45
+        savings_balanceunknown <= 0
+        ->  class yes  [0.646]
+
+    Rule 79/5: (62.2/23.3, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        ->  class yes  [0.621]
+
+    Rule 79/6: (41.6/16.3, lift 1.3)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.603]
+
+    Rule 79/7: (556.5/283.6, lift 1.1)
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.490]
+
+    Rule 79/8: (25.6, lift 1.8)
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        amount <= 3914
+        age > 45
+        phoneTRUE > 0
+        ->  class no  [0.964]
+
+    Rule 79/9: (21.1, lift 1.7)
+        checking_balance> 200 DM <= 0
+        credit_historypoor <= 0
+        amount <= 3914
+        employment_duration4 - 7 years > 0
+        phoneTRUE > 0
+        ->  class no  [0.957]
+
+    Rule 79/10: (16.7, lift 1.7)
+        amount <= 3914
+        dependents > 1
+        phoneTRUE > 0
+        ->  class no  [0.947]
+
+    Rule 79/11: (14.1, lift 1.7)
+        checking_balanceunknown > 0
+        months_loan_duration > 24
+        employment_duration> 7 years > 0
+        ->  class no  [0.938]
+
+    Rule 79/12: (13.5, lift 1.7)
+        credit_historyperfect <= 0
+        amount > 3448
+        amount <= 3914
+        phoneTRUE > 0
+        ->  class no  [0.935]
+
+    Rule 79/13: (26.3/0.9, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        amount > 4530
+        amount <= 7980
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.933]
+
+    Rule 79/14: (12.1, lift 1.7)
+        checking_balanceunknown > 0
+        purposefurniture/appliances <= 0
+        amount <= 1275
+        employment_duration> 7 years <= 0
+        ->  class no  [0.929]
+
+    Rule 79/15: (44.4/2.8, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 45
+        credit_historyvery good <= 0
+        amount > 5293
+        amount <= 7980
+        savings_balanceunknown <= 0
+        ->  class no  [0.919]
+
+    Rule 79/16: (10.2, lift 1.7)
+        checking_balanceunknown > 0
+        amount <= 4351
+        percent_of_income <= 1
+        ->  class no  [0.918]
+
+    Rule 79/17: (34.4/2.6, lift 1.6)
+        checking_balanceunknown > 0
+        purposefurniture/appliances > 0
+        amount <= 4351
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        jobunskilled <= 0
+        ->  class no  [0.900]
+
+    Rule 79/18: (16.1/1.3, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 15
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        phoneTRUE <= 0
+        ->  class no  [0.875]
+
+    Rule 79/19: (5.8, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.872]
+
+    Rule 79/20: (19.1/2, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances <= 0
+        amount <= 7980
+        savings_balance100 - 500 DM > 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.856]
+
+    Rule 79/21: (60.5/8.3, lift 1.6)
+        amount <= 5711
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years <= 0
+        ->  class no  [0.851]
+
+    Rule 79/22: (56.1/9.4, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances <= 0
+        amount <= 7980
+        employment_duration> 7 years <= 0
+        percent_of_income <= 2
+        ->  class no  [0.821]
+
+    Rule 79/23: (37/7.7, lift 1.4)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.776]
+
+    Rule 79/24: (49/11.4, lift 1.4)
+        checking_balanceunknown > 0
+        amount <= 6361
+        employment_duration> 7 years > 0
+        ->  class no  [0.757]
+
+    Rule 79/25: (117.8/36.9, lift 1.2)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        amount <= 5293
+        savings_balance100 - 500 DM <= 0
+        employment_duration1 - 4 years <= 0
+        other_creditstore <= 0
+        ->  class no  [0.684]
+
+    Default class: yes
+
+    -----  Trial 80:  -----
+
+    Rules:
+
+    Rule 80/1: (14.4, lift 2.2)
+        checking_balanceunknown <= 0
+        months_loan_duration > 36
+        credit_historypoor <= 0
+        purposefurniture/appliances > 0
+        dependents <= 1
+        ->  class yes  [0.939]
+
+    Rule 80/2: (8.5, lift 2.1)
+        checking_balance1 - 200 DM > 0
+        purposefurniture/appliances > 0
+        amount > 900
+        amount <= 1316
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.905]
+
+    Rule 80/3: (3.8, lift 2.0)
+        checking_balanceunknown > 0
+        purposecar0 <= 0
+        employment_durationunemployed > 0
+        other_creditnone <= 0
+        ->  class yes  [0.826]
+
+    Rule 80/4: (24.3/3.8, lift 1.9)
+        checking_balanceunknown > 0
+        purposecar0 <= 0
+        purposefurniture/appliances <= 0
+        percent_of_income > 1
+        age <= 44
+        other_creditnone <= 0
+        housingrent <= 0
+        ->  class yes  [0.817]
+
+    Rule 80/5: (8.2/0.9, lift 1.9)
+        checking_balance> 200 DM > 0
+        age <= 41
+        jobunskilled > 0
+        ->  class yes  [0.816]
+
+    Rule 80/6: (8.8/1.4, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        age > 45
+        ->  class yes  [0.774]
+
+    Rule 80/7: (12/2.3, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        years_at_residence <= 3
+        age <= 22
+        ->  class yes  [0.760]
+
+    Rule 80/8: (42/9.9, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        amount <= 1381
+        housingrent <= 0
+        ->  class yes  [0.753]
+
+    Rule 80/9: (51.1/12.6, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 14
+        credit_historyperfect <= 0
+        amount > 1778
+        savings_balance100 - 500 DM <= 0
+        other_creditstore <= 0
+        housingrent <= 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class yes  [0.744]
+
+    Rule 80/10: (17.9/4.5, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        amount > 9857
+        ->  class yes  [0.724]
+
+    Rule 80/11: (9.1/2.2, lift 1.7)
+        checking_balance> 200 DM > 0
+        dependents > 1
+        ->  class yes  [0.708]
+
+    Rule 80/12: (19.6/6.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposeeducation > 0
+        ->  class yes  [0.668]
+
+    Rule 80/13: (21.2/7.3, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        dependents > 1
+        ->  class yes  [0.641]
+
+    Rule 80/14: (97.5/40.5, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        housingrent > 0
+        ->  class yes  [0.583]
+
+    Rule 80/15: (22.6/2.1, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 14
+        credit_historyperfect <= 0
+        amount > 1778
+        employment_duration> 7 years <= 0
+        jobskilled > 0
+        ->  class no  [0.873]
+
+    Rule 80/16: (86/29.4, lift 1.1)
+        credit_historypoor > 0
+        ->  class no  [0.655]
+
+    Rule 80/17: (814/350.1, lift 1.0)
+        credit_historypoor <= 0
+        ->  class no  [0.570]
+
+    Default class: no
+
+    -----  Trial 81:  -----
+
+    Rules:
+
+    Rule 81/1: (9.3, lift 2.0)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        age <= 39
+        other_creditnone <= 0
+        housingrent > 0
+        ->  class yes  [0.911]
+
+    Rule 81/2: (14.3/0.6, lift 2.0)
+        months_loan_duration > 15
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar0 <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class yes  [0.899]
+
+    Rule 81/3: (7.4, lift 2.0)
+        percent_of_income <= 2
+        years_at_residence <= 1
+        housingrent > 0
+        ->  class yes  [0.894]
+
+    Rule 81/4: (11.6/0.4, lift 2.0)
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.894]
+
+    Rule 81/5: (6.8, lift 2.0)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.886]
+
+    Rule 81/6: (12.2/0.7, lift 2.0)
+        months_loan_duration > 15
+        credit_historygood <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        dependents > 1
+        ->  class yes  [0.878]
+
+    Rule 81/7: (7.4/0.2, lift 2.0)
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        housingrent > 0
+        existing_loans_count > 1
+        ->  class yes  [0.877]
+
+    Rule 81/8: (14.9/1.1, lift 2.0)
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        age > 33
+        ->  class yes  [0.876]
+
+    Rule 81/9: (8/0.5, lift 1.9)
+        credit_historyvery good > 0
+        purposeeducation <= 0
+        years_at_residence <= 1
+        ->  class yes  [0.848]
+
+    Rule 81/10: (4.6, lift 1.9)
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.848]
+
+    Rule 81/11: (3.7, lift 1.8)
+        employment_durationunemployed > 0
+        percent_of_income > 2
+        housingrent > 0
+        ->  class yes  [0.824]
+
+    Rule 81/12: (3.4, lift 1.8)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.816]
+
+    Rule 81/13: (25.3/4.1, lift 1.8)
+        months_loan_duration > 18
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        housingrent <= 0
+        existing_loans_count > 1
+        ->  class yes  [0.814]
+
+    Rule 81/14: (21/4.1, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 15
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        other_creditnone > 0
+        ->  class yes  [0.776]
+
+    Rule 81/15: (31.7/6.6, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 27
+        credit_historygood > 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        housingrent <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.774]
+
+    Rule 81/16: (17.4/3.4, lift 1.7)
+        months_loan_duration > 22
+        credit_historygood > 0
+        percent_of_income > 2
+        age <= 39
+        housingrent > 0
+        ->  class yes  [0.773]
+
+    Rule 81/17: (42.8/9.2, lift 1.7)
+        months_loan_duration > 15
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar0 <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        age > 21
+        age <= 29
+        other_creditstore <= 0
+        ->  class yes  [0.772]
+
+    Rule 81/18: (30.4/7.4, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        other_creditnone <= 0
+        housingrent <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.742]
+
+    Rule 81/19: (40.3/11.9, lift 1.6)
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        age <= 43
+        ->  class yes  [0.695]
+
+    Rule 81/20: (499.5/266.3, lift 1.0)
+        credit_historygood > 0
+        ->  class yes  [0.467]
+
+    Rule 81/21: (27.1/4.2, lift 1.5)
+        purposerenovations <= 0
+        savings_balance> 1000 DM > 0
+        existing_loans_count <= 2
+        ->  class no  [0.823]
+
+    Rule 81/22: (866.4/392.1, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.547]
+
+    Default class: no
+
+    -----  Trial 82:  -----
+
+    Rules:
+
+    Rule 82/1: (21.3/1.6, lift 1.8)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        years_at_residence > 3
+        age > 26
+        age <= 32
+        dependents <= 1
+        ->  class yes  [0.889]
+
+    Rule 82/2: (17/2.4, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        amount <= 1377
+        employment_duration4 - 7 years > 0
+        ->  class yes  [0.823]
+
+    Rule 82/3: (3.3, lift 1.6)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.811]
+
+    Rule 82/4: (31/8, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 22
+        purposeeducation <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        dependents <= 1
+        ->  class yes  [0.728]
+
+    Rule 82/5: (40.4/10.9, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        age > 23
+        ->  class yes  [0.720]
+
+    Rule 82/6: (434.2/198.4, lift 1.1)
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.543]
+
+    Rule 82/7: (542.3/249.2, lift 1.1)
+        checking_balanceunknown <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.540]
+
+    Rule 82/8: (14, lift 1.9)
+        checking_balanceunknown > 0
+        years_at_residence > 3
+        age > 32
+        age <= 44
+        other_creditnone > 0
+        ->  class no  [0.938]
+
+    Rule 82/9: (9, lift 1.8)
+        percent_of_income <= 1
+        age <= 22
+        other_creditnone > 0
+        ->  class no  [0.909]
+
+    Rule 82/10: (8.6, lift 1.8)
+        checking_balance> 200 DM <= 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        age > 61
+        ->  class no  [0.906]
+
+    Rule 82/11: (8.4, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        savings_balanceunknown > 0
+        other_creditnone <= 0
+        ->  class no  [0.904]
+
+    Rule 82/12: (16.2/1.2, lift 1.7)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        dependents > 1
+        ->  class no  [0.881]
+
+    Rule 82/13: (14.5/1.2, lift 1.7)
+        months_loan_duration > 11
+        amount > 1377
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.867]
+
+    Rule 82/14: (12.8/1, lift 1.7)
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditnone <= 0
+        phoneTRUE <= 0
+        ->  class no  [0.865]
+
+    Rule 82/15: (5.2, lift 1.7)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.862]
+
+    Rule 82/16: (23.6/3.1, lift 1.7)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        age > 44
+        ->  class no  [0.840]
+
+    Rule 82/17: (18.6/2.3, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 33
+        credit_historyvery good <= 0
+        purposecar <= 0
+        other_creditnone <= 0
+        phoneTRUE > 0
+        ->  class no  [0.838]
+
+    Rule 82/18: (16/2.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 1
+        percent_of_income <= 2
+        other_creditnone > 0
+        jobskilled <= 0
+        ->  class no  [0.825]
+
+    Rule 82/19: (37.5/6.6, lift 1.6)
+        checking_balance> 200 DM <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 57
+        jobskilled > 0
+        ->  class no  [0.808]
+
+    Rule 82/20: (16.6/2.7, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        percent_of_income <= 2
+        ->  class no  [0.803]
+
+    Rule 82/21: (14.7/2.3, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM > 0
+        other_creditnone > 0
+        ->  class no  [0.801]
+
+    Rule 82/22: (68.5/15.5, lift 1.5)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        other_creditnone > 0
+        ->  class no  [0.766]
+
+    Rule 82/23: (12.3/2.5, lift 1.5)
+        checking_balance> 200 DM > 0
+        purposecar > 0
+        employment_duration4 - 7 years <= 0
+        ->  class no  [0.758]
+
+    Rule 82/24: (31.8/7.9, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        employment_durationunemployed <= 0
+        percent_of_income > 2
+        years_at_residence <= 1
+        ->  class no  [0.738]
+
+    Rule 82/25: (30.5/8, lift 1.4)
+        checking_balance> 200 DM > 0
+        credit_historygood > 0
+        dependents <= 1
+        ->  class no  [0.725]
+
+    Rule 82/26: (26.6/7.2, lift 1.4)
+        purposeeducation <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.712]
+
+    Rule 82/27: (870.2/433.6, lift 1.0)
+        savings_balance> 1000 DM <= 0
+        ->  class no  [0.502]
+
+    Default class: no
+
+    -----  Trial 83:  -----
+
+    Rules:
+
+    Rule 83/1: (842.7/445.5, lift 1.0)
+        months_loan_duration > 8
+        ->  class yes  [0.471]
+
+    Rule 83/2: (19.9, lift 1.8)
+        checking_balanceunknown > 0
+        amount <= 1474
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        jobunskilled <= 0
+        ->  class no  [0.954]
+
+    Rule 83/3: (14.7, lift 1.7)
+        checking_balanceunknown > 0
+        savings_balanceunknown <= 0
+        housingown > 0
+        jobunskilled > 0
+        dependents <= 1
+        ->  class no  [0.940]
+
+    Rule 83/4: (10.7, lift 1.7)
+        employment_durationunemployed > 0
+        years_at_residence > 1
+        age > 52
+        dependents <= 1
+        ->  class no  [0.921]
+
+    Rule 83/5: (36.8/2.4, lift 1.7)
+        savings_balance500 - 1000 DM <= 0
+        age > 38
+        other_creditstore <= 0
+        jobunskilled > 0
+        dependents <= 1
+        ->  class no  [0.914]
+
+    Rule 83/6: (8, lift 1.7)
+        months_loan_duration <= 8
+        housingrent <= 0
+        dependents > 1
+        ->  class no  [0.900]
+
+    Rule 83/7: (7.9, lift 1.7)
+        savings_balance100 - 500 DM <= 0
+        percent_of_income <= 1
+        age <= 50
+        dependents > 1
+        ->  class no  [0.899]
+
+    Rule 83/8: (38.2/4.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 8
+        amount > 3573
+        amount <= 6187
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        jobskilled > 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.870]
+
+    Rule 83/9: (19/2, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 8
+        purposeeducation <= 0
+        jobskilled > 0
+        ->  class no  [0.857]
+
+    Rule 83/10: (14.3/1.5, lift 1.6)
+        amount > 6187
+        savings_balanceunknown > 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 3
+        ->  class no  [0.847]
+
+    Rule 83/11: (7.9/0.5, lift 1.6)
+        age <= 22
+        jobunskilled > 0
+        ->  class no  [0.845]
+
+    Rule 83/12: (9.2/0.7, lift 1.6)
+        credit_historypoor > 0
+        savings_balance500 - 1000 DM <= 0
+        jobunskilled > 0
+        ->  class no  [0.845]
+
+    Rule 83/13: (29/3.9, lift 1.6)
+        amount > 5190
+        amount <= 6187
+        employment_durationunemployed <= 0
+        jobunskilled <= 0
+        ->  class no  [0.842]
+
+    Rule 83/14: (25.7/3.7, lift 1.5)
+        checking_balanceunknown > 0
+        purposeeducation <= 0
+        amount <= 6187
+        employment_durationunemployed <= 0
+        housingown <= 0
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class no  [0.829]
+
+    Rule 83/15: (23/3.3, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances > 0
+        amount <= 6187
+        employment_duration> 7 years > 0
+        jobskilled > 0
+        dependents <= 1
+        ->  class no  [0.828]
+
+    Rule 83/16: (13.3/1.8, lift 1.5)
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        jobunskilled > 0
+        dependents <= 1
+        ->  class no  [0.817]
+
+    Rule 83/17: (39.5/8.4, lift 1.4)
+        credit_historyperfect <= 0
+        amount > 1534
+        employment_durationunemployed > 0
+        years_at_residence > 1
+        dependents <= 1
+        ->  class no  [0.773]
+
+    Rule 83/18: (41.6/9.8, lift 1.4)
+        credit_historyvery good <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        housingown > 0
+        jobunskilled > 0
+        dependents <= 1
+        ->  class no  [0.752]
+
+    Rule 83/19: (63.1/15.9, lift 1.4)
+        checking_balanceunknown > 0
+        months_loan_duration > 9
+        purposeeducation <= 0
+        amount <= 5190
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        jobunskilled <= 0
+        ->  class no  [0.741]
+
+    Default class: yes
+
+    -----  Trial 84:  -----
+
+    Rules:
+
+    Rule 84/1: (17.5, lift 2.3)
+        amount > 7629
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 29
+        ->  class yes  [0.949]
+
+    Rule 84/2: (3.4, lift 2.0)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.816]
+
+    Rule 84/3: (15.6/2.9, lift 1.9)
+        checking_balance> 200 DM <= 0
+        credit_historypoor > 0
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.777]
+
+    Rule 84/4: (10.9/1.9, lift 1.9)
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        age <= 22
+        ->  class yes  [0.773]
+
+    Rule 84/5: (2.3, lift 1.9)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.769]
+
+    Rule 84/6: (29.6/7.6, lift 1.8)
+        checking_balance> 200 DM <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        age <= 25
+        jobunskilled <= 0
+        ->  class yes  [0.729]
+
+    Rule 84/7: (36.5/11.4, lift 1.6)
+        purposeeducation <= 0
+        amount <= 7629
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        jobunskilled > 0
+        ->  class yes  [0.678]
+
+    Rule 84/8: (58.8/20, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years > 0
+        age > 30
+        age <= 62
+        ->  class yes  [0.655]
+
+    Rule 84/9: (28/10.4, lift 1.5)
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        ->  class yes  [0.620]
+
+    Rule 84/10: (759.6/437.9, lift 1.0)
+        savings_balanceunknown <= 0
+        ->  class yes  [0.424]
+
+    Rule 84/11: (45.6/11.1, lift 1.3)
+        savings_balance500 - 1000 DM > 0
+        jobunskilled <= 0
+        ->  class no  [0.746]
+
+    Rule 84/12: (844/355.2, lift 1.0)
+        savings_balance500 - 1000 DM <= 0
+        ->  class no  [0.579]
+
+    Default class: no
+
+    -----  Trial 85:  -----
+
+    Rules:
+
+    Rule 85/1: (14, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        age > 33
+        ->  class yes  [0.937]
+
+    Rule 85/2: (10.9, lift 2.0)
+        checking_balanceunknown <= 0
+        amount > 7758
+        employment_duration> 7 years > 0
+        ->  class yes  [0.923]
+
+    Rule 85/3: (7.2, lift 1.9)
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        dependents > 1
+        ->  class yes  [0.892]
+
+    Rule 85/4: (5.6, lift 1.9)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.868]
+
+    Rule 85/5: (27.4/5.8, lift 1.7)
+        months_loan_duration > 8
+        months_loan_duration <= 9
+        savings_balanceunknown <= 0
+        years_at_residence <= 3
+        dependents <= 1
+        ->  class yes  [0.770]
+
+    Rule 85/6: (17.1/5.1, lift 1.5)
+        purposerenovations > 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.682]
+
+    Rule 85/7: (707/373.4, lift 1.0)
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.472]
+
+    Rule 85/8: (22.1, lift 1.8)
+        months_loan_duration <= 8
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        years_at_residence <= 3
+        ->  class no  [0.958]
+
+    Rule 85/9: (20.4, lift 1.8)
+        months_loan_duration > 9
+        months_loan_duration <= 16
+        credit_historygood > 0
+        purposerenovations <= 0
+        years_at_residence <= 3
+        age > 26
+        age <= 35
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.955]
+
+    Rule 85/10: (11.8, lift 1.7)
+        months_loan_duration > 16
+        credit_historyperfect <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.928]
+
+    Rule 85/11: (8.5, lift 1.7)
+        purposeeducation > 0
+        savings_balanceunknown > 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.905]
+
+    Rule 85/12: (26.9/3, lift 1.6)
+        months_loan_duration > 12
+        months_loan_duration <= 16
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        age <= 38
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.862]
+
+    Rule 85/13: (4.4, lift 1.6)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.843]
+
+    Rule 85/14: (4.4, lift 1.6)
+        credit_historyvery good > 0
+        amount > 7629
+        ->  class no  [0.843]
+
+    Rule 85/15: (20.1/2.5, lift 1.6)
+        months_loan_duration <= 16
+        credit_historyvery good <= 0
+        employment_duration> 7 years <= 0
+        dependents > 1
+        ->  class no  [0.841]
+
+    Rule 85/16: (50/8.4, lift 1.5)
+        months_loan_duration <= 16
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        other_creditstore <= 0
+        ->  class no  [0.819]
+
+    Rule 85/17: (38/7.7, lift 1.4)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration > 16
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class no  [0.782]
+
+    Rule 85/18: (28.6/5.8, lift 1.4)
+        months_loan_duration <= 16
+        credit_historygood > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        phoneTRUE > 0
+        ->  class no  [0.777]
+
+    Rule 85/19: (23.8/6.7, lift 1.3)
+        credit_historypoor <= 0
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.703]
+
+    Rule 85/20: (82.7/24.7, lift 1.3)
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        housingrent <= 0
+        ->  class no  [0.696]
+
+    Rule 85/21: (69.6/22.1, lift 1.3)
+        savings_balanceunknown > 0
+        employment_duration> 7 years <= 0
+        existing_loans_count <= 1
+        ->  class no  [0.678]
+
+    Rule 85/22: (193/79.9, lift 1.1)
+        employment_duration> 7 years > 0
+        ->  class no  [0.585]
+
+    Default class: no
+
+    -----  Trial 86:  -----
+
+    Rules:
+
+    Rule 86/1: (9.8, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.915]
+
+    Rule 86/2: (7.1, lift 2.0)
+        months_loan_duration > 42
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        age <= 44
+        other_creditnone <= 0
+        dependents <= 1
+        ->  class yes  [0.890]
+
+    Rule 86/3: (9/0.3, lift 2.0)
+        checking_balanceunknown > 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years <= 0
+        age <= 44
+        other_creditnone <= 0
+        dependents > 1
+        ->  class yes  [0.886]
+
+    Rule 86/4: (11.7/0.9, lift 1.9)
+        months_loan_duration <= 33
+        credit_historyvery good > 0
+        other_creditnone > 0
+        ->  class yes  [0.858]
+
+    Rule 86/5: (26.9/4.1, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence <= 3
+        other_creditstore <= 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.825]
+
+    Rule 86/6: (13.3/2, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class yes  [0.800]
+
+    Rule 86/7: (2.7, lift 1.8)
+        credit_historyvery good > 0
+        purposeeducation > 0
+        employment_duration> 7 years <= 0
+        ->  class yes  [0.789]
+
+    Rule 86/8: (42.4/10.2, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        amount > 8072
+        ->  class yes  [0.747]
+
+    Rule 86/9: (14/3.1, lift 1.7)
+        credit_historyvery good > 0
+        employment_duration> 7 years > 0
+        ->  class yes  [0.743]
+
+    Rule 86/10: (37.2/9.8, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        jobskilled > 0
+        phoneTRUE > 0
+        ->  class yes  [0.723]
+
+    Rule 86/11: (37/10, lift 1.6)
+        checking_balanceunknown > 0
+        amount > 4351
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        dependents <= 1
+        ->  class yes  [0.719]
+
+    Rule 86/12: (56.5/19.6, lift 1.4)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class yes  [0.649]
+
+    Rule 86/13: (45.8/18.5, lift 1.3)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balanceunknown > 0
+        ->  class yes  [0.592]
+
+    Rule 86/14: (195.3/99, lift 1.1)
+        other_creditnone <= 0
+        ->  class yes  [0.493]
+
+    Rule 86/15: (6.3, lift 1.6)
+        months_loan_duration > 33
+        credit_historyvery good > 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.879]
+
+    Rule 86/16: (6, lift 1.6)
+        checking_balanceunknown > 0
+        percent_of_income <= 1
+        other_creditnone <= 0
+        ->  class no  [0.876]
+
+    Rule 86/17: (37.2/6.9, lift 1.4)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.798]
+
+    Rule 86/18: (828.6/361.6, lift 1.0)
+        amount <= 8072
+        ->  class no  [0.563]
+
+    Default class: no
+
+    -----  Trial 87:  -----
+
+    Rules:
+
+    Rule 87/1: (12, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        age > 33
+        ->  class yes  [0.929]
+
+    Rule 87/2: (35.6/6.9, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration > 47
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.791]
+
+    Rule 87/3: (40.7/10.3, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 40
+        credit_historygood > 0
+        purposecar > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        other_creditnone > 0
+        ->  class yes  [0.736]
+
+    Rule 87/4: (28.3/7.1, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        credit_historygood > 0
+        purposecar <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        jobskilled > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.732]
+
+    Rule 87/5: (31.1/7.9, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 47
+        credit_historyvery good > 0
+        amount > 409
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.731]
+
+    Rule 87/6: (36/10.2, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        savings_balance100 - 500 DM > 0
+        ->  class yes  [0.705]
+
+    Rule 87/7: (21.1/6.8, lift 1.4)
+        purposefurniture/appliances <= 0
+        existing_loans_count > 2
+        ->  class yes  [0.663]
+
+    Rule 87/8: (38.5/13.7, lift 1.3)
+        checking_balanceunknown > 0
+        purposefurniture/appliances <= 0
+        other_creditnone <= 0
+        ->  class yes  [0.636]
+
+    Rule 87/9: (99.8/39.2, lift 1.3)
+        checking_balance1 - 200 DM > 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence > 1
+        housingown > 0
+        ->  class yes  [0.606]
+
+    Rule 87/10: (51.4/21.1, lift 1.2)
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.586]
+
+    Rule 87/11: (420.2/202.9, lift 1.1)
+        checking_balanceunknown <= 0
+        other_creditnone > 0
+        housingrent <= 0
+        ->  class yes  [0.517]
+
+    Rule 87/12: (18.4/1.1, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration <= 47
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        age > 33
+        dependents <= 1
+        ->  class no  [0.898]
+
+    Rule 87/13: (6.6, lift 1.7)
+        amount <= 409
+        ->  class no  [0.884]
+
+    Rule 87/14: (47.2/13.5, lift 1.3)
+        savings_balance500 - 1000 DM > 0
+        existing_loans_count <= 2
+        ->  class no  [0.706]
+
+    Rule 87/15: (145.6/56.6, lift 1.2)
+        savings_balanceunknown > 0
+        ->  class no  [0.609]
+
+    Rule 87/16: (848.8/409.2, lift 1.0)
+        savings_balance500 - 1000 DM <= 0
+        ->  class no  [0.518]
+
+    Default class: no
+
+    -----  Trial 88:  -----
+
+    Rules:
+
+    Rule 88/1: (5.2, lift 1.8)
+        purposerenovations > 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class yes  [0.862]
+
+    Rule 88/2: (851/428.1, lift 1.0)
+        savings_balance500 - 1000 DM <= 0
+        ->  class yes  [0.497]
+
+    Rule 88/3: (13.9, lift 1.8)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        months_loan_duration <= 13
+        credit_historyvery good <= 0
+        purposecar <= 0
+        savings_balance100 - 500 DM <= 0
+        other_creditstore <= 0
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class no  [0.937]
+
+    Rule 88/4: (13.6, lift 1.8)
+        employment_duration4 - 7 years > 0
+        percent_of_income <= 3
+        housingown <= 0
+        ->  class no  [0.936]
+
+    Rule 88/5: (6.4, lift 1.7)
+        employment_durationunemployed > 0
+        age > 56
+        ->  class no  [0.880]
+
+    Rule 88/6: (5.3, lift 1.7)
+        purposecar0 > 0
+        employment_durationunemployed > 0
+        ->  class no  [0.863]
+
+    Rule 88/7: (4.7, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        savings_balanceunknown > 0
+        housingown <= 0
+        ->  class no  [0.850]
+
+    Rule 88/8: (15.7/1.8, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 36
+        credit_historygood > 0
+        housingown > 0
+        existing_loans_count > 1
+        ->  class no  [0.841]
+
+    Rule 88/9: (28/4.2, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 42
+        credit_historygood > 0
+        amount > 2051
+        amount <= 7228
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        housingown <= 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.827]
+
+    Rule 88/10: (17.1/2.4, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historypoor > 0
+        percent_of_income <= 3
+        ->  class no  [0.823]
+
+    Rule 88/11: (23.1/3.8, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 7
+        employment_durationunemployed <= 0
+        housingown > 0
+        ->  class no  [0.810]
+
+    Rule 88/12: (55.8/10.2, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        existing_loans_count <= 1
+        jobskilled > 0
+        ->  class no  [0.806]
+
+    Rule 88/13: (25.5/4.3, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration1 - 4 years > 0
+        housingown > 0
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class no  [0.805]
+
+    Rule 88/14: (19.2/3.3, lift 1.6)
+        checking_balanceunknown > 0
+        months_loan_duration > 22
+        credit_historypoor <= 0
+        employment_durationunemployed <= 0
+        jobskilled <= 0
+        ->  class no  [0.795]
+
+    Rule 88/15: (25.1/4.6, lift 1.6)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 27
+        credit_historyvery good <= 0
+        purposecar <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.792]
+
+    Rule 88/16: (19.4/3.7, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration1 - 4 years > 0
+        housingown > 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class no  [0.779]
+
+    Rule 88/17: (29.5/6.5, lift 1.5)
+        savings_balanceunknown > 0
+        housingown > 0
+        existing_loans_count > 1
+        ->  class no  [0.763]
+
+    Rule 88/18: (31.1/6.9, lift 1.5)
+        months_loan_duration > 7
+        employment_durationunemployed <= 0
+        percent_of_income <= 1
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class no  [0.762]
+
+    Rule 88/19: (24.9/5.6, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.755]
+
+    Rule 88/20: (64.9/16.8, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent <= 0
+        jobskilled > 0
+        ->  class no  [0.734]
+
+    Rule 88/21: (45/15.2, lift 1.3)
+        savings_balance500 - 1000 DM > 0
+        existing_loans_count <= 2
+        ->  class no  [0.656]
+
+    Default class: yes
+
+    -----  Trial 89:  -----
+
+    Rules:
+
+    Rule 89/1: (10.6, lift 2.1)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income <= 3
+        years_at_residence > 1
+        age <= 24
+        housingown > 0
+        jobunskilled <= 0
+        ->  class yes  [0.921]
+
+    Rule 89/2: (7.6, lift 2.0)
+        months_loan_duration > 40
+        credit_historygood > 0
+        percent_of_income > 3
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.896]
+
+    Rule 89/3: (7.1, lift 2.0)
+        checking_balance1 - 200 DM > 0
+        credit_historygood > 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 3
+        housingrent > 0
+        phoneTRUE <= 0
+        ->  class yes  [0.890]
+
+    Rule 89/4: (6.7, lift 2.0)
+        credit_historygood > 0
+        employment_durationunemployed > 0
+        percent_of_income > 3
+        phoneTRUE <= 0
+        ->  class yes  [0.885]
+
+    Rule 89/5: (5.6, lift 1.9)
+        credit_historygood > 0
+        purposerenovations > 0
+        percent_of_income > 3
+        phoneTRUE <= 0
+        ->  class yes  [0.869]
+
+    Rule 89/6: (15.2/1.6, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration <= 40
+        credit_historygood > 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years > 0
+        percent_of_income > 3
+        phoneTRUE <= 0
+        ->  class yes  [0.847]
+
+    Rule 89/7: (13.5/1.4, lift 1.9)
+        credit_historygood > 0
+        purposefurniture/appliances > 0
+        savings_balance> 1000 DM <= 0
+        existing_loans_count > 1
+        dependents <= 1
+        phoneTRUE > 0
+        ->  class yes  [0.845]
+
+    Rule 89/8: (5.5/0.3, lift 1.9)
+        credit_historyperfect > 0
+        dependents > 1
+        ->  class yes  [0.827]
+
+    Rule 89/9: (3.6, lift 1.8)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.821]
+
+    Rule 89/10: (27.9/6, lift 1.7)
+        credit_historygood > 0
+        amount > 8648
+        ->  class yes  [0.765]
+
+    Rule 89/11: (44/9.9, lift 1.7)
+        percent_of_income > 3
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.763]
+
+    Rule 89/12: (33.9/8.7, lift 1.6)
+        credit_historypoor > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        percent_of_income > 2
+        jobunskilled <= 0
+        ->  class yes  [0.729]
+
+    Rule 89/13: (11.7/2.8, lift 1.6)
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        other_creditnone > 0
+        ->  class yes  [0.719]
+
+    Rule 89/14: (60.2/18.2, lift 1.5)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 40
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 3
+        years_at_residence > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.691]
+
+    Rule 89/15: (37.9/12.1, lift 1.5)
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        purposecar > 0
+        savings_balance> 1000 DM <= 0
+        other_creditnone <= 0
+        ->  class yes  [0.671]
+
+    Rule 89/16: (62.7/24.1, lift 1.4)
+        credit_historygood > 0
+        savings_balance> 1000 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income <= 3
+        housingown <= 0
+        ->  class yes  [0.612]
+
+    Rule 89/17: (659.6/355.7, lift 1.0)
+        checking_balanceunknown <= 0
+        ->  class yes  [0.461]
+
+    Rule 89/18: (43.4/4.4, lift 1.6)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        savings_balance100 - 500 DM <= 0
+        other_creditnone > 0
+        ->  class no  [0.880]
+
+    Rule 89/19: (123/42.1, lift 1.2)
+        credit_historygood <= 0
+        purposecar <= 0
+        percent_of_income <= 3
+        ->  class no  [0.656]
+
+    Rule 89/20: (860.4/380.1, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.558]
+
+    Default class: no
+
+    -----  Trial 90:  -----
+
+    Rules:
+
+    Rule 90/1: (13.1, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        amount > 6761
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 3
+        dependents <= 1
+        ->  class yes  [0.934]
+
+    Rule 90/2: (11.5/0.7, lift 1.9)
+        checking_balanceunknown > 0
+        months_loan_duration <= 36
+        amount > 6419
+        savings_balance> 1000 DM <= 0
+        age <= 32
+        other_creditnone > 0
+        ->  class yes  [0.877]
+
+    Rule 90/3: (6, lift 1.9)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.875]
+
+    Rule 90/4: (11.1/0.8, lift 1.8)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 8
+        credit_historyperfect <= 0
+        purposecar <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 3
+        dependents <= 1
+        ->  class yes  [0.864]
+
+    Rule 90/5: (5.3, lift 1.8)
+        checking_balanceunknown <= 0
+        employment_durationunemployed > 0
+        dependents > 1
+        ->  class yes  [0.863]
+
+    Rule 90/6: (10.4/1, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration > 11
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        employment_duration4 - 7 years <= 0
+        dependents > 1
+        ->  class yes  [0.839]
+
+    Rule 90/7: (10.2/1, lift 1.8)
+        checking_balance> 200 DM > 0
+        age <= 41
+        jobunskilled > 0
+        ->  class yes  [0.837]
+
+    Rule 90/8: (3.9, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        dependents > 1
+        ->  class yes  [0.831]
+
+    Rule 90/9: (20.9/3, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 2
+        years_at_residence <= 3
+        age > 31
+        other_creditnone > 0
+        dependents <= 1
+        ->  class yes  [0.826]
+
+    Rule 90/10: (46.8/7.8, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 26
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        savings_balance> 1000 DM <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 2
+        dependents <= 1
+        ->  class yes  [0.821]
+
+    Rule 90/11: (58.7/12.7, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 26
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        dependents <= 1
+        ->  class yes  [0.774]
+
+    Rule 90/12: (10.3/1.9, lift 1.6)
+        checking_balance> 200 DM > 0
+        dependents > 1
+        ->  class yes  [0.767]
+
+    Rule 90/13: (55.1/14.6, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        months_loan_duration <= 26
+        credit_historyperfect <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 1
+        years_at_residence <= 2
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class yes  [0.727]
+
+    Rule 90/14: (41.5/12.1, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 1
+        age <= 44
+        other_creditnone <= 0
+        ->  class yes  [0.699]
+
+    Rule 90/15: (20.9/7.3, lift 1.4)
+        purposerenovations > 0
+        ->  class yes  [0.638]
+
+    Rule 90/16: (37.1/13.3, lift 1.4)
+        credit_historyperfect > 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.635]
+
+    Rule 90/17: (21.8/3.8, lift 1.5)
+        months_loan_duration > 26
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 1
+        ->  class no  [0.798]
+
+    Rule 90/18: (2.4, lift 1.5)
+        credit_historyperfect > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.772]
+
+    Rule 90/19: (859.5/399.1, lift 1.0)
+        credit_historyperfect <= 0
+        ->  class no  [0.536]
+
+    Default class: no
+
+    -----  Trial 91:  -----
+
+    Rules:
+
+    Rule 91/1: (4.7, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        other_creditstore <= 0
+        dependents > 1
+        ->  class yes  [0.850]
+
+    Rule 91/2: (26.6/4.4, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        amount > 8086
+        ->  class yes  [0.813]
+
+    Rule 91/3: (29.7/5.2, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        amount > 1922
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_durationunemployed <= 0
+        years_at_residence > 2
+        other_creditstore <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.806]
+
+    Rule 91/4: (851.2/417.6, lift 1.0)
+        months_loan_duration > 7
+        ->  class yes  [0.509]
+
+    Rule 91/5: (14.4, lift 1.9)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        years_at_residence > 2
+        ->  class no  [0.939]
+
+    Rule 91/6: (14.1, lift 1.9)
+        checking_balanceunknown > 0
+        amount <= 1459
+        years_at_residence <= 2
+        ->  class no  [0.938]
+
+    Rule 91/7: (12.8, lift 1.9)
+        checking_balanceunknown > 0
+        purposecar <= 0
+        savings_balance> 1000 DM <= 0
+        age > 44
+        ->  class no  [0.932]
+
+    Rule 91/8: (11.9, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown > 0
+        ->  class no  [0.928]
+
+    Rule 91/9: (17.5/0.5, lift 1.9)
+        checking_balance1 - 200 DM > 0
+        credit_historygood > 0
+        employment_duration1 - 4 years <= 0
+        other_creditnone > 0
+        housingrent <= 0
+        existing_loans_count <= 1
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.924]
+
+    Rule 91/10: (11, lift 1.8)
+        credit_historygood > 0
+        amount <= 8086
+        savings_balance100 - 500 DM <= 0
+        employment_duration1 - 4 years <= 0
+        age > 54
+        other_creditstore <= 0
+        ->  class no  [0.923]
+
+    Rule 91/11: (10.4, lift 1.8)
+        checking_balance> 200 DM > 0
+        credit_historypoor <= 0
+        employment_duration> 7 years > 0
+        dependents <= 1
+        ->  class no  [0.919]
+
+    Rule 91/12: (10.1, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        credit_historygood > 0
+        amount <= 8086
+        employment_duration> 7 years > 0
+        housingrent <= 0
+        dependents <= 1
+        ->  class no  [0.918]
+
+    Rule 91/13: (7.4, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        employment_duration4 - 7 years > 0
+        housingrent > 0
+        ->  class no  [0.894]
+
+    Rule 91/14: (7.2, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        employment_duration1 - 4 years > 0
+        age <= 35
+        existing_loans_count <= 1
+        jobskilled <= 0
+        phoneTRUE <= 0
+        ->  class no  [0.892]
+
+    Rule 91/15: (7.2, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        amount > 1922
+        savings_balance100 - 500 DM <= 0
+        percent_of_income <= 3
+        ->  class no  [0.891]
+
+    Rule 91/16: (7.2, lift 1.8)
+        checking_balance> 200 DM > 0
+        age <= 24
+        ->  class no  [0.891]
+
+    Rule 91/17: (6.3, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        months_loan_duration <= 7
+        credit_historygood > 0
+        amount <= 8086
+        ->  class no  [0.879]
+
+    Rule 91/18: (11.4/0.9, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        credit_historygood > 0
+        amount <= 8086
+        housingrent <= 0
+        existing_loans_count > 1
+        ->  class no  [0.856]
+
+    Rule 91/19: (4.8, lift 1.7)
+        checking_balance> 200 DM > 0
+        other_creditnone <= 0
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.853]
+
+    Rule 91/20: (4.6, lift 1.7)
+        checking_balance> 200 DM > 0
+        months_loan_duration <= 7
+        ->  class no  [0.847]
+
+    Rule 91/21: (19.3/2.5, lift 1.7)
+        checking_balanceunknown > 0
+        purposecar <= 0
+        savings_balance> 1000 DM <= 0
+        years_at_residence > 2
+        years_at_residence <= 3
+        ->  class no  [0.834]
+
+    Rule 91/22: (46.5/11.8, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        amount <= 1922
+        employment_durationunemployed <= 0
+        other_creditstore <= 0
+        ->  class no  [0.735]
+
+    Rule 91/23: (30.8/9.4, lift 1.4)
+        amount > 2171
+        other_creditstore > 0
+        ->  class no  [0.684]
+
+    Rule 91/24: (39.2/12.2, lift 1.4)
+        credit_historygood <= 0
+        savings_balance100 - 500 DM > 0
+        other_creditstore <= 0
+        ->  class no  [0.679]
+
+    Rule 91/25: (71.9/23.2, lift 1.3)
+        checking_balanceunknown > 0
+        purposecar > 0
+        ->  class no  [0.673]
+
+    Rule 91/26: (150.8/59.1, lift 1.2)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        ->  class no  [0.607]
+
+    Default class: yes
+
+    -----  Trial 92:  -----
+
+    Rules:
+
+    Rule 92/1: (10, lift 2.0)
+        months_loan_duration > 8
+        credit_historyperfect > 0
+        housingown <= 0
+        ->  class yes  [0.917]
+
+    Rule 92/2: (13.2/0.4, lift 2.0)
+        months_loan_duration > 33
+        credit_historyperfect <= 0
+        percent_of_income > 2
+        years_at_residence <= 3
+        age <= 27
+        dependents <= 1
+        ->  class yes  [0.905]
+
+    Rule 92/3: (8.2, lift 2.0)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        other_creditnone > 0
+        ->  class yes  [0.902]
+
+    Rule 92/4: (7.4, lift 2.0)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        employment_duration> 7 years > 0
+        percent_of_income > 1
+        years_at_residence > 2
+        age <= 31
+        ->  class yes  [0.894]
+
+    Rule 92/5: (6.4, lift 1.9)
+        percent_of_income <= 2
+        years_at_residence <= 1
+        housingrent > 0
+        ->  class yes  [0.881]
+
+    Rule 92/6: (11/1, lift 1.9)
+        months_loan_duration > 8
+        credit_historyperfect > 0
+        percent_of_income > 3
+        ->  class yes  [0.844]
+
+    Rule 92/7: (5.8/0.2, lift 1.9)
+        months_loan_duration <= 8
+        amount > 4139
+        ->  class yes  [0.842]
+
+    Rule 92/8: (11.6/1.2, lift 1.8)
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        employment_duration1 - 4 years > 0
+        other_creditnone > 0
+        ->  class yes  [0.835]
+
+    Rule 92/9: (4, lift 1.8)
+        savings_balanceunknown <= 0
+        other_creditstore > 0
+        housingown <= 0
+        ->  class yes  [0.835]
+
+    Rule 92/10: (3.4, lift 1.8)
+        credit_historyperfect > 0
+        other_creditstore > 0
+        ->  class yes  [0.815]
+
+    Rule 92/11: (3.3, lift 1.8)
+        purposeeducation > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.813]
+
+    Rule 92/12: (26.9/5.7, lift 1.7)
+        checking_balanceunknown > 0
+        months_loan_duration > 8
+        purposeeducation <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        years_at_residence > 2
+        age <= 31
+        other_creditnone > 0
+        ->  class yes  [0.768]
+
+    Rule 92/13: (2.1, lift 1.7)
+        purposerenovations > 0
+        savings_balance> 1000 DM > 0
+        ->  class yes  [0.759]
+
+    Rule 92/14: (22/4.9, lift 1.7)
+        amount <= 2337
+        savings_balanceunknown <= 0
+        other_creditstore > 0
+        ->  class yes  [0.753]
+
+    Rule 92/15: (24.3/6.3, lift 1.6)
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 2
+        years_at_residence <= 3
+        age <= 23
+        other_creditnone > 0
+        ->  class yes  [0.724]
+
+    Rule 92/16: (65.3/18.3, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historyvery good <= 0
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 2
+        years_at_residence <= 3
+        age > 27
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class yes  [0.713]
+
+    Rule 92/17: (71.7/21.6, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        amount > 1126
+        savings_balance> 1000 DM <= 0
+        percent_of_income > 2
+        other_creditnone > 0
+        housingown <= 0
+        ->  class yes  [0.693]
+
+    Rule 92/18: (65.5/20, lift 1.5)
+        months_loan_duration > 8
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposecar0 <= 0
+        savings_balance> 1000 DM <= 0
+        years_at_residence > 1
+        age <= 44
+        other_creditnone <= 0
+        other_creditstore <= 0
+        ->  class yes  [0.689]
+
+    Rule 92/19: (35.3/11.2, lift 1.5)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        percent_of_income > 1
+        ->  class yes  [0.672]
+
+    Rule 92/20: (12, lift 1.7)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        percent_of_income <= 1
+        age <= 31
+        ->  class no  [0.929]
+
+    Rule 92/21: (12.1, lift 1.7)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        years_at_residence > 2
+        ->  class no  [0.929]
+
+    Rule 92/22: (18.3/2.1, lift 1.6)
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        amount > 2337
+        other_creditstore > 0
+        housingown > 0
+        ->  class no  [0.848]
+
+    Rule 92/23: (11/1.9, lift 1.4)
+        purposeeducation > 0
+        savings_balanceunknown > 0
+        ->  class no  [0.777]
+
+    Rule 92/24: (847.1/377.7, lift 1.0)
+        other_creditstore <= 0
+        ->  class no  [0.554]
+
+    Default class: no
+
+    -----  Trial 93:  -----
+
+    Rules:
+
+    Rule 93/1: (4.3, lift 1.8)
+        employment_durationunemployed > 0
+        age <= 25
+        housingown > 0
+        ->  class yes  [0.841]
+
+    Rule 93/2: (30/4.3, lift 1.8)
+        checking_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        percent_of_income <= 2
+        age <= 25
+        existing_loans_count <= 1
+        dependents <= 1
+        ->  class yes  [0.835]
+
+    Rule 93/3: (25.8/4.4, lift 1.7)
+        months_loan_duration > 22
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        age <= 49
+        other_creditnone > 0
+        housingrent > 0
+        ->  class yes  [0.806]
+
+    Rule 93/4: (48.3/9.2, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        amount > 7980
+        ->  class yes  [0.797]
+
+    Rule 93/5: (20.1/4.1, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        employment_durationunemployed <= 0
+        age > 49
+        housingown <= 0
+        ->  class yes  [0.769]
+
+    Rule 93/6: (23.4/5.3, lift 1.6)
+        credit_historypoor > 0
+        purposefurniture/appliances <= 0
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        other_creditstore <= 0
+        ->  class yes  [0.753]
+
+    Rule 93/7: (51.3/12.6, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        amount > 1715
+        amount <= 5117
+        savings_balanceunknown <= 0
+        existing_loans_count > 1
+        jobskilled > 0
+        ->  class yes  [0.745]
+
+    Rule 93/8: (30.1/8, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        purposeeducation > 0
+        amount <= 7980
+        age <= 43
+        ->  class yes  [0.719]
+
+    Rule 93/9: (77.5/22.9, lift 1.5)
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historygood > 0
+        amount > 701
+        amount <= 7980
+        percent_of_income > 1
+        age > 30
+        housingown > 0
+        existing_loans_count <= 1
+        ->  class yes  [0.700]
+
+    Rule 93/10: (299.5/145.5, lift 1.1)
+        existing_loans_count > 1
+        ->  class yes  [0.514]
+
+    Rule 93/11: (480.5/244.1, lift 1.1)
+        purposefurniture/appliances <= 0
+        ->  class yes  [0.492]
+
+    Rule 93/12: (12.6, lift 1.7)
+        checking_balanceunknown <= 0
+        credit_historyperfect <= 0
+        purposeeducation <= 0
+        amount <= 7980
+        existing_loans_count > 1
+        jobskilled <= 0
+        phoneTRUE > 0
+        ->  class no  [0.931]
+
+    Rule 93/13: (8, lift 1.7)
+        checking_balanceunknown > 0
+        months_loan_duration > 28
+        purposefurniture/appliances <= 0
+        employment_duration1 - 4 years > 0
+        other_creditnone > 0
+        ->  class no  [0.900]
+
+    Rule 93/14: (13.2/0.7, lift 1.7)
+        checking_balanceunknown <= 0
+        purposeeducation <= 0
+        amount <= 7980
+        savings_balance> 1000 DM > 0
+        ->  class no  [0.887]
+
+    Rule 93/15: (6.5, lift 1.7)
+        checking_balance> 200 DM > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        jobskilled > 0
+        phoneTRUE > 0
+        ->  class no  [0.883]
+
+    Rule 93/16: (5.6, lift 1.6)
+        checking_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        other_creditstore <= 0
+        dependents > 1
+        ->  class no  [0.869]
+
+    Rule 93/17: (27.8/3.8, lift 1.6)
+        months_loan_duration <= 42
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        existing_loans_count > 1
+        jobunskilled > 0
+        ->  class no  [0.838]
+
+    Rule 93/18: (19.7/3.4, lift 1.5)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown > 0
+        existing_loans_count > 1
+        ->  class no  [0.796]
+
+    Rule 93/19: (26.3/6.5, lift 1.4)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.737]
+
+    Rule 93/20: (37.7/9.6, lift 1.4)
+        checking_balanceunknown > 0
+        credit_historypoor <= 0
+        purposefurniture/appliances <= 0
+        employment_duration1 - 4 years <= 0
+        years_at_residence > 1
+        other_creditstore <= 0
+        ->  class no  [0.734]
+
+    Rule 93/21: (68.8/22, lift 1.3)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 11
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        ->  class no  [0.675]
+
+    Rule 93/22: (826.1/369.7, lift 1.0)
+        amount <= 7980
+        ->  class no  [0.552]
+
+    Default class: no
+
+    -----  Trial 94:  -----
+
+    Rules:
+
+    Rule 94/1: (8.1, lift 1.9)
+        checking_balance> 200 DM <= 0
+        credit_historypoor > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        years_at_residence <= 1
+        ->  class yes  [0.901]
+
+    Rule 94/2: (22.8/3.6, lift 1.7)
+        checking_balanceunknown <= 0
+        months_loan_duration <= 47
+        credit_historypoor <= 0
+        amount > 7238
+        other_creditnone > 0
+        phoneTRUE > 0
+        ->  class yes  [0.816]
+
+    Rule 94/3: (32.7/5.8, lift 1.7)
+        checking_balance> 200 DM <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        age <= 25
+        ->  class yes  [0.805]
+
+    Rule 94/4: (33.1/6, lift 1.7)
+        months_loan_duration > 47
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.801]
+
+    Rule 94/5: (2.9, lift 1.7)
+        credit_historypoor > 0
+        existing_loans_count > 3
+        ->  class yes  [0.795]
+
+    Rule 94/6: (2.8, lift 1.7)
+        savings_balance500 - 1000 DM > 0
+        employment_durationunemployed <= 0
+        existing_loans_count > 2
+        ->  class yes  [0.793]
+
+    Rule 94/7: (14.7/2.9, lift 1.6)
+        purposeeducation <= 0
+        savings_balanceunknown > 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence <= 1
+        ->  class yes  [0.765]
+
+    Rule 94/8: (30.1/8, lift 1.5)
+        checking_balance> 200 DM <= 0
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        purposeeducation > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.720]
+
+    Rule 94/9: (32.7/9.5, lift 1.5)
+        credit_historygood > 0
+        purposeeducation <= 0
+        savings_balanceunknown > 0
+        employment_duration1 - 4 years > 0
+        ->  class yes  [0.697]
+
+    Rule 94/10: (40.2/11.8, lift 1.5)
+        credit_historypoor > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        ->  class yes  [0.696]
+
+    Rule 94/11: (92.4/30.1, lift 1.4)
+        checking_balance> 200 DM <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        age <= 25
+        jobunskilled <= 0
+        ->  class yes  [0.671]
+
+    Rule 94/12: (34.5/11.1, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.668]
+
+    Rule 94/13: (87.9/32.5, lift 1.3)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        years_at_residence > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.627]
+
+    Rule 94/14: (53.4/20.1, lift 1.3)
+        credit_historyvery good > 0
+        amount <= 7629
+        ->  class yes  [0.619]
+
+    Rule 94/15: (5.9, lift 1.7)
+        credit_historyvery good > 0
+        amount > 7629
+        ->  class no  [0.873]
+
+    Rule 94/16: (839.7/395.9, lift 1.0)
+        credit_historyvery good <= 0
+        ->  class no  [0.528]
+
+    Default class: no
+
+    -----  Trial 95:  -----
+
+    Rules:
+
+    Rule 95/1: (13.2, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposerenovations <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        jobskilled <= 0
+        ->  class yes  [0.934]
+
+    Rule 95/2: (21.5/1.7, lift 1.9)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        purposecar > 0
+        amount <= 4370
+        savings_balance> 1000 DM <= 0
+        savings_balanceunknown <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.887]
+
+    Rule 95/3: (16.7/1.7, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        percent_of_income > 1
+        other_creditnone <= 0
+        jobskilled > 0
+        ->  class yes  [0.854]
+
+    Rule 95/4: (12.3/2.5, lift 1.6)
+        checking_balance> 200 DM > 0
+        dependents > 1
+        ->  class yes  [0.757]
+
+    Rule 95/5: (803.7/421.3, lift 1.0)
+        savings_balance100 - 500 DM <= 0
+        ->  class yes  [0.476]
+
+    Rule 95/6: (22.1, lift 1.8)
+        checking_balanceunknown > 0
+        amount <= 1474
+        employment_durationunemployed <= 0
+        jobunskilled <= 0
+        ->  class no  [0.959]
+
+    Rule 95/7: (10.9, lift 1.7)
+        checking_balanceunknown > 0
+        savings_balance100 - 500 DM <= 0
+        existing_loans_count > 1
+        jobunskilled > 0
+        ->  class no  [0.922]
+
+    Rule 95/8: (17.5/0.6, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        purposefurniture/appliances > 0
+        employment_duration> 7 years > 0
+        ->  class no  [0.920]
+
+    Rule 95/9: (13.9/0.4, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        amount <= 9283
+        other_creditnone <= 0
+        phoneTRUE > 0
+        ->  class no  [0.909]
+
+    Rule 95/10: (8.7, lift 1.7)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposecar > 0
+        percent_of_income > 1
+        age > 53
+        other_creditstore <= 0
+        ->  class no  [0.907]
+
+    Rule 95/11: (8.8, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        purposefurniture/appliances > 0
+        amount <= 900
+        savings_balance500 - 1000 DM <= 0
+        employment_duration> 7 years <= 0
+        ->  class no  [0.907]
+
+    Rule 95/12: (22.7/2.4, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        purposecar > 0
+        amount > 4370
+        amount <= 9283
+        ->  class no  [0.864]
+
+    Rule 95/13: (25.3/2.8, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        purposecar <= 0
+        purposefurniture/appliances <= 0
+        savings_balance> 1000 DM <= 0
+        housingown > 0
+        phoneTRUE <= 0
+        ->  class no  [0.860]
+
+    Rule 95/14: (42.2/5.4, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        purposecar <= 0
+        amount > 1264
+        amount <= 4249
+        savings_balance500 - 1000 DM <= 0
+        other_creditstore <= 0
+        housingown > 0
+        phoneTRUE <= 0
+        ->  class no  [0.856]
+
+    Rule 95/15: (17.2/2.4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        purposerenovations <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 1
+        other_creditstore <= 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        dependents <= 1
+        ->  class no  [0.825]
+
+    Rule 95/16: (45.9/8.3, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        purposefurniture/appliances <= 0
+        amount <= 9283
+        employment_duration> 7 years <= 0
+        phoneTRUE > 0
+        ->  class no  [0.806]
+
+    Rule 95/17: (14.1/2.2, lift 1.5)
+        checking_balanceunknown > 0
+        savings_balance> 1000 DM <= 0
+        other_creditstore <= 0
+        jobunskilled <= 0
+        dependents > 1
+        ->  class no  [0.800]
+
+    Rule 95/18: (40.3/8.1, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        amount <= 11816
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.784]
+
+    Rule 95/19: (53.9/11.3, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historygood > 0
+        savings_balance100 - 500 DM <= 0
+        employment_durationunemployed <= 0
+        other_creditstore <= 0
+        existing_loans_count <= 1
+        jobunskilled <= 0
+        ->  class no  [0.780]
+
+    Rule 95/20: (23.7/5.4, lift 1.4)
+        savings_balance> 1000 DM > 0
+        existing_loans_count <= 2
+        ->  class no  [0.751]
+
+    Rule 95/21: (43.6/10.4, lift 1.4)
+        checking_balance1 - 200 DM <= 0
+        purposecar > 0
+        amount > 1391
+        amount <= 2964
+        other_creditnone > 0
+        ->  class no  [0.749]
+
+    Rule 95/22: (21.6/5.2, lift 1.4)
+        checking_balanceunknown > 0
+        savings_balance100 - 500 DM > 0
+        ->  class no  [0.737]
+
+    Rule 95/23: (30.2/8.2, lift 1.3)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor > 0
+        other_creditstore <= 0
+        ->  class no  [0.715]
+
+    Default class: yes
+
+    -----  Trial 96:  -----
+
+    Rules:
+
+    Rule 96/1: (6.8, lift 2.1)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 47
+        credit_historyvery good > 0
+        other_creditnone > 0
+        ->  class yes  [0.887]
+
+    Rule 96/2: (6.2, lift 2.1)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 11
+        purposefurniture/appliances <= 0
+        amount <= 1382
+        percent_of_income <= 2
+        jobskilled > 0
+        ->  class yes  [0.877]
+
+    Rule 96/3: (26.8/3.9, lift 2.0)
+        checking_balanceunknown <= 0
+        months_loan_duration > 47
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        ->  class yes  [0.829]
+
+    Rule 96/4: (20.6/3.2, lift 2.0)
+        months_loan_duration > 16
+        purposefurniture/appliances > 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        other_creditstore <= 0
+        jobunskilled > 0
+        ->  class yes  [0.815]
+
+    Rule 96/5: (3.1, lift 1.9)
+        savings_balance100 - 500 DM > 0
+        existing_loans_count > 3
+        ->  class yes  [0.805]
+
+    Rule 96/6: (25.2/5.2, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        purposefurniture/appliances > 0
+        years_at_residence > 1
+        years_at_residence <= 3
+        other_creditstore <= 0
+        jobskilled > 0
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class yes  [0.771]
+
+    Rule 96/7: (19.3/4.1, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM <= 0
+        savings_balanceunknown <= 0
+        employment_duration> 7 years <= 0
+        other_creditstore <= 0
+        jobskilled > 0
+        phoneTRUE > 0
+        ->  class yes  [0.758]
+
+    Rule 96/8: (14.1/3.3, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposefurniture/appliances > 0
+        savings_balance100 - 500 DM > 0
+        ->  class yes  [0.736]
+
+    Rule 96/9: (50.1/13, lift 1.8)
+        checking_balance> 200 DM <= 0
+        months_loan_duration > 11
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        purposerenovations <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        age <= 53
+        other_creditnone > 0
+        jobskilled > 0
+        ->  class yes  [0.731]
+
+    Rule 96/10: (23.2/5.9, lift 1.8)
+        checking_balance1 - 200 DM > 0
+        credit_historyvery good <= 0
+        purposeeducation <= 0
+        purposefurniture/appliances <= 0
+        purposerenovations <= 0
+        savings_balance> 1000 DM <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        jobskilled <= 0
+        ->  class yes  [0.725]
+
+    Rule 96/11: (30.7/9.9, lift 1.6)
+        checking_balance> 200 DM <= 0
+        credit_historyvery good <= 0
+        purposefurniture/appliances <= 0
+        savings_balance100 - 500 DM <= 0
+        savings_balance500 - 1000 DM <= 0
+        savings_balanceunknown <= 0
+        other_creditnone <= 0
+        jobskilled > 0
+        ->  class yes  [0.668]
+
+    Rule 96/12: (31/10.1, lift 1.6)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 47
+        purposeeducation > 0
+        savings_balanceunknown <= 0
+        age <= 43
+        ->  class yes  [0.662]
+
+    Rule 96/13: (9.1/0.2, lift 1.5)
+        months_loan_duration <= 47
+        purposeeducation > 0
+        age > 43
+        ->  class no  [0.894]
+
+    Rule 96/14: (62.5/15, lift 1.3)
+        checking_balance> 200 DM > 0
+        savings_balance500 - 1000 DM <= 0
+        dependents <= 1
+        ->  class no  [0.752]
+
+    Rule 96/15: (147.8/49.4, lift 1.1)
+        savings_balanceunknown > 0
+        ->  class no  [0.663]
+
+    Rule 96/16: (833.1/345.4, lift 1.0)
+        purposeeducation <= 0
+        ->  class no  [0.585]
+
+    Default class: no
+
+    -----  Trial 97:  -----
+
+    Rules:
+
+    Rule 97/1: (8.8, lift 2.0)
+        checking_balanceunknown > 0
+        months_loan_duration > 8
+        amount > 1474
+        years_at_residence <= 2
+        age <= 23
+        ->  class yes  [0.907]
+
+    Rule 97/2: (11.5/0.3, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        amount > 1203
+        amount <= 1382
+        employment_durationunemployed <= 0
+        housingrent > 0
+        ->  class yes  [0.906]
+
+    Rule 97/3: (8.5, lift 2.0)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        housingrent > 0
+        ->  class yes  [0.905]
+
+    Rule 97/4: (8.4, lift 2.0)
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        ->  class yes  [0.904]
+
+    Rule 97/5: (37.6/3.5, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 36
+        credit_historypoor <= 0
+        purposecar > 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        years_at_residence <= 2
+        housingrent <= 0
+        ->  class yes  [0.886]
+
+    Rule 97/6: (18.5/1.7, lift 1.9)
+        checking_balanceunknown <= 0
+        amount <= 2171
+        other_creditstore > 0
+        ->  class yes  [0.870]
+
+    Rule 97/7: (9.9/0.6, lift 1.9)
+        checking_balanceunknown <= 0
+        purposecar <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        age > 57
+        jobunskilled <= 0
+        ->  class yes  [0.869]
+
+    Rule 97/8: (8.9/0.4, lift 1.9)
+        checking_balance> 200 DM <= 0
+        credit_historyvery good <= 0
+        savings_balance500 - 1000 DM > 0
+        employment_duration4 - 7 years <= 0
+        jobunskilled > 0
+        ->  class yes  [0.867]
+
+    Rule 97/9: (16.5/2.4, lift 1.8)
+        credit_historyperfect <= 0
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        other_creditnone <= 0
+        housingrent > 0
+        ->  class yes  [0.816]
+
+    Rule 97/10: (35.9/6.4, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 36
+        purposecar > 0
+        employment_durationunemployed <= 0
+        age <= 28
+        housingrent <= 0
+        ->  class yes  [0.806]
+
+    Rule 97/11: (30.8/5.5, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        amount > 8133
+        employment_durationunemployed <= 0
+        ->  class yes  [0.803]
+
+    Rule 97/12: (21.8/3.7, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        amount > 1382
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        housingrent > 0
+        jobunskilled <= 0
+        dependents <= 1
+        ->  class yes  [0.801]
+
+    Rule 97/13: (30.9/6.7, lift 1.7)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 36
+        purposecar <= 0
+        amount <= 8133
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        housingrent <= 0
+        jobskilled <= 0
+        jobunskilled <= 0
+        ->  class yes  [0.768]
+
+    Rule 97/14: (26/6.4, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 36
+        credit_historypoor <= 0
+        amount <= 8133
+        employment_durationunemployed <= 0
+        ->  class yes  [0.734]
+
+    Rule 97/15: (13.3/3.6, lift 1.5)
+        checking_balance> 200 DM > 0
+        dependents > 1
+        ->  class yes  [0.698]
+
+    Rule 97/16: (19/6.6, lift 1.4)
+        purposerenovations > 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.641]
+
+    Rule 97/17: (45.7/16.8, lift 1.4)
+        checking_balance1 - 200 DM > 0
+        purposefurniture/appliances > 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        jobskilled > 0
+        ->  class yes  [0.626]
+
+    Rule 97/18: (755.6/402.1, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.468]
+
+    Rule 97/19: (11.4, lift 1.7)
+        checking_balanceunknown > 0
+        months_loan_duration <= 8
+        ->  class no  [0.925]
+
+    Rule 97/20: (27.4/5.7, lift 1.4)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        employment_durationunemployed > 0
+        years_at_residence > 1
+        other_creditstore <= 0
+        dependents <= 1
+        ->  class no  [0.773]
+
+    Rule 97/21: (41.9/13.1, lift 1.3)
+        purposecar <= 0
+        savings_balance100 - 500 DM > 0
+        other_creditnone > 0
+        ->  class no  [0.679]
+
+    Rule 97/22: (82.3/27.8, lift 1.2)
+        checking_balance> 200 DM <= 0
+        purposecar <= 0
+        housingrent <= 0
+        jobunskilled > 0
+        ->  class no  [0.658]
+
+    Rule 97/23: (834.7/380.7, lift 1.0)
+        employment_durationunemployed <= 0
+        ->  class no  [0.544]
+
+    Default class: no
+
+    -----  Trial 98:  -----
+
+    Rules:
+
+    Rule 98/1: (12.2, lift 2.0)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 21
+        credit_historygood > 0
+        amount <= 2910
+        employment_duration> 7 years <= 0
+        years_at_residence > 1
+        housingown > 0
+        ->  class yes  [0.930]
+
+    Rule 98/2: (8.9, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar <= 0
+        amount > 4657
+        percent_of_income > 2
+        years_at_residence > 1
+        ->  class yes  [0.908]
+
+    Rule 98/3: (8.3, lift 1.9)
+        credit_historygood > 0
+        employment_durationunemployed > 0
+        percent_of_income > 2
+        phoneTRUE <= 0
+        ->  class yes  [0.903]
+
+    Rule 98/4: (26.2/2.8, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration <= 36
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        amount > 2122
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        phoneTRUE <= 0
+        ->  class yes  [0.865]
+
+    Rule 98/5: (5.3, lift 1.8)
+        employment_durationunemployed > 0
+        years_at_residence <= 1
+        ->  class yes  [0.862]
+
+    Rule 98/6: (21.9/2.4, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposeeducation <= 0
+        amount <= 4657
+        employment_duration> 7 years <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        housingown <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.858]
+
+    Rule 98/7: (10.1/0.7, lift 1.8)
+        checking_balance> 200 DM <= 0
+        credit_historypoor > 0
+        years_at_residence <= 1
+        ->  class yes  [0.857]
+
+    Rule 98/8: (20.4/2.3, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 36
+        credit_historyvery good <= 0
+        percent_of_income > 2
+        years_at_residence > 1
+        ->  class yes  [0.855]
+
+    Rule 98/9: (14.7/1.5, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyperfect > 0
+        percent_of_income > 2
+        years_at_residence > 1
+        ->  class yes  [0.847]
+
+    Rule 98/10: (26.4/3.5, lift 1.8)
+        checking_balanceunknown <= 0
+        months_loan_duration > 8
+        credit_historygood > 0
+        amount <= 2910
+        years_at_residence > 1
+        other_creditnone <= 0
+        phoneTRUE <= 0
+        ->  class yes  [0.840]
+
+    Rule 98/11: (22.8/3.7, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        purposeeducation > 0
+        percent_of_income > 2
+        years_at_residence > 1
+        ->  class yes  [0.812]
+
+    Rule 98/12: (27.4/5.4, lift 1.7)
+        checking_balanceunknown > 0
+        credit_historyvery good <= 0
+        savings_balance100 - 500 DM <= 0
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        housingrent > 0
+        ->  class yes  [0.783]
+
+    Rule 98/13: (23.4/5.5, lift 1.6)
+        checking_balanceunknown <= 0
+        credit_historypoor > 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 2
+        ->  class yes  [0.744]
+
+    Rule 98/14: (51.4/14.2, lift 1.5)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 16
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        employment_durationunemployed <= 0
+        percent_of_income <= 2
+        years_at_residence > 1
+        other_creditstore <= 0
+        housingown > 0
+        ->  class yes  [0.716]
+
+    Rule 98/15: (58.8/16.3, lift 1.5)
+        months_loan_duration <= 39
+        credit_historyvery good > 0
+        age > 23
+        ->  class yes  [0.716]
+
+    Rule 98/16: (53.1/15, lift 1.5)
+        checking_balanceunknown > 0
+        credit_historyvery good <= 0
+        amount > 3878
+        employment_duration> 7 years <= 0
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.709]
+
+    Rule 98/17: (92.1/34.3, lift 1.3)
+        savings_balanceunknown <= 0
+        housingrent <= 0
+        dependents > 1
+        ->  class yes  [0.624]
+
+    Rule 98/18: (108.1/41.2, lift 1.3)
+        checking_balance> 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood > 0
+        purposecar > 0
+        employment_durationunemployed <= 0
+        ->  class yes  [0.617]
+
+    Rule 98/19: (17.3, lift 1.8)
+        checking_balanceunknown > 0
+        amount <= 3878
+        savings_balanceunknown > 0
+        ->  class no  [0.948]
+
+    Rule 98/20: (13.3, lift 1.8)
+        checking_balanceunknown <= 0
+        credit_historyvery good <= 0
+        percent_of_income <= 2
+        years_at_residence > 1
+        years_at_residence <= 3
+        housingown <= 0
+        ->  class no  [0.935]
+
+    Rule 98/21: (5.8, lift 1.7)
+        credit_historyvery good > 0
+        age <= 23
+        ->  class no  [0.871]
+
+    Rule 98/22: (32/3.6, lift 1.7)
+        months_loan_duration <= 16
+        credit_historyvery good <= 0
+        savings_balanceunknown <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income <= 2
+        years_at_residence <= 3
+        other_creditstore <= 0
+        housingown > 0
+        ->  class no  [0.864]
+
+    Rule 98/23: (5.8/0.5, lift 1.6)
+        months_loan_duration > 39
+        credit_historyvery good > 0
+        ->  class no  [0.803]
+
+    Rule 98/24: (46.6/10.3, lift 1.5)
+        checking_balance> 200 DM <= 0
+        months_loan_duration <= 36
+        credit_historygood <= 0
+        credit_historyperfect <= 0
+        credit_historypoor <= 0
+        purposeeducation <= 0
+        savings_balanceunknown <= 0
+        percent_of_income > 2
+        phoneTRUE > 0
+        ->  class no  [0.768]
+
+    Rule 98/25: (33.2/7.7, lift 1.5)
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        percent_of_income <= 2
+        years_at_residence > 1
+        ->  class no  [0.754]
+
+    Rule 98/26: (816.6/380.9, lift 1.0)
+        credit_historyvery good <= 0
+        ->  class no  [0.534]
+
+    Default class: no
+
+    -----  Trial 99:  -----
+
+    Rules:
+
+    Rule 99/1: (9.6, lift 2.1)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        amount > 8648
+        savings_balanceunknown <= 0
+        age <= 41
+        ->  class yes  [0.914]
+
+    Rule 99/2: (8.8, lift 2.1)
+        checking_balance1 - 200 DM > 0
+        amount > 12204
+        ->  class yes  [0.908]
+
+    Rule 99/3: (19.2/1, lift 2.1)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor <= 0
+        amount <= 2012
+        savings_balanceunknown <= 0
+        percent_of_income <= 2
+        age <= 41
+        phoneTRUE <= 0
+        ->  class yes  [0.904]
+
+    Rule 99/4: (7.3, lift 2.0)
+        checking_balanceunknown > 0
+        amount > 5711
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        housingrent > 0
+        ->  class yes  [0.886]
+
+    Rule 99/5: (5.6, lift 2.0)
+        checking_balance1 - 200 DM > 0
+        savings_balance500 - 1000 DM > 0
+        percent_of_income > 2
+        phoneTRUE <= 0
+        ->  class yes  [0.868]
+
+    Rule 99/6: (8.7/0.5, lift 2.0)
+        checking_balance> 200 DM > 0
+        purposefurniture/appliances <= 0
+        employment_duration4 - 7 years > 0
+        ->  class yes  [0.859]
+
+    Rule 99/7: (5.4/0.1, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        credit_historypoor <= 0
+        purposecar <= 0
+        employment_durationunemployed > 0
+        jobskilled > 0
+        ->  class yes  [0.848]
+
+    Rule 99/8: (18.8/2.3, lift 1.9)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        purposecar > 0
+        years_at_residence <= 2
+        jobskilled > 0
+        ->  class yes  [0.841]
+
+    Rule 99/9: (6.4/0.4, lift 1.9)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        savings_balance100 - 500 DM > 0
+        employment_duration4 - 7 years <= 0
+        jobskilled <= 0
+        ->  class yes  [0.833]
+
+    Rule 99/10: (27.3/4.1, lift 1.9)
+        checking_balanceunknown <= 0
+        credit_historypoor <= 0
+        purposerenovations <= 0
+        percent_of_income > 2
+        dependents > 1
+        phoneTRUE <= 0
+        ->  class yes  [0.825]
+
+    Rule 99/11: (31.3/5.5, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 7
+        months_loan_duration <= 33
+        employment_duration1 - 4 years <= 0
+        employment_duration4 - 7 years <= 0
+        other_creditnone > 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class yes  [0.804]
+
+    Rule 99/12: (9/1.2, lift 1.8)
+        checking_balanceunknown <= 0
+        purposerenovations > 0
+        age <= 41
+        ->  class yes  [0.798]
+
+    Rule 99/13: (31.9/6.5, lift 1.8)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled > 0
+        ->  class yes  [0.778]
+
+    Rule 99/14: (35.3/7.4, lift 1.8)
+        checking_balanceunknown > 0
+        purposefurniture/appliances <= 0
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        other_creditnone <= 0
+        ->  class yes  [0.775]
+
+    Rule 99/15: (39.4/8.8, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historygood > 0
+        purposecar <= 0
+        amount > 1237
+        employment_duration4 - 7 years <= 0
+        percent_of_income > 1
+        years_at_residence > 1
+        jobskilled > 0
+        ->  class yes  [0.763]
+
+    Rule 99/16: (15.2/3.2, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        ->  class yes  [0.754]
+
+    Rule 99/17: (29.4/7.6, lift 1.7)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        credit_historyvery good > 0
+        savings_balance100 - 500 DM <= 0
+        ->  class yes  [0.726]
+
+    Rule 99/18: (36.4/10.3, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        savings_balanceunknown <= 0
+        age > 41
+        ->  class yes  [0.706]
+
+    Rule 99/19: (29.6/8.8, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        checking_balanceunknown <= 0
+        months_loan_duration > 11
+        credit_historygood <= 0
+        credit_historyvery good <= 0
+        purposecar > 0
+        jobskilled > 0
+        ->  class yes  [0.690]
+
+    Rule 99/20: (748.6/413.2, lift 1.0)
+        employment_duration4 - 7 years <= 0
+        ->  class yes  [0.448]
+
+    Rule 99/21: (14.3, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        employment_duration> 7 years > 0
+        age <= 41
+        dependents <= 1
+        phoneTRUE <= 0
+        ->  class no  [0.939]
+
+    Rule 99/22: (29.4/1.7, lift 1.7)
+        checking_balance1 - 200 DM > 0
+        amount > 5595
+        amount <= 8648
+        age <= 41
+        ->  class no  [0.914]
+
+    Rule 99/23: (24.2/1.6, lift 1.7)
+        checking_balanceunknown > 0
+        employment_duration4 - 7 years > 0
+        ->  class no  [0.901]
+
+    Rule 99/24: (6.1, lift 1.6)
+        checking_balanceunknown > 0
+        percent_of_income <= 1
+        other_creditnone <= 0
+        ->  class no  [0.877]
+
+    Rule 99/25: (92.3/11, lift 1.6)
+        checking_balanceunknown > 0
+        years_at_residence > 1
+        other_creditnone > 0
+        housingrent <= 0
+        ->  class no  [0.872]
+
+    Rule 99/26: (22.4/2.3, lift 1.6)
+        checking_balance1 - 200 DM > 0
+        credit_historypoor > 0
+        age <= 41
+        ->  class no  [0.864]
+
+    Rule 99/27: (44.6/5.5, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historygood <= 0
+        credit_historypoor <= 0
+        credit_historyvery good <= 0
+        purposecar <= 0
+        savings_balance500 - 1000 DM <= 0
+        employment_durationunemployed <= 0
+        housingown > 0
+        ->  class no  [0.861]
+
+    Rule 99/28: (18.7/1.9, lift 1.6)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historyvery good <= 0
+        employment_duration4 - 7 years > 0
+        jobskilled <= 0
+        ->  class no  [0.860]
+
+    Rule 99/29: (13.5/1.3, lift 1.6)
+        checking_balance1 - 200 DM <= 0
+        months_loan_duration > 33
+        purposeeducation <= 0
+        employment_duration4 - 7 years <= 0
+        existing_loans_count <= 1
+        jobskilled <= 0
+        ->  class no  [0.850]
+
+    Rule 99/30: (39.3/5.9, lift 1.5)
+        checking_balance1 - 200 DM > 0
+        amount <= 12204
+        savings_balanceunknown > 0
+        ->  class no  [0.834]
+
+    Rule 99/31: (48.7/12.6, lift 1.3)
+        checking_balance> 200 DM <= 0
+        checking_balance1 - 200 DM <= 0
+        credit_historyvery good <= 0
+        existing_loans_count > 1
+        jobskilled <= 0
+        ->  class no  [0.731]
+
+    Rule 99/32: (59.6/21.3, lift 1.2)
+        checking_balance> 200 DM > 0
+        ->  class no  [0.637]
+
+    Rule 99/33: (710.5/310.4, lift 1.0)
+        months_loan_duration <= 33
+        ->  class no  [0.563]
+
+    Default class: no
+
+
+    Evaluation on training data (900 cases):
+
+    Trial           Rules     
+    -----     ----------------
+            No      Errors
+
+       0        19  144(16.0%)
+       1        25  209(23.2%)
+       2        18  211(23.4%)
+       3        24  175(19.4%)
+       4        26  180(20.0%)
+       5        19  209(23.2%)
+       6        18  217(24.1%)
+       7        32  193(21.4%)
+       8        21  194(21.6%)
+       9        23  238(26.4%)
+      10        16  181(20.1%)
+      11        20  222(24.7%)
+      12        19  216(24.0%)
+      13        15  238(26.4%)
+      14        17  199(22.1%)
+      15        12  229(25.4%)
+      16        14  247(27.4%)
+      17        23  236(26.2%)
+      18        23  202(22.4%)
+      19        20  233(25.9%)
+      20        19  192(21.3%)
+      21        22  218(24.2%)
+      22        20  179(19.9%)
+      23        19  247(27.4%)
+      24        14  192(21.3%)
+      25        17  182(20.2%)
+      26        19  277(30.8%)
+      27        21  242(26.9%)
+      28        24  192(21.3%)
+      29        19  191(21.2%)
+      30        14  208(23.1%)
+      31        19  254(28.2%)
+      32        18  186(20.7%)
+      33        17  228(25.3%)
+      34        28  205(22.8%)
+      35        18  193(21.4%)
+      36        13  210(23.3%)
+      37        21  237(26.3%)
+      38        21  229(25.4%)
+      39        16  220(24.4%)
+      40        26  190(21.1%)
+      41        14  200(22.2%)
+      42        16  218(24.2%)
+      43        22  207(23.0%)
+      44        16  206(22.9%)
+      45        17  239(26.6%)
+      46        32  182(20.2%)
+      47        19  248(27.6%)
+      48        17  193(21.4%)
+      49        16  206(22.9%)
+      50        22  195(21.7%)
+      51        15  250(27.8%)
+      52        26  227(25.2%)
+      53        12  198(22.0%)
+      54        25  168(18.7%)
+      55        11  260(28.9%)
+      56        17  254(28.2%)
+      57        19  181(20.1%)
+      58        19  176(19.6%)
+      59        13  221(24.6%)
+      60        24  255(28.3%)
+      61        16  194(21.6%)
+      62        21  264(29.3%)
+      63        14  194(21.6%)
+      64        15  208(23.1%)
+      65        21  242(26.9%)
+      66        20  210(23.3%)
+      67        25  197(21.9%)
+      68        20  173(19.2%)
+      69        25  234(26.0%)
+      70        14  209(23.2%)
+      71        17  204(22.7%)
+      72        20  191(21.2%)
+      73        19  221(24.6%)
+      74        18  214(23.8%)
+      75        14  200(22.2%)
+      76        25  216(24.0%)
+      77        18  192(21.3%)
+      78        23  198(22.0%)
+      79        25  205(22.8%)
+      80        17  173(19.2%)
+      81        22  172(19.1%)
+      82        27  200(22.2%)
+      83        19  280(31.1%)
+      84        12  231(25.7%)
+      85        22  219(24.3%)
+      86        18  216(24.0%)
+      87        16  219(24.3%)
+      88        21  234(26.0%)
+      89        20  186(20.7%)
+      90        19  181(20.1%)
+      91        26  224(24.9%)
+      92        24  167(18.6%)
+      93        22  195(21.7%)
+      94        16  218(24.2%)
+      95        23  241(26.8%)
+      96        16  186(20.7%)
+      97        23  175(19.4%)
+      98        26  181(20.1%)
+      99        33  154(17.1%)
+    boost            23( 2.6%)   <<
+
+
+           (a)   (b)    <-classified as
+          ----  ----
+           250    20    (a): class yes
+             3   627    (b): class no
+
+
+        Attribute usage:
+
+        100.00% checking_balance> 200 DM
+        100.00% checking_balanceunknown
+        100.00% months_loan_duration
+        100.00% credit_historyperfect
+        100.00% credit_historypoor
+        100.00% credit_historyvery good
+        100.00% purposeeducation
+        100.00% purposerenovations
+        100.00% amount
+        100.00% savings_balance> 1000 DM
+        100.00% savings_balance100 - 500 DM
+        100.00% savings_balance500 - 1000 DM
+        100.00% savings_balanceunknown
+        100.00% employment_duration> 7 years
+        100.00% employment_duration4 - 7 years
+        100.00% employment_durationunemployed
+        100.00% percent_of_income
+        100.00% age
+        100.00% other_creditnone
+        100.00% other_creditstore
+        100.00% housingrent
+        100.00% existing_loans_count
+        100.00% phoneTRUE
+         99.89% credit_historygood
+         99.89% years_at_residence
+         99.78% purposecar
+         99.67% purposefurniture/appliances
+         99.67% jobskilled
+         99.44% dependents
+         98.89% jobunskilled
+         97.56% housingown
+         97.11% checking_balance1 - 200 DM
+         88.78% employment_duration1 - 4 years
+         41.67% purposecar0
+         25.67% jobunemployed
+
+
+    Time: 1.3 secs
 
 #### Model Predictors
-
-    Loading required package: C50
 
      [1] "checking_balanceunknown"       "months_loan_duration"          "amount"                        "savings_balanceunknown"        "employment_duration4"         
      [6] "age"                           "percent_of_income"             "credit_historyvery"            "checking_balance>"             "dependents"                   
@@ -2163,6 +18327,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
          100
 
 ### c50\_model\_grouped\_categories
+
+> Mean ROC cutoff: `0.452914864767327`
 
 #### Model Summary
 
@@ -24597,6 +40763,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### c50\_rules\_model\_independent\_categories
 
+> Mean ROC cutoff: `0.255882627878457`
+
 #### Model Summary
 
 
@@ -24862,6 +41030,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
         1.89
 
 ### c50\_rules\_model\_grouped\_categories
+
+> Mean ROC cutoff: `0.383591411701433`
 
 #### Model Summary
 
@@ -25175,6 +41345,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### rf\_independent\_categories
 
+> Mean ROC cutoff: `0.460366666666667`
+
 #### Model Summary
 
                     Length Class      Mode     
@@ -25246,6 +41418,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### rf\_grouped\_categories
 
+> Mean ROC cutoff: `0.4652`
+
 #### Model Summary
 
                     Length Class      Mode     
@@ -25307,6 +41481,10 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### adaboost\_independent\_categories
 
+    Loading required package: fastAdaboost
+
+> Mean ROC cutoff: `0.500072191041081`
+
 #### Model Summary
 
                        Length Class      Mode     
@@ -25323,8 +41501,6 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
     param                0    -none-     list     
 
 #### Model Predictors
-
-    Loading required package: fastAdaboost
 
      [1] "checking_balanceunknown"        "months_loan_duration"           "employment_durationunemployed"  "years_at_residence"             "employment_duration4 - 7 years"
      [6] "percent_of_income"              "amount"                         "credit_historyvery good"        "purposefurniture/appliances"    "purposecar"                    
@@ -25361,6 +41537,8 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
          0.5063
 
 ### adaboost\_grouped\_categories
+
+> Mean ROC cutoff: `0.500096258498435`
 
 #### Model Summary
 
@@ -25419,45 +41597,54 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 > if this takes a long time to run, consider tune\_length rather than tune\_grid
 
-#### Model Summary
-
-                      Length Class      Mode     
-    initF                1   -none-     numeric  
-    fit                900   -none-     numeric  
-    train.error       2525   -none-     numeric  
-    valid.error       2525   -none-     numeric  
-    oobag.improve     2525   -none-     numeric  
-    trees             2525   -none-     list     
-    c.splits             0   -none-     list     
-    bag.fraction         1   -none-     numeric  
-    distribution         1   -none-     list     
-    interaction.depth    1   -none-     numeric  
-    n.minobsinnode       1   -none-     numeric  
-    num.classes          1   -none-     numeric  
-    n.trees              1   -none-     numeric  
-    nTrain               1   -none-     numeric  
-    train.fraction       1   -none-     numeric  
-    response.name        1   -none-     character
-    shrinkage            1   -none-     numeric  
-    var.levels          35   -none-     list     
-    var.monotone        35   -none-     numeric  
-    var.names           35   -none-     character
-    var.type            35   -none-     numeric  
-    verbose              1   -none-     logical  
-    data                 6   -none-     list     
-    xNames              35   -none-     character
-    problemType          1   -none-     character
-    tuneValue            4   data.frame list     
-    obsLevels            2   -none-     character
-    param                0   -none-     list     
-
-#### Model Predictors
-
     Loading required package: gbm
 
     Loading required package: splines
 
     Loaded gbm 2.1.3
+
+> Mean ROC cutoff: `0.376947978633954`<img src="predictive_analysis_classification_files/figure-markdown_github/gbm_independent_categories-1.png" width="750px" />
+
+#### Model Summary
+
+                                var     rel.inf
+                             amount 24.54683539
+                                age 13.46539903
+               months_loan_duration 11.37591957
+            checking_balanceunknown  8.48456479
+                  percent_of_income  4.46432893
+                 years_at_residence  3.56644831
+             savings_balanceunknown  2.25478991
+                   other_creditnone  2.18635810
+            credit_historyvery good  2.17488838
+                          phoneTRUE  1.81498992
+              credit_historyperfect  1.76247937
+     employment_duration4 - 7 years  1.71164921
+         checking_balance1 - 200 DM  1.61550371
+        purposefurniture/appliances  1.57541643
+                         housingown  1.54618376
+               existing_loans_count  1.50244752
+           checking_balance> 200 DM  1.41119900
+      employment_durationunemployed  1.33154239
+     employment_duration1 - 4 years  1.25364262
+                 credit_historypoor  1.25325568
+                 credit_historygood  1.15570148
+                         purposecar  1.14531773
+                         dependents  1.08282908
+       employment_duration> 7 years  0.97679664
+                        housingrent  0.87608780
+                   purposeeducation  0.85937393
+                         jobskilled  0.85778205
+                  other_creditstore  0.74819986
+                 purposerenovations  0.63925403
+           savings_balance> 1000 DM  0.61962217
+                       jobunskilled  0.61585365
+        savings_balance100 - 500 DM  0.59909661
+       savings_balance500 - 1000 DM  0.35716097
+                        purposecar0  0.10348279
+                      jobunemployed  0.06559918
+
+#### Model Predictors
 
      [1] "checking_balance> 200 DM"       "checking_balance1 - 200 DM"     "checking_balanceunknown"        "months_loan_duration"           "credit_historygood"            
      [6] "credit_historyperfect"          "credit_historypoor"             "credit_historyvery good"        "purposecar"                     "purposecar0"                   
@@ -25469,7 +41656,7 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 #### Model Tuning Grid Performance
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/gbm_independent_categories-1.png" width="750px" />
+<img src="predictive_analysis_classification_files/figure-markdown_github/gbm_independent_categories-2.png" width="750px" />
 
 #### Variable Importance
 
@@ -25501,7 +41688,7 @@ Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of co
 
 ### gbm\_grouped\_categories (stochastic gradient boosting)
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/gbm_grouped_categories-1.png" width="750px" />
+> Mean ROC cutoff: `0.330734623669432`<img src="predictive_analysis_classification_files/figure-markdown_github/gbm_grouped_categories-1.png" width="750px" />
 
 #### Model Summary
 
@@ -25719,7 +41906,11 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
     obsLevels          2   -none-     character
     param              0   -none-     list     
 
+#### Probability Distributions, by outcome
+
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-1.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-2.png" width="750px" />
+
+#### Quality, default cutoff
 
     Confusion Matrix and Statistics
 
@@ -25748,19 +41939,33 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
            'Positive' Class : yes             
                                               
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-3.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-4.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-3.png" width="750px" />
 
-      threshold specificity sensitivity 
-      0.4890000   0.9142857   0.6333333 
+#### ROC
 
-      threshold specificity sensitivity 
-      0.4890000   0.9142857   0.6333333 
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-4.png" width="750px" />NULL
+
+#### Cutoffs
+
+> Top Left (Training Set CV) cutoff: `0.4652`
+
+> Top Left (Test Set) cutoff: `0.489`
+
+> Youden (Test Set) cutoff: `0.489`
+
+#### Quality, cross-validated (training set) cutoff
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-5.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-6.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-10.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-11.png" width="750px" />
+#### Expected Value
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-6.png" width="750px" />
+
+#### Gain/Lift/Calibration
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-7.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-8.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-9.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-10.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-11.png" width="750px" />
 
 ### Stochastic Gradient Boosting (gbm\_grouped\_categories)
 
@@ -25768,7 +41973,11 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-12.png" width="750px" />`var    rel.inf      checking_balance 20.2991981                amount 14.7668276  months_loan_duration 12.9758115        credit_history  9.1126882   employment_duration  7.7445948       savings_balance  7.1323685                   age  6.9311927               purpose  5.4043114          other_credit  3.6950532     percent_of_income  3.0209027               housing  2.8956110    years_at_residence  1.9670349            dependents  1.4892067                 phone  0.9052488  existing_loans_count  0.8825967                   job  0.7773533`
 
+#### Probability Distributions, by outcome
+
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-13.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-14.png" width="750px" />
+
+#### Quality, default cutoff
 
     Confusion Matrix and Statistics
 
@@ -25797,19 +42006,33 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
            'Positive' Class : yes             
                                               
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-15.png" width="750px" />
 
-      threshold specificity sensitivity 
-      0.2810120   0.7142857   0.7666667 
+#### ROC
 
-      threshold specificity sensitivity 
-      0.2810120   0.7142857   0.7666667 
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-16.png" width="750px" />NULL
+
+#### Cutoffs
+
+> Top Left (Training Set CV) cutoff: `0.330734623669432`
+
+> Top Left (Test Set) cutoff: `0.281011994981996`
+
+> Youden (Test Set) cutoff: `0.281011994981996`
+
+#### Quality, cross-validated (training set) cutoff
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-17.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-22.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-23.png" width="750px" />
+#### Expected Value
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-18.png" width="750px" />
+
+#### Gain/Lift/Calibration
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-19.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-20.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-21.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-22.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-23.png" width="750px" />
 
 ### Stochastic Gradient Boosting (gbm\_independent\_categories)
 
@@ -25817,7 +42040,11 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-24.png" width="750px" />`var     rel.inf                          amount 24.50924462                             age 13.99074860            months_loan_duration 11.48396109         checking_balanceunknown  8.46060673               percent_of_income  4.21441883              years_at_residence  3.51606589          savings_balanceunknown  2.35678482         credit_historyvery good  2.05957224                other_creditnone  1.87888148           credit_historyperfect  1.75432501                       phoneTRUE  1.67061557                      housingown  1.62837285  employment_duration4 - 7 years  1.59821125            existing_loans_count  1.57737056        checking_balance> 200 DM  1.57583990     purposefurniture/appliances  1.50093489      checking_balance1 - 200 DM  1.39118928              credit_historypoor  1.36232219   employment_durationunemployed  1.35822574              credit_historygood  1.28202896  employment_duration1 - 4 years  1.24699943                      purposecar  1.06998968                purposeeducation  0.98712940                      dependents  0.97553656                     housingrent  0.91442823    employment_duration> 7 years  0.89525717               other_creditstore  0.82081094                    jobunskilled  0.76224815              purposerenovations  0.71093790                      jobskilled  0.70136546     savings_balance100 - 500 DM  0.63422718        savings_balance> 1000 DM  0.56647347    savings_balance500 - 1000 DM  0.34235700                     purposecar0  0.13406462                   jobunemployed  0.06845431`
 
+#### Probability Distributions, by outcome
+
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-25.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-26.png" width="750px" />
+
+#### Quality, default cutoff
 
     Confusion Matrix and Statistics
 
@@ -25846,19 +42073,33 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
            'Positive' Class : yes             
                                               
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-27.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-28.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-27.png" width="750px" />
 
-      threshold specificity sensitivity 
-      0.2470993   0.6857143   0.7666667 
+#### ROC
 
-      threshold specificity sensitivity 
-      0.2470993   0.6857143   0.7666667 
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-28.png" width="750px" />NULL
+
+#### Cutoffs
+
+> Top Left (Training Set CV) cutoff: `0.376947978633954`
+
+> Top Left (Test Set) cutoff: `0.247099294175467`
+
+> Youden (Test Set) cutoff: `0.247099294175467`
+
+#### Quality, cross-validated (training set) cutoff
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-29.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-30.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-34.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-35.png" width="750px" />
+#### Expected Value
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-30.png" width="750px" />
+
+#### Gain/Lift/Calibration
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-31.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-32.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-33.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-34.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-35.png" width="750px" />
 
 ### Regularized Discriminant Analysis (regularized\_discriminant\_analysis)
 
@@ -25882,7 +42123,11 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
     obsLevels         2   -none-     character
     param             0   -none-     list     
 
+#### Probability Distributions, by outcome
+
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-36.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-37.png" width="750px" />
+
+#### Quality, default cutoff
 
     Confusion Matrix and Statistics
 
@@ -25911,19 +42156,33 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
            'Positive' Class : yes             
                                               
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-38.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-39.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-38.png" width="750px" />
 
-      threshold specificity sensitivity 
-      0.2707901   0.6714286   0.7333333 
+#### ROC
 
-      threshold specificity sensitivity 
-      0.2482568   0.6428571   0.7666667 
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-39.png" width="750px" />NULL
+
+#### Cutoffs
+
+> Top Left (Training Set CV) cutoff: `0.314184820135548`
+
+> Top Left (Test Set) cutoff: `0.270790089342545`
+
+> Youden (Test Set) cutoff: `0.248256848795735`
+
+#### Quality, cross-validated (training set) cutoff
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-40.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-41.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-42.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-44.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-45.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-46.png" width="750px" />
+#### Expected Value
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-41.png" width="750px" />
+
+#### Gain/Lift/Calibration
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-42.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-43.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-44.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-45.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-46.png" width="750px" />
 
 ### Random Forest (rf\_independent\_categories)
 
@@ -25954,7 +42213,11 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
     obsLevels          2   -none-     character
     param              0   -none-     list     
 
+#### Probability Distributions, by outcome
+
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-47.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-48.png" width="750px" />
+
+#### Quality, default cutoff
 
     Confusion Matrix and Statistics
 
@@ -25983,16 +42246,36 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
            'Positive' Class : yes             
                                               
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-49.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-50.png" width="750px" />NULL
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-49.png" width="750px" />
 
-      threshold specificity sensitivity 
-          0.372       0.800       0.700 
+#### ROC
 
-      threshold specificity sensitivity 
-          0.372       0.800       0.700 
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-50.png" width="750px" />NULL
+
+#### Cutoffs
+
+> Top Left (Training Set CV) cutoff: `0.460366666666667`
+
+> Top Left (Test Set) cutoff: `0.372`
+
+> Youden (Test Set) cutoff: `0.372`
+
+#### Quality, cross-validated (training set) cutoff
 
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-51.png" width="750px" />
 
 NOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).
 
-<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-52.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-53.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-54.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-55.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-56.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-57.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-58.png" width="750px" />
+#### Expected Value
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-52.png" width="750px" />
+
+#### Gain/Lift/Calibration
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_models-53.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-54.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-55.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-56.png" width="750px" /><img src="predictive_analysis_classification_files/figure-markdown_github/top_models-57.png" width="750px" />
+
+### Top Model Comparison
+
+<img src="predictive_analysis_classification_files/figure-markdown_github/top_model_comparison-1.png" width="750px" />
+
+`test_set` sensitivity/specificity uses the default probability cutoff of `0.5`

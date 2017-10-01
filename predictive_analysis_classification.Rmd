@@ -316,10 +316,7 @@ if(sum(numeric_columns == TRUE) >= 2) {
 > "If the predictor could perfectly separate the classes, there would be a cutoff for the predictor that would achieve a sensitivity oand specificity of 1 and the area under the curve would be one. [A] completely irrelevant predictor would have an area under the curve of approximately 0.5."
 
 ```{r variable_importance, echo = FALSE, comment = '', results = 'asis'}
-
-kable(
-	filterVarImp(x = classification_dataset %>% dplyr::select(-target),
-			 y = classification_dataset$target))
+kable(filterVarImp(x = classification_dataset %>% dplyr::select(-target), y = classification_dataset$target))
 ```
 
 ## Graphs of Predictors
@@ -495,7 +492,7 @@ train_control <- trainControl(
 
 metric <- 'ROC'
 classification_models <- list()
-model_preprocessing_values <- data.frame(model = NULL, training_preProcess = NULL)
+model_information <- data.frame(model = NULL, training_preProcess = NULL, mean_roc_threshold = NULL)
 ```
 
 > Using ``r cross_validation_num_folds``-fold cross-validation with ``r cross_validation_num_repeats`` repeats, using the ``r metric`` statistic to evaluate each model.
@@ -596,6 +593,34 @@ train_classification <- function(	model_name,
 		caret_model <- readRDS(paste0('./classification_data/', model_name,'.RDS'))
 	}
 
+	############
+	# rather than using the test set (or the training set, raw) to derive the roc threshold, we will use cross validation on the training set
+	# https://github.com/shane-kercheval/r-predictive-analysis-template/issues/17
+	############
+	#so, for each fold/repitition in the *original* cross validation, use the 'test' set to calculate the ideal threshold
+	#therefore, we are still using the same 'unseen' data to calculate the ideal threshold point, so that when we hand off the threshold to the actual test set, it will be less biased than if we determined based on raw training set.
+	roc_thresholds <- map_dbl(training_control$index, ~ {
+		#indexes <- training_control$index[[1]]
+		indexes <- .
+		test_set_folds <- dataset[-indexes,]
+		
+		
+		predictions_probabilities_raw <- predict(caret_model, test_set_folds %>% dplyr::select(-target), type = 'prob')
+		predicted_probabilities_positive <- predictions_probabilities_raw[, target_positive_class]
+		names(predicted_probabilities_positive) <- NULL
+		actual_observations <- test_set_folds$target
+		
+		#ifelse(predicted_probabilities_positive > cutoff_closest_topleft, 'yes', 'no' ) == actual_observations
+		
+		model_roc <- roc(actual_observations, predicted_probabilities_positive, levels = rev(c(target_positive_class, target_negative_class)))
+		cutoff_closest_topleft <- coords(model_roc, x = 'best', best.method = 'closest.topleft')
+	
+		return (cutoff_closest_topleft[['threshold']])
+	})
+	mean_roc_threshold <- mean(roc_thresholds)
+	#median(roc_thresholds)
+	cat(paste0('\n\n> Mean ROC cutoff: `', mean_roc_threshold,'`'))
+
 	if(training_method == 'treebag' || training_method == 'rpart') {
 
 		cat('\n\n#### Model Summary\n\n')
@@ -627,7 +652,7 @@ train_classification <- function(	model_name,
 	cat('\n\n#### Variable Importance\n\n')
 	cat(codebc(varImp(caret_model, scale = FALSE), postfix='\n\n'))
 	
-	return (caret_model)
+	return (list(caret_model, mean_roc_threshold))
 }
 
 #############################
@@ -646,7 +671,9 @@ test_model_glm <- train_classification(	model_name = 'test',
 						sample_to_predictor_ratio_threshold = NULL,
 						class_to_predictor_ratio_threshold = NULL,
 						class_names = NULL)
-
+roc_cutoff <- test_model_glm[[2]]
+stopifnot(near(roc_cutoff, 0.3183735))
+test_model_glm <- test_model_glm[[1]]
 stopifnot(file.exists('./classification_data/test.RDS'))
 # expected_model_glm <- test_model_glm
 # saveRDS(expected_model_glm, file = './classification_data/expected_model_glm.RDS')
@@ -714,8 +741,13 @@ glm_no_pre_process <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values, 
-									data.frame(model = 'glm_no_pre_process', training_preProcess = I(list(NA))))
+mean_roc_threshold <- glm_no_pre_process[[2]]
+glm_no_pre_process <- glm_no_pre_process[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(model = 'glm_no_pre_process',
+											   training_preProcess = I(list(NA)),
+											   mean_roc_threshold = mean_roc_threshold))
 classification_models[['glm_no_pre_process']] <- glm_no_pre_process
 ```
 
@@ -738,8 +770,13 @@ glm_basic_processing <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'glm_basic_processing', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- glm_basic_processing[[2]]
+glm_basic_processing <- glm_basic_processing[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'glm_basic_processing',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['glm_basic_processing']] <- glm_basic_processing
 ```
 
@@ -767,11 +804,16 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 		class_to_predictor_ratio_threshold = NULL,
 		class_names = NULL)
 
-	model_preprocessing_values <- rbind(model_preprocessing_values,
-										data.frame(model = 'glm_remove_collinearity_caret', training_preProcess = I(list(model_pre_processing))))
+	mean_roc_threshold <- glm_remove_collinearity_caret[[2]]
+	glm_remove_collinearity_caret <- glm_remove_collinearity_caret[[1]]
+
+	model_information <- rbind(model_information,
+										data.frame(	model = 'glm_remove_collinearity_caret',
+													training_preProcess = I(list(model_pre_processing)),
+													mean_roc_threshold = mean_roc_threshold))
 	classification_models[['glm_remove_collinearity_caret']] <- glm_remove_collinearity_caret
 }
-``` 
+```
 
 ### glm_remove_collinearity_custom
 
@@ -797,8 +839,13 @@ if(all(classification_column_names %in% recommended_columns_custom)) { # if all 
 		class_to_predictor_ratio_threshold = NULL,
 		class_names = NULL)
 
-	model_preprocessing_values <- rbind(model_preprocessing_values,
-										data.frame(model = 'glm_remove_collinearity_custom', training_preProcess = I(list(model_pre_processing))))
+	mean_roc_threshold <- glm_remove_collinearity_custom[[2]]
+	glm_remove_collinearity_custom <- glm_remove_collinearity_custom[[1]]
+
+	model_information <- rbind(model_information,
+										data.frame(	model = 'glm_remove_collinearity_custom',
+													training_preProcess = I(list(model_pre_processing)),
+													mean_roc_threshold = mean_roc_threshold))
 	classification_models[['glm_remove_collinearity_custom']] <- glm_remove_collinearity_custom
 }
 ```
@@ -822,8 +869,13 @@ glm_yeojohnson <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'glm_yeojohnson', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- glm_yeojohnson[[2]]
+glm_yeojohnson <- glm_yeojohnson[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'glm_yeojohnson',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['glm_yeojohnson']] <- glm_yeojohnson
 ```
 
@@ -858,6 +910,10 @@ if(refresh_models) {
 	stepwise_glm_model$formula	
 	stepwise_logistic_columns <- str_split(stepwise_glm_model$formula, pattern = ' ')[[3]]
 	stepwise_logistic_columns <- c('target', stepwise_logistic_columns[stepwise_logistic_columns != '+'])
+	
+	saveRDS(stepwise_logistic_columns, './classification_data/stepwise_logistic_columns.RDS')
+} else {
+	stepwise_logistic_columns <- readRDS('./classification_data/stepwise_logistic_columns.RDS')
 }
 
 model_pre_processing <- c('nzv', 'center', 'scale')
@@ -876,8 +932,13 @@ logistic_regression_stepwise_backward <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'logistic_regression_stepwise_backward', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- logistic_regression_stepwise_backward[[2]]
+logistic_regression_stepwise_backward <- logistic_regression_stepwise_backward[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'logistic_regression_stepwise_backward',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['logistic_regression_stepwise_backward']] <- logistic_regression_stepwise_backward
 ```
 
@@ -900,8 +961,13 @@ linear_discriminant_analsysis <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'linear_discriminant_analsysis', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- linear_discriminant_analsysis[[2]]
+linear_discriminant_analsysis <- linear_discriminant_analsysis[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'linear_discriminant_analsysis',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['linear_discriminant_analsysis']] <- linear_discriminant_analsysis
 ```
 
@@ -929,8 +995,13 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 		class_to_predictor_ratio_threshold = NULL,
 		class_names = NULL)
 
-	model_preprocessing_values <- rbind(model_preprocessing_values,
-										data.frame(model = 'linear_discriminant_analsysis_remove_collinear', training_preProcess = I(list(model_pre_processing))))
+	mean_roc_threshold <- linear_discriminant_analsysis_remove_collinear[[2]]
+	linear_discriminant_analsysis_remove_collinear <- linear_discriminant_analsysis_remove_collinear[[1]]
+
+	model_information <- rbind(model_information,
+										data.frame(	model = 'linear_discriminant_analsysis_remove_collinear',
+													training_preProcess = I(list(model_pre_processing)),
+													mean_roc_threshold = mean_roc_threshold))
 	classification_models[['linear_discriminant_analsysis_remove_collinear']] <- linear_discriminant_analsysis_remove_collinear
 }
 ```
@@ -955,8 +1026,13 @@ linear_discriminant_analsysis_remove_collinear_skew <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'linear_discriminant_analsysis_remove_collinear_skew', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- linear_discriminant_analsysis_remove_collinear_skew[[2]]
+linear_discriminant_analsysis_remove_collinear_skew <- linear_discriminant_analsysis_remove_collinear_skew[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'linear_discriminant_analsysis_remove_collinear_skew',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['linear_discriminant_analsysis_remove_collinear_skew']] <- linear_discriminant_analsysis_remove_collinear_skew
 ```
 
@@ -979,8 +1055,13 @@ partial_least_squares_discriminant_analysis <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'partial_least_squares_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- partial_least_squares_discriminant_analysis[[2]]
+partial_least_squares_discriminant_analysis <- partial_least_squares_discriminant_analysis[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'partial_least_squares_discriminant_analysis',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['partial_least_squares_discriminant_analysis']] <- partial_least_squares_discriminant_analysis
 ```
 
@@ -1003,8 +1084,13 @@ partial_least_squares_discriminant_analysis_skew <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'partial_least_squares_discriminant_analysis_skew', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- partial_least_squares_discriminant_analysis_skew[[2]]
+partial_least_squares_discriminant_analysis_skew <- partial_least_squares_discriminant_analysis_skew[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'partial_least_squares_discriminant_analysis_skew',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['partial_least_squares_discriminant_analysis_skew']] <- partial_least_squares_discriminant_analysis_skew
 ```
 
@@ -1027,8 +1113,13 @@ glmnet_lasso_ridge <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'glmnet_lasso_ridge', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- glmnet_lasso_ridge[[2]]
+glmnet_lasso_ridge <- glmnet_lasso_ridge[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'glmnet_lasso_ridge',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['glmnet_lasso_ridge']] <- glmnet_lasso_ridge
 ```
 
@@ -1051,8 +1142,13 @@ sparse_lda <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'sparse_lda', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- sparse_lda[[2]]
+sparse_lda <- sparse_lda[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'sparse_lda',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['sparse_lda']] <- sparse_lda
 ```
 
@@ -1077,8 +1173,13 @@ nearest_shrunken_centroids <- train_classification(
 	class_to_predictor_ratio_threshold = NULL,
 	class_names = NULL)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'nearest_shrunken_centroids', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- nearest_shrunken_centroids[[2]]
+nearest_shrunken_centroids <- nearest_shrunken_centroids[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'nearest_shrunken_centroids',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['nearest_shrunken_centroids']] <- nearest_shrunken_centroids
 ```
 
@@ -1101,8 +1202,13 @@ regularized_discriminant_analysis <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'regularized_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- regularized_discriminant_analysis[[2]]
+regularized_discriminant_analysis <- regularized_discriminant_analysis[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'regularized_discriminant_analysis',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['regularized_discriminant_analysis']] <- regularized_discriminant_analysis
 ```
 
@@ -1130,8 +1236,13 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 		class_to_predictor_ratio_threshold = 5,
 		class_names = c(target_positive_class, target_negative_class))
 
-	model_preprocessing_values <- rbind(model_preprocessing_values,
-										data.frame(model = 'regularized_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
+	mean_roc_threshold <- regularized_discriminant_analysis_rc[[2]]
+	regularized_discriminant_analysis_rc <- regularized_discriminant_analysis_rc[[1]]
+
+	model_information <- rbind(model_information,
+										data.frame(	model = 'regularized_discriminant_analysis_rc',
+													training_preProcess = I(list(model_pre_processing)),
+													mean_roc_threshold = mean_roc_threshold))
 	classification_models[['regularized_discriminant_analysis_rc']] <- regularized_discriminant_analysis_rc
 }
 ```
@@ -1155,8 +1266,13 @@ mixture_discriminant_analysis <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'mixture_discriminant_analysis', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- mixture_discriminant_analysis[[2]]
+mixture_discriminant_analysis <- mixture_discriminant_analysis[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'mixture_discriminant_analysis',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['mixture_discriminant_analysis']] <- mixture_discriminant_analysis
 ```
 
@@ -1184,8 +1300,13 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 		class_to_predictor_ratio_threshold = 5,
 		class_names = c(target_positive_class, target_negative_class))
 
-	model_preprocessing_values <- rbind(model_preprocessing_values,
-										data.frame(model = 'mixture_discriminant_analysis_rc', training_preProcess = I(list(model_pre_processing))))
+	mean_roc_threshold <- mixture_discriminant_analysis_rc[[2]]
+	mixture_discriminant_analysis_rc <- mixture_discriminant_analysis_rc[[1]]
+
+	model_information <- rbind(model_information,
+										data.frame(	model = 'mixture_discriminant_analysis_rc',
+													training_preProcess = I(list(model_pre_processing)),
+													mean_roc_threshold = mean_roc_threshold))
 	classification_models[['mixture_discriminant_analysis_rc']] <- mixture_discriminant_analysis_rc
 }
 ```
@@ -1214,8 +1335,13 @@ neural_network_spatial_rc <- train_classification(
 	neural_net_lineout = parameter_nnet_linout,
 	neural_net_max_iterations = parameter_nnet_max_iterations)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'neural_network_spatial_rc', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- neural_network_spatial_rc[[2]]
+neural_network_spatial_rc <- neural_network_spatial_rc[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'neural_network_spatial_rc',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['neural_network_spatial_rc']] <- neural_network_spatial_rc
 ```
 
@@ -1243,8 +1369,13 @@ neural_network_spatial_rc_skew <- train_classification(
 	neural_net_lineout = parameter_nnet_linout,
 	neural_net_max_iterations = parameter_nnet_max_iterations)
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'neural_network_spatial_rc_skew', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- neural_network_spatial_rc_skew[[2]]
+neural_network_spatial_rc_skew <- neural_network_spatial_rc_skew[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'neural_network_spatial_rc_skew',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['neural_network_spatial_rc_skew']] <- neural_network_spatial_rc_skew
 ```
 
@@ -1267,8 +1398,13 @@ flexible_discriminant_analsysis <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'flexible_discriminant_analsysis', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- flexible_discriminant_analsysis[[2]]
+flexible_discriminant_analsysis <- flexible_discriminant_analsysis[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'flexible_discriminant_analsysis',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['flexible_discriminant_analsysis']] <- flexible_discriminant_analsysis
 ```
 
@@ -1294,8 +1430,13 @@ svm_linear <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'svm_linear', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- svm_linear[[2]]
+svm_linear <- svm_linear[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'svm_linear',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['svm_linear']] <- svm_linear
 ```
 
@@ -1321,8 +1462,13 @@ svm_polynomial <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'svm_polynomial', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- svm_polynomial[[2]]
+svm_polynomial <- svm_polynomial[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'svm_polynomial',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['svm_polynomial']] <- svm_polynomial
 ```
 
@@ -1348,8 +1494,13 @@ svm_radial <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'svm_radial', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- svm_radial[[2]]
+svm_radial <- svm_radial[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'svm_radial',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['svm_radial']] <- svm_radial
 ```
 
@@ -1375,8 +1526,13 @@ k_nearest_neighbors <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'k_nearest_neighbors', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- k_nearest_neighbors[[2]]
+k_nearest_neighbors <- k_nearest_neighbors[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'k_nearest_neighbors',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['k_nearest_neighbors']] <- k_nearest_neighbors
 ```
 
@@ -1402,8 +1558,13 @@ naive_bayes <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'naive_bayes', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- naive_bayes[[2]]
+naive_bayes <- naive_bayes[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'naive_bayes',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['naive_bayes']] <- naive_bayes
 ```
 
@@ -1432,8 +1593,13 @@ rpart_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'rpart_independent_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- rpart_independent_categories[[2]]
+rpart_independent_categories <- rpart_independent_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'rpart_independent_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['rpart_independent_categories']] <- rpart_independent_categories
 plot(as.party(rpart_independent_categories$finalModel))
 ```
@@ -1459,8 +1625,13 @@ rpart_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'rpart_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- rpart_grouped_categories[[2]]
+rpart_grouped_categories <- rpart_grouped_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'rpart_grouped_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['rpart_grouped_categories']] <- rpart_grouped_categories
 plot(as.party(rpart_grouped_categories$finalModel))
 ```
@@ -1486,8 +1657,13 @@ treebag_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'treebag_independent_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- treebag_independent_categories[[2]]
+treebag_independent_categories <- treebag_independent_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'treebag_independent_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['treebag_independent_categories']] <- treebag_independent_categories
 ```
 
@@ -1512,8 +1688,13 @@ treebag_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'treebag_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- treebag_grouped_categories[[2]]
+treebag_grouped_categories <- treebag_grouped_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'treebag_grouped_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['treebag_grouped_categories']] <- treebag_grouped_categories
 ```
 
@@ -1538,8 +1719,13 @@ c50_model_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'c50_model_independent_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- c50_model_independent_categories[[2]]
+c50_model_independent_categories <- c50_model_independent_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'c50_model_independent_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['c50_model_independent_categories']] <- c50_model_independent_categories
 ```
 
@@ -1564,8 +1750,13 @@ c50_model_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'c50_model_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- c50_model_grouped_categories[[2]]
+c50_model_grouped_categories <- c50_model_grouped_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'c50_model_grouped_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['c50_model_grouped_categories']] <- c50_model_grouped_categories
 ```
 
@@ -1590,8 +1781,13 @@ c50_rules_model_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'c50_rules_model_independent_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- c50_rules_model_independent_categories[[2]]
+c50_rules_model_independent_categories <- c50_rules_model_independent_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'c50_rules_model_independent_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['c50_rules_model_independent_categories']] <- c50_rules_model_independent_categories
 ```
 
@@ -1616,8 +1812,13 @@ c50_rules_model_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'c50_rules_model_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- c50_rules_model_grouped_categories[[2]]
+c50_rules_model_grouped_categories <- c50_rules_model_grouped_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'c50_rules_model_grouped_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['c50_rules_model_grouped_categories']] <- c50_rules_model_grouped_categories
 ```
 
@@ -1642,8 +1843,13 @@ rf_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'rf_independent_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- rf_independent_categories[[2]]
+rf_independent_categories <- rf_independent_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'rf_independent_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['rf_independent_categories']] <- rf_independent_categories
 ```
 
@@ -1668,8 +1874,13 @@ rf_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'rf_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- rf_grouped_categories[[2]]
+rf_grouped_categories <- rf_grouped_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'rf_grouped_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['rf_grouped_categories']] <- rf_grouped_categories
 ```
 
@@ -1694,8 +1905,13 @@ adaboost_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'adaboost_independent_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- adaboost_independent_categories[[2]]
+adaboost_independent_categories <- adaboost_independent_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'adaboost_independent_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['adaboost_independent_categories']] <- adaboost_independent_categories
 ```
 
@@ -1720,8 +1936,13 @@ adaboost_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'adaboost_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- adaboost_grouped_categories[[2]]
+adaboost_grouped_categories <- adaboost_grouped_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'adaboost_grouped_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['adaboost_grouped_categories']] <- adaboost_grouped_categories
 ```
 
@@ -1748,8 +1969,13 @@ adabag_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'adabag_independent_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- adabag_independent_categories[[2]]
+adabag_independent_categories <- adabag_independent_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'adabag_independent_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['adabag_independent_categories']] <- adabag_independent_categories
 ```
 
@@ -1774,8 +2000,13 @@ adabag_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'adabag_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- adabag_grouped_categories[[2]]
+adabag_grouped_categories <- adabag_grouped_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'adabag_grouped_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['adabag_grouped_categories']] <- adabag_grouped_categories
 ```
 
@@ -1806,8 +2037,13 @@ gbm_independent_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'gbm_independent_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- gbm_independent_categories[[2]]
+gbm_independent_categories <- gbm_independent_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'gbm_independent_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['gbm_independent_categories']] <- gbm_independent_categories
 ```
 
@@ -1835,8 +2071,13 @@ gbm_grouped_categories <- train_classification(
 	class_to_predictor_ratio_threshold = 5,
 	class_names = c(target_positive_class, target_negative_class))
 
-model_preprocessing_values <- rbind(model_preprocessing_values,
-									data.frame(model = 'gbm_grouped_categories', training_preProcess = I(list(model_pre_processing))))
+mean_roc_threshold <- gbm_grouped_categories[[2]]
+gbm_grouped_categories <- gbm_grouped_categories[[1]]
+
+model_information <- rbind(model_information,
+									data.frame(	model = 'gbm_grouped_categories',
+												training_preProcess = I(list(model_pre_processing)),
+												mean_roc_threshold = mean_roc_threshold))
 classification_models[['gbm_grouped_categories']] <- gbm_grouped_categories
 ```
 
@@ -1849,7 +2090,7 @@ classification_models[['gbm_grouped_categories']] <- gbm_grouped_categories
 
 ## Resamples
 
-```{r resamples_regression, echo=FALSE, fig.height=6, fig.width=9}
+```{r resamples_regression, echo=FALSE, fig.height=9, fig.width=12}
 resamples <- resamples(classification_models)
 
 # Table comparison
@@ -1883,7 +2124,8 @@ resamples$values %>% dplyr::select(contains('~ROC')) %>%
 	mutate(model = factor(model)) %>%
 ggplot() + 
 	geom_density(aes(ROC, color = model)) + 
-    geom_jitter(aes(ROC, 0, color = model), alpha = 0.5, height = 0.02) 
+    geom_jitter(aes(ROC, 0, color = model), alpha = 0.5, height = 0.02) +
+    theme(legend.position = 'bottom')
 
 # densityplot(resamples, metric = 'ROC')
 densityplot(resamples, metric = 'Sens')
@@ -1895,7 +2137,7 @@ densityplot(resamples, metric = 'Spec')
 > after using cross-validation to tune, we will take the highest ranked models, retrain the models (with the final tuning parameters) on the entire training set, and predict using the test set.
 
 ```{r model_definitions, echo=FALSE}
-model_plots <- function(model, testing_set, prediction_threshold = 0.5){
+model_plots <- function(model, testing_set, mean_roc_threshold){
 
 	predictions_probabilities_raw <- predict(model, testing_set %>% dplyr::select(-target), type = 'prob')
 	actual_observations <- testing_set$target
@@ -1916,6 +2158,7 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	# ggplot(df_results, aes(predicted_probabilities)) + geom_histogram(binwidth = 0.1)
 
 	### Plot the probability of negative/positive
+	cat('\n\n#### Probability Distributions, by outcome\n\n')
 	print(histogram(~predicted_probabilities_negative | label, data = df_results, layout = c(2, 1), nint = 20,
 						xlab = paste0('Probability of `', target_negative_class,'`'), type = 'count'))
 	print(histogram(~predicted_probabilities | label, data = df_results, layout = c(2, 1), nint = 20,
@@ -1924,6 +2167,7 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	###########################################################
 	# Create the confusion matrix from the test set.
 	###########################################################
+	cat('\n\n#### Quality, default cutoff\n\n')
 	conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
 	cat('\n\n')
 	cat(codebc(conf_matrix, postfix = '\n\n'))
@@ -1939,6 +2183,7 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	###########################################################
 	# ROC/AUC
 	###########################################################
+	cat('\n\n#### ROC\n\n')
 	roc_pred <- prediction(predictions = predicted_probabilities_positive, labels = actual_observations)
 	roc_perf <- performance(roc_pred, measure = 'sens', x.measure = 'fpr')
 	print(plot(roc_perf, colorize = TRUE, print.cutoffs.at = seq(0, 1, 0.05), text.adj = c(-0.2, 1.7)))
@@ -1956,28 +2201,32 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	cutoff_youden <- coords(model_roc, x = 'best', best.method = 'youden')
 	stopifnot(round(model_roc$auc, 2) == round(model_auc, 2)) # make sure AUC matches between different calculations
 
-	cat('\n\n')
-	cat(codebc(cutoff_closest_topleft, postfix='\n\n'))
-	cat(codebc(cutoff_youden, postfix='\n\n'))
+	cat('\n\n#### Cutoffs\n\n')
+	cat(paste0('\n\n> Top Left (Training Set CV) cutoff: `', mean_roc_threshold,'`'))
+	cat(paste0('\n\n> Top Left (Test Set) cutoff: `', cutoff_closest_topleft['threshold'],'`'))
+	cat(paste0('\n\n> Youden (Test Set) cutoff: `', cutoff_youden['threshold'],'`\n\n'))
 
-	predicted_class_topleft <- factor(ifelse(df_results$predicted_probabilities > cutoff_closest_topleft['threshold'],
+	predicted_class_mean_roc <- factor(ifelse(df_results$predicted_probabilities > mean_roc_threshold,
 											 target_positive_class, target_negative_class),
 									  levels = c(target_positive_class, target_negative_class))
 
-	confusion_matrix_topleft <- table(actual = actual_observations, predictions = predicted_class_topleft)
-	confusion_ls_topleft <- confusion_list(true_pos = confusion_matrix_topleft[target_positive_class, target_positive_class],
-									true_neg = confusion_matrix_topleft[target_negative_class, target_negative_class],
-									false_pos = confusion_matrix_topleft[target_negative_class, target_positive_class],
-									false_neg = confusion_matrix_topleft[target_positive_class, target_negative_class])
-
-	print(visualize_quality_of_model(	confusion_ls_topleft,
+	confusion_matrix_mean_roc <- table(actual = actual_observations, predictions = predicted_class_mean_roc)
+	confusion_ls_mean_roc <- confusion_list(true_pos = confusion_matrix_mean_roc[target_positive_class, target_positive_class],
+									true_neg = confusion_matrix_mean_roc[target_negative_class, target_negative_class],
+									false_pos = confusion_matrix_mean_roc[target_negative_class, target_positive_class],
+									false_neg = confusion_matrix_mean_roc[target_positive_class, target_negative_class])
+	quality_mean_roc <- quality_of_model(confusion_ls_mean_roc)
+	
+	cat('\n\n#### Quality, cross-validated (training set) cutoff\n\n')
+	print(visualize_quality_of_model(	confusion_ls_mean_roc,
 										chart_title = paste0('Quality of Model (using calculated probability threshold,',
-										round(cutoff_closest_topleft['threshold'], 3),')')))
+										round(mean_roc_threshold, 3),')')))
 	cat('\n\nNOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).\n\n')
 
 	###########################################################
 	# expected value
 	###########################################################
+	cat('\n\n#### Expected Value\n\n')
 	average_profit <- 5
 	average_cost <- 2
 	gain_true_positive <- average_profit - average_cost # positive is gain
@@ -1996,6 +2245,7 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 	###########################################################
 	# gain/lift/calibration
 	###########################################################
+	cat('\n\n#### Gain/Lift/Calibration\n\n')
 	creditLift <- lift(actual_observations ~ predicted_probabilities_positive, data = df_results)
 	print(xyplot(creditLift))
 
@@ -2018,7 +2268,8 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 									target_positive_class = target_positive_class)
 	cal_chart <- calibration_chart(cal_table = cal_table)
 	print(cal_chart)
-	
+	cat('\n\n')
+
 	return (c(	model_auc = model_auc,
 				model_sensitivity = as.numeric(conf_matrix$byClass['Sensitivity']),
 				model_specificity = as.numeric(conf_matrix$byClass['Specificity']),
@@ -2027,12 +2278,15 @@ model_plots <- function(model, testing_set, prediction_threshold = 0.5){
 				topleft_specificity = as.numeric(cutoff_closest_topleft['specificity']),
 				youden_threshold = as.numeric(cutoff_youden['threshold']),
 				youden_sensitivity = as.numeric(cutoff_youden['sensitivity']),
-				youden_specificity = as.numeric(cutoff_youden['specificity'])))
+				youden_specificity = as.numeric(cutoff_youden['specificity']),
+				training_cv_threshold = mean_roc_threshold,
+				training_cv_sensitivity = quality_mean_roc$sensitivity,
+				training_cv_specificity = quality_mean_roc$specificity))
 }
 ```
 
-```{r top_models, echo=FALSE, fig.height=5, fig.width=8, comment = '', results = 'asis'}
-stopifnot(length(classification_models) == nrow(model_preprocessing_values))
+```{r top_models, echo=FALSE, fig.height=7, fig.width=11, comment = '', results = 'asis'}
+stopifnot(length(classification_models) == nrow(model_information))
 
 top_models <- resamples_means %>% 
 	filter(metric == 'ROC') %>% 
@@ -2045,7 +2299,7 @@ top_models <- resamples_means %>%
 	mutate(model_object = map(model, ~ { classification_models[names(classification_models) == .][[1]] })) # add models to data.frame so when we choose the top models later we will 
 
 expected_rows <- nrow(top_models)
-top_models <- inner_join(top_models, model_preprocessing_values %>% mutate(model = as.character(model)), by = 'model')
+top_models <- inner_join(top_models, model_information %>% mutate(model = as.character(model)), by = 'model')
 
 stopifnot(nrow(top_models) == expected_rows)
 stopifnot(!is.na(top_models$cross_validation_auc))
@@ -2053,13 +2307,19 @@ stopifnot(!is.na(top_models$model_object))
 
 final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE, savePredictions = 'all') # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
 
-model_stats <- pmap(list(as.character(top_models$model), top_models$model_object, top_models$training_preProcess), function(.x, .y, .z){
-	# model_name <- as.character(top_models$model[1])
+model_stats <- pmap(list(	as.character(top_models$model),
+							top_models$model_object,
+							top_models$training_preProcess,
+							top_models$mean_roc_threshold), 
+					function(.w, .x, .y, .z) {
+	# model_name <- as.character(top_models$model[[1]])
 	# model_object <- top_models$model_object[[1]]
 	# pre_process <- top_models$training_preProcess[[1]]
-	model_name <- .x
-	model_object <- .y
-	pre_process <- .z
+	# mean_roc_threshold <- top_models$mean_roc_threshold[[1]]
+	model_name <- .w
+	model_object <- .x
+	pre_process <- .y
+	mean_roc_threshold <- .z
 	
 	cat(paste0('\n\n### ', model_object$modelInfo$label, ' (', model_name,')\n\n'))
 
@@ -2161,21 +2421,31 @@ model_stats <- pmap(list(as.character(top_models$model), top_models$model_object
 			error=function(e) e)	
 	}
 	
-	model_stats <- model_plots(model = final_model, testing_set = classification_test)
+	model_stats <- model_plots(	model = final_model,
+								testing_set = classification_test,
+								mean_roc_threshold = mean_roc_threshold)
 	return (model_stats)
 })
+```
 
-final_models_metrics <- data.frame(model = factor(as.character(top_models$model), levels = as.character(top_models$model)),
-								   test_set__auc = map_dbl(model_stats, ~ .['model_auc']),
-								   cross_validation__auc = top_models$cross_validation_auc,
-								   test_set__sensitivity = map_dbl(model_stats, ~ .['model_sensitivity']),
-								   test_set__specificity = map_dbl(model_stats, ~ .['model_specificity']),
-								   top_left__threshold = map_dbl(model_stats, ~ .['topleft_threshold']),
-								   top_left__sensitivity = map_dbl(model_stats, ~ .['topleft_sensitivity']),
-								   top_left__specificity = map_dbl(model_stats, ~ .['topleft_specificity']),
-								   youden__threshold = map_dbl(model_stats, ~ .['youden_threshold']),
-								   youden__sensitivity = map_dbl(model_stats, ~ .['youden_sensitivity']),
-								   youden__specificity = map_dbl(model_stats, ~ .['youden_specificity']))
+### Top Model Comparison
+
+```{r top_model_comparison, echo=FALSE, fig.height=7, fig.width=11, comment = '', results = 'asis'}
+final_models_metrics <- data.frame(	model = factor(	as.character(top_models$model),
+													levels = as.character(top_models$model)),
+									test_set__auc = map_dbl(model_stats, ~ .['model_auc']),
+									cross_validation__auc = top_models$cross_validation_auc,
+									test_set__sensitivity = map_dbl(model_stats, ~ .['model_sensitivity']),
+									test_set__specificity = map_dbl(model_stats, ~ .['model_specificity']),
+									top_left__threshold = map_dbl(model_stats, ~ .['topleft_threshold']),
+									top_left__sensitivity = map_dbl(model_stats, ~ .['topleft_sensitivity']),
+									top_left__specificity = map_dbl(model_stats, ~ .['topleft_specificity']),
+									youden__threshold = map_dbl(model_stats, ~ .['youden_threshold']),
+									youden__sensitivity = map_dbl(model_stats, ~ .['youden_sensitivity']),
+									youden__specificity = map_dbl(model_stats, ~ .['youden_specificity']),
+									training_cv__threshold = map_dbl(model_stats, ~ .['training_cv_threshold']),
+									training_cv__sensitivity = map_dbl(model_stats, ~ .['training_cv_sensitivity']),
+									training_cv__specificity = map_dbl(model_stats, ~ .['training_cv_specificity']))
 
 max_test_auc <- max(final_models_metrics$test_set__auc)
 max_sensitivity <- max(final_models_metrics$test_set__sensitivity)
@@ -2185,7 +2455,7 @@ final_models_metrics_long <- final_models_metrics %>%
 	dplyr::select(-contains('threshold')) %>%
 	gather(metric, value, -model) %>%
 	separate(col = metric, c('type', 'metric'), sep = '__') %>%
-	dplyr::mutate(type = factor(type, levels = c('cross_validation', 'test_set', 'top_left', 'youden'))) %>%
+	dplyr::mutate(type = factor(type, levels = c('cross_validation', 'test_set', 'top_left', 'youden', 'training_cv'))) %>%
 	dplyr::mutate(metric = factor(metric, levels = c('auc', 'sensitivity', 'specificity')))
 
 best_values <- data.frame(metric = c('auc', 'sensitivity', 'specificity'), Z = c(max_test_auc, max_sensitivity, max_specificity))
@@ -2195,3 +2465,5 @@ ggplot(data = final_models_metrics_long, mapping = aes(x = model, y = value, col
 	facet_grid(. ~ metric, scales = "free", space = "free_y") +
 	coord_flip()
 ```
+
+`test_set` sensitivity/specificity uses the default probability cutoff of `0.5`
