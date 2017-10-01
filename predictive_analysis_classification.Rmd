@@ -74,7 +74,8 @@ target_negative_class <- 'no'
 ```
 
 ```{r dataset_prepare, echo = FALSE}
-classification_dataset$target <- factor(classification_dataset$target, levels = c(target_positive_class, target_negative_class))
+classification_dataset$target <- factor(classification_dataset$target, 
+										levels = c(target_positive_class, target_negative_class))
 
 classification_dataset <- classification_dataset %>%
 	dplyr::mutate_if(is.character, as.factor) %>%
@@ -154,7 +155,9 @@ Rule of thumbs for dimensions (Probabilistic and Statistical Modeling in Compute
 ```{r class_imbalance, echo = FALSE, comment = '', results = 'asis'}
 class_imbalance <- min((classification_dataset %>% count(target))$n / nrow(classification_dataset))
 if(class_imbalance <= 0.3) {
-	cat(paste0('\n\n> Class imbalance, min class proportion is `', percent(class_imbalance),'`. Consider up-sampling/down-sampling techniques.\n\n'))
+	cat(paste0('\n\n> Class imbalance, min class proportion is `',
+				percent(class_imbalance),
+				'`. Consider up-sampling/down-sampling techniques.\n\n'))
 }
 ``` 
 
@@ -223,8 +226,9 @@ if(sum(numeric_columns == TRUE) >= 2) {
 	corrplot::corrplot(	matrix_correlations, 
 						order = 'hclust',
 						tl.cex = .35,
-						col = colorRampPalette(rev(c(	'#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7', '#FFFFFF', '#D1E5F0',
-														'#92C5DE', '#4393C3', '#2166AC', '#053061')))(200))
+						col = colorRampPalette(rev(c('#67001F', '#B2182B', '#D6604D', '#F4A582', '#FDDBC7',
+													 '#FFFFFF', '#D1E5F0', '#92C5DE', '#4393C3', '#2166AC',
+													 '#053061')))(200))
 } else {
 
 	cat('\n\n> Not enough numberic columns for correlation.\n\n')
@@ -413,29 +417,42 @@ walk(classification_column_names, ~ {
 			#https://www.r-bloggers.com/two-sample-students-t-test-1/
 			# Before proceeding with the t-test, it is necessary to evaluate the sample variances of the two groups, using a Fisher’s F-test to verify the homoskedasticity (homogeneity of variances).
 			homogeneous <- var.test(level_1_values, level_2_values)$p.value > 0.05 # If we obtain a p-value greater than 0.05, then we fail to reject the null and can assume that the two variances are homogeneous
-			different_means <- t.test(level_1_values, level_2_values, var.equal = homogeneous, paired = FALSE)$p.value <= 0.05 # if we obtain a p-value of <= 0.05 then we reject the null and conclude that the true difference in means is not equal to 0
+			different_means <- t.test(	level_1_values,
+										level_2_values,
+										var.equal = homogeneous,
+										paired = FALSE)$p.value <= 0.05 # if we obtain a p-value of <= 0.05 then we reject the null and conclude that the true difference in means is not equal to 0
 			
-			cat(paste0('\n\n> statistically different means (check assumptions for t-test): `', different_means, '`\n\n'))
+			cat(paste0('\n\n> statistically different means (check assumptions for t-test): `',
+						different_means,
+						'`\n\n'))
 
 			# https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/
 			# Comparison of the averages of two independent groups of samples, of which we can not assume a distribution of Gaussian type; is also known as Mann-Whitney U-test.
 			cat('\n\n*The Wilcoxon-Matt-Whitney test (or Wilcoxon rank sum test, or Mann-Whitney U-test) is used when is asked to compare the means of two groups that do not follow a normal distribution: it is a non-parametrical test. (https://www.r-bloggers.com/wilcoxon-mann-whitney-rank-sum-test-or-test-u/)*')
 
-			different_means <- wilcox.test(level_1_values, level_2_values, correct = FALSE, paired = FALSE)$p.value <= 0.05
-			cat(paste0('\n\n> statistically different means (Wilcoxon-Matt-Whitney): `', different_means, '`\n\n'))
+			different_means <- wilcox.test( level_1_values,
+											level_2_values,
+											correct = FALSE,
+											paired = FALSE)$p.value <= 0.05
+			cat(paste0('\n\n> statistically different means (Wilcoxon-Matt-Whitney): `',
+						different_means,
+						'`\n\n'))
 		}
 	} else if(is.factor(dataset_column) || is.logical(dataset_column)) {
 		
 		print(ggplot(data = classification_dataset, mapping = aes(x = dataset_column)) + 
 			geom_bar(mapping=aes(fill = dataset_column)) + 
 			ggtitle(paste('Histogram of', column_name)) +
-			ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
+			ylab('Count') + xlab(column_name) +
+			theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
 
-		df_data <- data.frame(categorical_variable=classification_dataset$target, column = classification_dataset[, column_name ])
+		df_data <- data.frame(	categorical_variable=classification_dataset$target,
+								column = classification_dataset[, column_name ])
 		print(ggplot(df_data, aes(column, ..count..)) +
 				geom_bar(aes(fill = categorical_variable), position = 'dodge') +
 				ggtitle(paste('Histogram of', column_name, ', grouped by the target variable')) +
-				ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + scale_fill_manual(values=colors_two))
+				ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) +
+				scale_fill_manual(values=colors_two))
 
 		result = tryCatch({
 
@@ -619,7 +636,8 @@ train_classification <- function(	model_name,
 		
 		#ifelse(predicted_probabilities_positive > cutoff_closest_topleft, 'yes', 'no' ) == actual_observations
 		
-		model_roc <- roc(actual_observations, predicted_probabilities_positive, levels = rev(c(target_positive_class, target_negative_class)))
+		model_roc <- roc(actual_observations, predicted_probabilities_positive,
+						 levels = rev(c(target_positive_class, target_negative_class)))
 		cutoff_closest_topleft <- coords(model_roc, x = 'best', best.method = 'closest.topleft')
 	
 		return (cutoff_closest_topleft[['threshold']])
@@ -896,7 +914,8 @@ if(refresh_models) {
 	if(sum(numeric_columns == TRUE) >= 1) { # have to have at least 1 numeric column to pre-process
 		
 		set.seed(custom_seed)
-		pre_processed_numeric_data <- preProcess(classification_train, method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
+		pre_processed_numeric_data <- preProcess(classification_train,
+												 method = c('nzv', 'center', 'scale', 'knnImpute')) # ignores non-numeric data
 		columns_not_in_preprocessed_data <- colnames(classification_train)[!(colnames(classification_train) %in% colnames(pre_processed_numeric_data$data))] # figure out which columns we need to add back in (i.e. all (non-numeric) that are in classification_train but are NOT in pre_processed_numeric_data
 		pre_processed_classification_train <- cbind(classification_train[, columns_not_in_preprocessed_data], pre_processed_numeric_data$data)
 	
@@ -911,7 +930,11 @@ if(refresh_models) {
 	pre_processed_classification_train <- cbind(classification_train[, columns_not_in_preprocessed_data], pre_processed_numeric_data$data)
 
 	set.seed(custom_seed)
-	stepwise_glm_model <- step(glm(family = binomial, formula = target ~ ., data = pre_processed_classification_train), direction="backward", trace=0) # do stepwise regression (glm doesn't like factor target variables), then use the formula in train in order to take advantage of k-fold Cross Validation
+	stepwise_glm_model <- step(	glm(family = binomial,
+									formula = target ~ .,
+									data = pre_processed_classification_train),
+								direction="backward",
+								trace=0) # do stepwise regression (glm doesn't like factor target variables), then use the formula in train in order to take advantage of k-fold Cross Validation
 	# stepwise_glm_model$formula gives the `optimal` formula (need to do this because coefficients will have factor variable names, not original columns. The formula will exclude columns not statistically significant)
 	# now feed this back into training to do cross validation
 	stepwise_glm_model$formula	
@@ -1321,7 +1344,8 @@ if(all(classification_column_names %in% recommended_columns_caret)) { # if all t
 ### neural_network_spatial_rc
 
 ```{r neural_network_spatial_rc, echo = FALSE, comment = '', results = 'asis'}
-parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tuning_nnet_size), number_of_dataset_columns = ncol(classification_train[, recommended_columns_caret]))
+parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tuning_nnet_size),
+														 number_of_dataset_columns = ncol(classification_train[, recommended_columns_caret]))
 
 model_pre_processing <- c('nzv', 'center', 'scale', 'spatialSign')
 neural_network_spatial_rc <- train_classification(
@@ -1355,7 +1379,8 @@ classification_models[['neural_network_spatial_rc']] <- neural_network_spatial_r
 ### neural_network_spatial_rc_skew
 
 ```{r neural_network_spatial_rc_skew, echo = FALSE, comment = '', results = 'asis'}
-parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tuning_nnet_size), number_of_dataset_columns = ncol(classification_train[, recommended_columns_caret]))
+parameter_nnet_training_numWts <- calculate_nnet_MaxNWts(max_nnet_size = max(tuning_nnet_size),
+														 number_of_dataset_columns = ncol(classification_train[, recommended_columns_caret]))
 
 model_pre_processing <- c('nzv', 'YeoJohnson', 'center', 'scale', 'spatialSign')
 neural_network_spatial_rc_skew <- train_classification(
@@ -1559,7 +1584,9 @@ naive_bayes <- train_classification(
 	training_method = 'nb',
 	training_preProcess = model_pre_processing,
 	training_control = train_control,
-	training_tune_grid = expand.grid(usekernel = tuning_naive_bayes_distribution_type, fL = tuning_naive_bayes_laplace_correction, adjust = tuning_naive_bayes_bandwidth_adjustment),
+	training_tune_grid = expand.grid(usekernel = tuning_naive_bayes_distribution_type,
+									 fL = tuning_naive_bayes_laplace_correction,
+									 adjust = tuning_naive_bayes_bandwidth_adjustment),
 	training_tune_length = NULL,
 	sample_to_predictor_ratio_threshold = NULL,
 	class_to_predictor_ratio_threshold = 5,
@@ -2118,7 +2145,8 @@ max_roc_mean <- max(resamples_means %>% filter(metric == 'ROC') %>% dplyr::selec
 max_sensitivity_mean <- max(resamples_means %>% filter(metric == 'Sens') %>% dplyr::select(average))
 max_specificity_mean <- max(resamples_means %>% filter(metric == 'Spec') %>% dplyr::select(average))
 
-best_values <- data.frame(metric = levels(resamples_long$metric), Z = c(max_roc_mean, max_sensitivity_mean, max_specificity_mean))
+best_values <- data.frame(	metric = levels(resamples_long$metric),
+							Z = c(max_roc_mean, max_sensitivity_mean, max_specificity_mean))
 ggplot(data = resamples_long, mapping = aes(x = model, y = value)) +
 	geom_boxplot() + 
 	stat_summary(fun.y=mean, colour="red", geom="point", shape=21, size=3, show.legend = FALSE) + 
@@ -2159,7 +2187,8 @@ model_plots <- function(model, testing_set, mean_roc_threshold){
 						 		predicted_probabilities_negative = predicted_probabilities_negative)
 	df_results$predicted_class <- predict(model, testing_set %>% dplyr::select(-target))
 	df_results$label <- ifelse(actual_observations == target_negative_class,
-									paste('True Outcome:', target_negative_class), paste('True Outcome:', target_positive_class))
+									paste('True Outcome:', target_negative_class),
+									paste('True Outcome:', target_positive_class))
 
 	# prop.table(table(classification_test$target))[target_positive_class]
 	# ggplot(df_results, aes(predicted_probabilities)) + geom_histogram(binwidth = 0.1)
@@ -2312,7 +2341,10 @@ stopifnot(nrow(top_models) == expected_rows)
 stopifnot(!is.na(top_models$cross_validation_auc))
 stopifnot(!is.na(top_models$model_object))
 
-final_train_control <- trainControl(method = "none", summaryFunction = twoClassSummary, classProbs = TRUE, savePredictions = 'all') # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
+final_train_control <- trainControl(method = "none",
+									summaryFunction = twoClassSummary,
+									classProbs = TRUE,
+									savePredictions = 'all') # In cases where the model tuning values are known, train can be used to fit the model to the entire training set without any resampling or parameter tuning. Using the method = "none" option in trainControl can be used https://topepo.github.io/caret/model-training-and-tuning.html#fitting-models-without-parameter-tuning
 
 model_stats <- pmap(list(	as.character(top_models$model),
 							top_models$model_object,
@@ -2465,7 +2497,8 @@ final_models_metrics_long <- final_models_metrics %>%
 	dplyr::mutate(type = factor(type, levels = c('cross_validation', 'test_set', 'top_left', 'youden', 'training_cv'))) %>%
 	dplyr::mutate(metric = factor(metric, levels = c('auc', 'sensitivity', 'specificity')))
 
-best_values <- data.frame(metric = c('auc', 'sensitivity', 'specificity'), Z = c(max_test_auc, max_sensitivity, max_specificity))
+best_values <- data.frame(	metric = c('auc', 'sensitivity', 'specificity'),
+							Z = c(max_test_auc, max_sensitivity, max_specificity))
 ggplot(data = final_models_metrics_long, mapping = aes(x = model, y = value, col = type)) +
 	geom_point(size = 3, alpha = 0.7) +
 	geom_hline(data = best_values, aes(yintercept = Z), color='red') +

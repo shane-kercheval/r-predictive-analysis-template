@@ -37,14 +37,23 @@ refresh_models <- FALSE
 ```
 
 ```{r function_definition, echo = FALSE}
-check_data <- function(dataset, validate_n_p = TRUE)
+check_data <- function(dataset, validate_n_p = TRUE, training_tune_grid = NULL, training_method = NULL)
 {
 	if(validate_n_p) {
+		cat('\n\n> Validating n/p...\n\n')
 		number_of_samples <- nrow(dataset)
 		number_of_dimensions <- ncol(dataset)
 		sample_to_dimension_ratio <- number_of_samples / number_of_dimensions
 
 		stopifnot(sample_to_dimension_ratio >= 5)
+	}
+
+	if(!is.null(training_tune_grid)) {
+		cat('\n\n> Validating Tune Grid...\n\n')
+		model_tuning_parameters <- as.character(modelLookup(training_method)$parameter)
+		model_tuning_parameters <- model_tuning_parameters[model_tuning_parameters != 'parameter']
+		stopifnot(colnames(training_tune_grid) %in% model_tuning_parameters) # make sure all the parameters passed in exist in the tuning parameters
+		stopifnot(model_tuning_parameters %in% colnames(training_tune_grid)) # make sure all the tuning parameters exist in the grid
 	}
 }
 ```
@@ -215,7 +224,9 @@ outliers <- map(regression_column_names[numeric_columns], ~ {
 	return (list(upper_outlier_count, lower_outlier_count))
 })
 
-outliers <- data.frame(columns = regression_column_names[numeric_columns], lower_outlier_count = map_chr(outliers, ~ {.[[2]]}), upper_outlier_count = map_chr(outliers, ~ {.[[1]]}))
+outliers <- data.frame(	columns = regression_column_names[numeric_columns],
+						lower_outlier_count = map_chr(outliers, ~ {.[[2]]}), 
+						upper_outlier_count = map_chr(outliers, ~ {.[[1]]}))
 kable(outliers)
 ```
 
@@ -282,7 +293,8 @@ while(max(abs(predictor_correlations), na.rm = TRUE) > correlation_threshold) {
 	## caret's findCorrelation function is used to identify columns to remove.
 	num_cols_rows <- nrow(predictor_correlations)
 	#highCorr <- findCorrelation(predictor_correlations, .75)
-	ab_index <- which(abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) & abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
+	ab_index <- which(	abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) &
+						abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
 	a_index <- ceil(ab_index / num_cols_rows) # get the row number 
 	b_index <- ab_index - (num_cols_rows * (a_index-1))
 
@@ -318,7 +330,8 @@ if(sum(numeric_columns == TRUE) >= 2) {
 		## caret's findCorrelation function is used to identify columns to remove.
 		num_cols_rows <- nrow(predictor_correlations)
 		#highCorr <- findCorrelation(predictor_correlations, .75)
-		ab_index <- which(abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) & abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
+		ab_index <- which(	abs(predictor_correlations) == max(abs(predictor_correlations), na.rm = TRUE) &
+							abs(predictor_correlations) > 0.75)[1] # get the first index of the highest correlation
 		a_index <- ceil(ab_index / num_cols_rows) # get the row number 
 		b_index <- ab_index - (num_cols_rows * (a_index-1))
 	
@@ -417,7 +430,8 @@ walk(regression_column_names, ~ {
 		
 		print(ggplot(data = regression_dataset, mapping = aes(x = dataset_column)) + 
 			geom_bar(mapping=aes(fill = dataset_column)) + 
-			ggtitle(paste('Histogram of', column_name)) + ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
+			ggtitle(paste('Histogram of', column_name)) + ylab('Count') + xlab(column_name) +
+			theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
 
 		print(ggplot(data = regression_dataset, mapping = aes(x = dataset_column, y = target)) +
 			geom_boxplot(mapping = aes(group = dataset_column)) + 
@@ -426,7 +440,8 @@ walk(regression_column_names, ~ {
 	}else if(is.logical(dataset_column)){
 		print(ggplot(data = regression_dataset, mapping = aes(x = dataset_column)) + 
 			geom_bar(mapping=aes(fill = dataset_column)) + 
-			ggtitle(paste('Histogram of', column_name)) + ylab('Count') + xlab(column_name) + theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
+			ggtitle(paste('Histogram of', column_name)) + ylab('Count') + xlab(column_name) +
+			theme(axis.text.x = element_text(angle = 50, hjust = 1)) + guides(fill = FALSE))
 
 		print(ggplot(data = regression_dataset, mapping = aes(x = dataset_column, y = target)) +
 			geom_boxplot(mapping = aes(group = dataset_column)) + 
@@ -445,9 +460,14 @@ training_index <- createDataPartition(regression_dataset$target, p = training_pe
 regression_train <- regression_dataset[training_index$Resample1, ]
 regression_test <- regression_dataset[-training_index$Resample1, ]
 
-df_target_long <- data.frame(type = rep('regression_dataset', times = nrow(regression_dataset)), target = regression_dataset$target)
-df_target_long <- rbind(df_target_long, data.frame(type = rep('regression_train', times = nrow(regression_train)), target = regression_train$target))
-df_target_long <- rbind(df_target_long, data.frame(type = rep('regression_test', times = nrow(regression_test)), target = regression_test$target))
+df_target_long <- data.frame(	type = rep('regression_dataset', times = nrow(regression_dataset)),
+								target = regression_dataset$target)
+df_target_long <- rbind(df_target_long, data.frame(	type = rep(	'regression_train',
+																times = nrow(regression_train)),
+													target = regression_train$target))
+df_target_long <- rbind(df_target_long, data.frame(	type = rep(	'regression_test',
+																times = nrow(regression_test)),
+													target = regression_test$target))
 ggplot(data = df_target_long, mapping = aes(x = type,  y = target, group = type)) +
 	geom_boxplot()
 ```
@@ -461,7 +481,9 @@ ggplot(data = df_target_long, mapping = aes(x = type,  y = target, group = type)
 ```{r spot_check_numeric, echo = FALSE}
 # we have to make sure they are fit on exactly the same test sets in training and cross validation so we are sure we are making an apples-to-apples comparison
 set.seed(seed)
-spot_check_folds <- createMultiFolds(regression_train$target, k = cross_validation_num_folds, times = cross_validation_num_repeats) # maintains the `churn` ratio
+spot_check_folds <- createMultiFolds(	regression_train$target,
+										k = cross_validation_num_folds,
+										times = cross_validation_num_repeats) # maintains the `churn` ratio
 
 train_control <- trainControl(
 	method = 'repeatedcv',
@@ -475,11 +497,15 @@ train_control <- trainControl(
 ### Linear Regression - no pre processing
 
 ```{r linear_regression_no_pre_processing, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_no_pre_processing <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control)
+	lm_no_pre_processing <- train(	target ~ .,
+									data = regression_train,
+									method = 'lm',
+									trControl = train_control)
+
 	saveRDS(lm_no_pre_processing, file = './regression_data/lm_no_pre_processing.RDS')
 } else{
 	lm_no_pre_processing <- readRDS('./regression_data/lm_no_pre_processing.RDS')
@@ -491,11 +517,16 @@ plot(lm_no_pre_processing$finalModel)
 ### Linear Regression - basic pre processing
 
 ```{r linear_regression_basic_pre_processing, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_basic_pre_processing <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'knnImpute'))
+	lm_basic_pre_processing <- train(	target ~ .,
+										data = regression_train,
+										method = 'lm',
+										trControl = train_control,
+										preProc=c('center', 'scale', 'knnImpute'))
+
 	saveRDS(lm_basic_pre_processing, file = './regression_data/lm_basic_pre_processing.RDS')
 } else{
 	lm_basic_pre_processing <- readRDS('./regression_data/lm_basic_pre_processing.RDS')
@@ -507,11 +538,16 @@ plot(lm_basic_pre_processing$finalModel)
 ### Linear Regression - basic pre processing with medianImpute
 
 ```{r linear_regression_impute, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_median_impute <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'medianImpute'))
+	lm_median_impute <- train(	target ~ .,
+								data = regression_train,
+								method = 'lm',
+								trControl = train_control,
+								preProc=c('center', 'scale', 'medianImpute'))
+
 	saveRDS(lm_median_impute, file = './regression_data/lm_median_impute.RDS')
 } else{
 	lm_median_impute <- readRDS('./regression_data/lm_median_impute.RDS')
@@ -523,11 +559,16 @@ plot(lm_median_impute$finalModel)
 ### Linear Regression - basic pre processing
 
 ```{r linear_regression_basic, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_near_zero_variance <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
+	lm_near_zero_variance <- train(	target ~ .,
+									data = regression_train,
+									method = 'lm',
+									trControl = train_control,
+									preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
+
 	saveRDS(lm_near_zero_variance, file = './regression_data/lm_near_zero_variance.RDS')
 } else{
 	lm_near_zero_variance <- readRDS('./regression_data/lm_near_zero_variance.RDS')
@@ -539,11 +580,16 @@ plot(lm_near_zero_variance$finalModel)
 ### Linear Regression - skewness - YeoJohnson
 
 ```{r linear_regression_YeoJohnson, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_skewness_y <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
+	lm_skewness_y <- train(	target ~ .,
+							data = regression_train,
+							method = 'lm',
+							trControl = train_control,
+							preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
+
 	saveRDS(lm_skewness_y, file = './regression_data/lm_skewness_y.RDS')
 } else{
 	lm_skewness_y <- readRDS('./regression_data/lm_skewness_y.RDS')
@@ -555,11 +601,16 @@ plot(lm_skewness_y$finalModel)
 ### Linear Regression - skewness - BoxCox
 
 ```{r linear_regression_BoxCox, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_skewness_bc <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('BoxCox', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
+	lm_skewness_bc <- train(target ~ .,
+							data = regression_train,
+							method = 'lm',
+							trControl = train_control,
+							preProc=c('BoxCox', 'center', 'scale', 'knnImpute')) # (caret docs: 'The Yeo-Johnson transformation is similar to the Box-Cox model but can accommodate predictors with zero and/or negative values (while the predictors values for the Box-Cox transformation must be strictly positive.) ')
+
 	saveRDS(lm_skewness_bc, file = './regression_data/lm_skewness_bc.RDS')
 } else{
 	lm_skewness_bc <- readRDS('./regression_data/lm_skewness_bc.RDS')
@@ -571,11 +622,16 @@ plot(lm_skewness_bc$finalModel)
 ### Linear Regression - remove collinear data - based on caret's recommendation
 
 ```{r linear_regression_collinear_caret, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
 	check_data(regression_train[, recommended_columns_caret], validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_remove_collinearity_caret <- train(target ~ ., data = regression_train[, recommended_columns_caret], method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
+	lm_remove_collinearity_caret <- train(	target ~ .,
+											data = regression_train[, recommended_columns_caret],
+											method = 'lm',
+											trControl = train_control,
+											preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
+
 	saveRDS(lm_remove_collinearity_caret, file = './regression_data/lm_remove_collinearity_caret.RDS')
 } else{
 	lm_remove_collinearity_caret <- readRDS('./regression_data/lm_remove_collinearity_caret.RDS')
@@ -587,11 +643,16 @@ plot(lm_remove_collinearity_caret$finalModel)
 ### Linear Regression - remove collinear data - based on calculation
 
 ```{r linear_regression_collinear_calc, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
 	check_data(regression_train[, recommended_columns_custom], validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_remove_collinearity_custom <- train(target ~ ., data = regression_train[, recommended_columns_custom], method = 'lm', trControl = train_control, preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
+	lm_remove_collinearity_custom <- train(	target ~ .,
+											data = regression_train[, recommended_columns_custom],
+											method = 'lm',
+											trControl = train_control,
+											preProc=c('nzv', 'center', 'scale', 'knnImpute')) # APM pg 550
+
 	saveRDS(lm_remove_collinearity_custom, file = './regression_data/lm_remove_collinearity_custom.RDS')
 } else{
 	lm_remove_collinearity_custom <- readRDS('./regression_data/lm_remove_collinearity_custom.RDS')
@@ -603,11 +664,16 @@ plot(lm_remove_collinearity_custom$finalModel)
 ### Robust Linear Regression
 
 ```{r robust_linear, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_robust <- train(target ~ ., data = regression_train, method = 'rlm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # by default uses the 'Huber' approach. (APM pg 130.) 'The Huber function uses the squared residuals when they are 'small' and the simple difference between the observed and predicted values values when the residuals are above a threshold.' (APM pg 109f)
+	lm_robust <- train(	target ~ .,
+						data = regression_train,
+						method = 'rlm',
+						trControl = train_control,
+						preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # by default uses the 'Huber' approach. (APM pg 130.) 'The Huber function uses the squared residuals when they are 'small' and the simple difference between the observed and predicted values values when the residuals are above a threshold.' (APM pg 109f)
+
 	saveRDS(lm_robust, file = './regression_data/lm_robust.RDS')
 } else{
 	lm_robust <- readRDS('./regression_data/lm_robust.RDS')
@@ -619,11 +685,16 @@ plot(lm_robust$finalModel)
 ### Linear Regression - spatial sign
 
 ```{r linear_regression_spatial_sign, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = TRUE)
+
 	set.seed(seed)
-	lm_spatial_sign <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('center', 'scale', 'knnImpute', 'spatialSign'))
+	lm_spatial_sign <- train(	target ~ .,
+								data = regression_train,
+								method = 'lm',
+								trControl = train_control,
+								preProc=c('center', 'scale', 'knnImpute', 'spatialSign'))
+
 	saveRDS(lm_spatial_sign, file = './regression_data/lm_spatial_sign.RDS')
 } else{
 	lm_spatial_sign <- readRDS('./regression_data/lm_spatial_sign.RDS')
@@ -635,10 +706,16 @@ plot(lm_spatial_sign$finalModel)
 ### Linear Regression - principal components analysis
 
 ```{r linear_regression_PCA, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	lm_pca <- train(target ~ ., data = regression_train, method = 'lm', trControl = train_control, preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # (APM pg 37 'to help PCA avoid summarizing distributional differences and predictor scale informatino, it is best to first transform skewed predictors and then center and scale the predictors prior to performing PCA. Centering and scaling enables PCA to find the underlying relationships in the data without being influenced by the original measurement scales.')
+	lm_pca <- train(target ~ .,
+					data = regression_train,
+					method = 'lm',
+					trControl = train_control,
+					preProc=c('YeoJohnson', 'center', 'scale', 'knnImpute', 'pca')) # (APM pg 37 'to help PCA avoid summarizing distributional differences and predictor scale informatino, it is best to first transform skewed predictors and then center and scale the predictors prior to performing PCA. Centering and scaling enables PCA to find the underlying relationships in the data without being influenced by the original measurement scales.')
+
 	saveRDS(lm_pca, file = './regression_data/lm_pca.RDS')
 } else{
 	lm_pca <- readRDS('./regression_data/lm_pca.RDS')
@@ -650,10 +727,17 @@ plot(lm_pca$finalModel)
 ### Principal Component Regression
 
 ```{r principal_component_PCR, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	lm_pcr <- train(target ~ ., data = regression_train, method = 'pcr', trControl = train_control, tuneLength = 20, preProc = c('center', 'scale', 'knnImpute'))
+	lm_pcr <- train(target ~ ., 
+					data = regression_train,
+					method = 'pcr',
+					trControl = train_control,
+					tuneLength = 20,
+					preProc = c('center', 'scale', 'knnImpute'))
+
 	saveRDS(lm_pcr, file = './regression_data/lm_pcr.RDS')
 } else{
 	lm_pcr <- readRDS('./regression_data/lm_pcr.RDS')
@@ -665,10 +749,16 @@ plot(lm_pcr)
 ### Partial Least Squares
 
 ```{r partial_least_squares, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	lm_pls <- train(target ~ ., data = regression_train, method = 'pls', trControl = train_control, preProc = c('center', 'scale', 'knnImpute'), tuneLength = 14)
+	lm_pls <- train(target ~ .,
+					data = regression_train,
+					method = 'pls',
+					trControl = train_control,
+					preProc = c('center', 'scale', 'knnImpute'), tuneLength = 14)
+
 	saveRDS(lm_pls, file = './regression_data/lm_pls.RDS')
 } else{
 	lm_pls <- readRDS('./regression_data/lm_pls.RDS')
@@ -679,17 +769,33 @@ summary(lm_pls)
 plot(lm_pls)
 
 # Compare # of components of PCR vs. PLS
-xyplot(RMSE ~ ncomp, data = rbind(lm_pls$results %>% mutate(Model = 'PLS'), lm_pcr$results %>% mutate(Model = 'PCR')), xlab = '# Components', ylab = 'RMSE (Cross-Validation)', auto.key = list(columns = 2), groups = Model, type = c('o', 'g'))
+xyplot(RMSE ~ ncomp,data = rbind(	lm_pls$results %>% mutate(Model = 'PLS'), 
+									lm_pcr$results %>% mutate(Model = 'PCR')),
+					xlab = '# Components',
+					ylab = 'RMSE (Cross-Validation)',
+					auto.key = list(columns = 2),
+					groups = Model,
+					type = c('o', 'g'))
 ```
 
 ### Ridge Regression
 
 ```{r ridge_regression, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	training_tune_grid <- expand.grid(lambda = tuning_ridge_lambda)
+	check_data(	dataset = regression_train,
+				validate_n_p = TRUE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'ridge')
+
 	set.seed(seed)
-	lm_ridge <- train(target ~ ., data = regression_train, method = 'ridge', tuneGrid = expand.grid(lambda = tuning_ridge_lambda) , trControl = train_control, preProc = c('center', 'scale', 'knnImpute'))
+	lm_ridge <- train(	target ~ .,
+						data = regression_train,
+						method = 'ridge',
+						tuneGrid = training_tune_grid,
+						trControl = train_control,
+						preProc = c('center', 'scale', 'knnImpute'))
+
 	saveRDS(lm_ridge, file = './regression_data/lm_ridge.RDS')
 } else{
 	lm_ridge <- readRDS('./regression_data/lm_ridge.RDS')
@@ -701,11 +807,21 @@ plot(lm_ridge)
 ### ridge & lasso combo
 
 ```{r ridge_lasso, echo = FALSE}
-if(refresh_models)
-{
-	check_data(regression_train, validate_n_p = TRUE)
+if(refresh_models) {
+	training_tune_grid <- expand.grid(lambda = tuning_enet_lambda, fraction = tuning_enet_fraction)
+	check_data( dataset = regression_train,
+				validate_n_p = TRUE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'enet')
+
 	set.seed(seed)
-	lm_enet <- train(target ~ ., data = regression_train, method = 'enet', tuneGrid = expand.grid(lambda = tuning_enet_lambda, fraction = tuning_enet_fraction), trControl = train_control, preProc = c('center', 'scale', 'knnImpute'))
+	lm_enet <- train(	target ~ .,
+						data = regression_train,
+						method = 'enet',
+						tuneGrid = training_tune_grid,
+						trControl = train_control,
+						preProc = c('center', 'scale', 'knnImpute'))
+
 	saveRDS(lm_enet, file = './regression_data/lm_enet.RDS')
 } else{
 	lm_enet <- readRDS('./regression_data/lm_enet.RDS')
@@ -718,17 +834,25 @@ plot(lm_enet)
 ### neural network - basic
 
 ```{r neural_network_basic, echo = FALSE, eval=FALSE, include=FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- expand.grid(decay = tuning_neural_network_decay, size = tuning_neural_network_size)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'nnet')
+
 	set.seed(seed)
-	nlm_neur_net_basic <- train(target ~ ., data = regression_train, method = 'nnet',
-							tuneGrid = expand.grid(decay = tuning_neural_network_decay, size = tuning_neural_network_size),
-							trControl = train_control,
-							preProc = c('nzv', 'center', 'scale', 'knnImpute'),
-							linout = parameter_neural_network_linout,
-							trace = parameter_neural_network_trace,
-							MaxNWts = parameter_neural_network_max_num_weights,
-							maxit = parameter_neural_network_max_iterations)
+	nlm_neur_net_basic <- train(target ~ .,
+								data = regression_train,
+								method = 'nnet',
+								tuneGrid = training_tune_grid,
+								trControl = train_control,
+								preProc = c('nzv', 'center', 'scale', 'knnImpute'),
+								linout = parameter_neural_network_linout,
+								trace = parameter_neural_network_trace,
+								MaxNWts = parameter_neural_network_max_num_weights,
+								maxit = parameter_neural_network_max_iterations)
+
 	saveRDS(nlm_neur_net_basic, file = './regression_data/nlm_neur_net_basic.RDS')
 } else{
 	nlm_neur_net_basic <- readRDS('./regression_data/nlm_neur_net_basic.RDS')
@@ -740,17 +864,25 @@ plot(nlm_neur_net_basic)
 ### neural network - basic - removing correlated predictors
 
 ```{r neural_network_basic_removing_correlated_predictors, echo = FALSE, eval=FALSE, include=FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- expand.grid(decay = tuning_neural_network_decay, size = tuning_neural_network_size)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'nnet')
+
 	set.seed(seed)
-	nlm_neur_net_basic_remove_corr <- train(target ~ ., data = regression_train[, recommended_columns_caret], method = 'nnet',
-							tuneGrid = expand.grid(decay = tuning_neural_network_decay, size = tuning_neural_network_size),
-							trControl = train_control,
-							preProc = c('nzv', 'center', 'scale', 'knnImpute'),
-							linout = parameter_neural_network_linout,
-							trace = parameter_neural_network_trace,
-							MaxNWts = parameter_neural_network_max_num_weights,
-							maxit = parameter_neural_network_max_iterations)
+	nlm_neur_net_basic_remove_corr <- train(target ~ .,
+											data = regression_train[, recommended_columns_caret],
+											method = 'nnet',
+											tuneGrid = training_tune_grid,
+											trControl = train_control,
+											preProc = c('nzv', 'center', 'scale', 'knnImpute'),
+											linout = parameter_neural_network_linout,
+											trace = parameter_neural_network_trace,
+											MaxNWts = parameter_neural_network_max_num_weights,
+											maxit = parameter_neural_network_max_iterations)
+
 	saveRDS(nlm_neur_net_basic_remove_corr, file = './regression_data/nlm_neur_net_basic_remove_corr.RDS')
 } else{
 	nlm_neur_net_basic_remove_corr <- readRDS('./regression_data/nlm_neur_net_basic_remove_corr.RDS')
@@ -762,17 +894,27 @@ plot(nlm_neur_net_basic_remove_corr)
 ### neural network - model averaging - removing correlated predictors
 
 ```{r neural_network_averaging_removing_correlated_predictors, echo = FALSE, eval=FALSE, include=FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- expand.grid(	decay = tuning_neural_network_decay,
+										size = tuning_neural_network_size,
+										bag = tuning_neural_network_bag)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'avNNet')
+
 	set.seed(seed)
-	nlm_neur_net_averaging_remove_corr <- train(target ~ ., data = regression_train[, recommended_columns_caret], method = 'avNNet',
-							tuneGrid = expand.grid(decay = tuning_neural_network_decay, size = tuning_neural_network_size, bag = tuning_neural_network_bag),
-							trControl = train_control,
-							preProc = c('nzv', 'center', 'scale', 'knnImpute'),
-							linout = parameter_neural_network_linout,
-							trace = parameter_neural_network_trace,
-							MaxNWts = parameter_neural_network_max_num_weights,
-							maxit = parameter_neural_network_max_iterations)
+	nlm_neur_net_averaging_remove_corr <- train(target ~ .,
+												data = regression_train[, recommended_columns_caret],
+												method = 'avNNet',
+												tuneGrid = training_tune_grid,
+												trControl = train_control,
+												preProc = c('nzv', 'center', 'scale', 'knnImpute'),
+												linout = parameter_neural_network_linout,
+												trace = parameter_neural_network_trace,
+												MaxNWts = parameter_neural_network_max_num_weights,
+												maxit = parameter_neural_network_max_iterations)
+
 	saveRDS(nlm_neur_net_averaging_remove_corr, file = './regression_data/nlm_neur_net_averaging_remove_corr.RDS')
 } else{
 	nlm_neur_net_averaging_remove_corr <- readRDS('./regression_data/nlm_neur_net_averaging_remove_corr.RDS')
@@ -785,17 +927,27 @@ plot(nlm_neur_net_averaging_remove_corr)
 ### neural network - model averaging - PCA
 
 ```{r neural_network_averaging_PCA, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- expand.grid(	decay = tuning_neural_network_decay,
+										size = tuning_neural_network_size,
+										bag = tuning_neural_network_bag)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'avNNet')
+
 	set.seed(seed)
-	nlm_neur_net_averaging_pca <- train(target ~ ., data = regression_train, method = 'avNNet',
-							tuneGrid = expand.grid(decay = tuning_neural_network_decay, size = tuning_neural_network_size, bag = tuning_neural_network_bag),
-							trControl = train_control,
-							preProc = c('nzv', 'YeoJohnson', 'center', 'scale', 'knnImpute', 'pca'),
-							linout = parameter_neural_network_linout,
-							trace = parameter_neural_network_trace,
-							MaxNWts = parameter_neural_network_max_num_weights,
-							maxit = parameter_neural_network_max_iterations)
+	nlm_neur_net_averaging_pca <- train(target ~ .,
+										data = regression_train,
+										method = 'avNNet',
+										tuneGrid = training_tune_grid,
+										trControl = train_control,
+										preProc = c('nzv', 'YeoJohnson', 'center', 'scale', 'knnImpute', 'pca'),
+										linout = parameter_neural_network_linout,
+										trace = parameter_neural_network_trace,
+										MaxNWts = parameter_neural_network_max_num_weights,
+										maxit = parameter_neural_network_max_iterations)
+
 	saveRDS(nlm_neur_net_averaging_pca, file = './regression_data/nlm_neur_net_averaging_pca.RDS')
 } else{
 	nlm_neur_net_averaging_pca <- readRDS('./regression_data/nlm_neur_net_averaging_pca.RDS')
@@ -807,10 +959,20 @@ plot(nlm_neur_net_averaging_pca)
 ### MARS (Multivariate Adaptive Regression Splines)
 
 ```{r mars, echo = FALSE, fig.height=6, fig.width=9}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- expand.grid(degree = tuning_mars_degree, nprune = tuning_mars_nprune)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'earth')
+
 	set.seed(seed)
-	nlm_mars <- train(target ~ ., data = regression_train, method = 'earth', tuneGrid = expand.grid(degree = tuning_mars_degree, nprune = tuning_mars_nprune), trControl = train_control)
+	nlm_mars <- train(	target ~ .,
+						data = regression_train,
+						method = 'earth',
+						tuneGrid = training_tune_grid,
+						trControl = train_control)
+
 	saveRDS(nlm_mars, file = './regression_data/nlm_mars.RDS')
 } else{
 	nlm_mars <- readRDS('./regression_data/nlm_mars.RDS')
@@ -827,10 +989,17 @@ plotmo(nlm_mars$finalModel)
 ### SVM - Support Vector Machine - Radial
 
 ```{r svm_radial, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	nlm_svm_radial <- train(target ~ ., data = regression_train, method = 'svmRadial', preProc = c('center', 'scale', 'knnImpute'), tuneLength = 14, trControl = train_control) # tuneLength tunes C (sigma is chosen automatically)
+	nlm_svm_radial <- train(target ~ .,
+							data = regression_train,
+							method = 'svmRadial',
+							preProc = c('center', 'scale', 'knnImpute'),
+							tuneLength = 14, # tuneLength tunes C (sigma is chosen automatically)
+							trControl = train_control)
+
 	saveRDS(nlm_svm_radial, file = './regression_data/nlm_svm_radial.RDS')
 } else{
 	nlm_svm_radial <- readRDS('./regression_data/nlm_svm_radial.RDS')
@@ -842,10 +1011,21 @@ plot(nlm_svm_radial, scales = list(x = list(log = 2)))
 ### SVM - Support Vector Machine - Linear
 
 ```{r svm_linear, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- data.frame(C=tuning_svm_cost)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'svmLinear')
+
 	set.seed(seed)
-	nlm_svm_linear <- train(target ~ ., data = regression_train, method = 'svmLinear', preProc = c('center', 'scale', 'knnImpute'), tuneGrid = data.frame(C=tuning_svm_cost), trControl = train_control)
+	nlm_svm_linear <- train(target ~ .,
+							data = regression_train,
+							method = 'svmLinear',
+							preProc = c('center', 'scale', 'knnImpute'),
+							tuneGrid = training_tune_grid,
+							trControl = train_control)
+
 	saveRDS(nlm_svm_linear, file = './regression_data/nlm_svm_linear.RDS')
 } else{
 	nlm_svm_linear <- readRDS('./regression_data/nlm_svm_linear.RDS')
@@ -857,10 +1037,23 @@ plot(nlm_svm_linear, scales = list(x = list(log = 2)))
 ### SVM - Support Vector Machine - Polynomial
 
 ```{r svm_poly, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- expand.grid(	degree = tuning_svm_poly_degree,
+										scale = tuning_svm_poly_scale,
+										C = tuning_svm_cost)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'svmPoly')
+
 	set.seed(seed)
-	nlm_svm_poly <- train(target ~ ., data = regression_train, method = 'svmPoly', preProc = c('center', 'scale', 'knnImpute'), tuneGrid = expand.grid(degree = tuning_svm_poly_degree, scale = tuning_svm_poly_scale, C = tuning_svm_cost), trControl = train_control)
+	nlm_svm_poly <- train(	target ~ .,
+							data = regression_train,
+							method = 'svmPoly',
+							preProc = c('center', 'scale', 'knnImpute'),
+							tuneGrid = training_tune_grid,
+							trControl = train_control)
+
 	saveRDS(nlm_svm_poly, file = './regression_data/nlm_svm_poly.RDS')
 } else{
 	nlm_svm_poly <- readRDS('./regression_data/nlm_svm_poly.RDS')
@@ -872,10 +1065,16 @@ plot(nlm_svm_poly, scales = list(x = list(log = 2),  between = list(x = .5, y = 
 ### CART - Classification and Regression Tree - Tuning over maximum depth
 
 ```{r cart, echo = FALSE, fig.height=6, fig.width=9}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(	dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	tree_cart <- train(target ~ ., data = regression_train, method = 'rpart', tuneLength = 25, trControl = train_control) # tuneLength tunes `cp` (Complexity Parameter)
+	tree_cart <- train(	target ~ .,
+						data = regression_train,
+						method = 'rpart',
+						tuneLength = 25,
+						trControl = train_control) # tuneLength tunes `cp` (Complexity Parameter)
+
 	saveRDS(tree_cart, file = './regression_data/tree_cart.RDS')
 } else{
 	tree_cart <- readRDS('./regression_data/tree_cart.RDS')
@@ -889,10 +1088,16 @@ plot(party_tree)
 ### CART - Classification and Regression Tree - Tuning over maximum depth
 
 ```{r cart2, echo = FALSE, fig.height=6, fig.width=9}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	tree_cart2 <- train(target ~ ., data = regression_train, method = 'rpart2', tuneLength = 25, trControl = train_control) # tuneLength tunes `maxdepth` (Max Tree Depth)
+	tree_cart2 <- train(target ~ .,
+						data = regression_train,
+						method = 'rpart2',
+						tuneLength = 25,
+						trControl = train_control) # tuneLength tunes `maxdepth` (Max Tree Depth)
+
 	saveRDS(tree_cart2, file = './regression_data/tree_cart2.RDS')
 } else{
 	tree_cart2 <- readRDS('./regression_data/tree_cart2.RDS')
@@ -906,10 +1111,20 @@ plot(party_tree)
 ### Conditional Inference Tree
 
 ```{r conditional_inference, echo = FALSE, fig.height=6, fig.width=9}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- data.frame(mincriterion = tuning_ctree_mincriterion)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'ctree')
+
 	set.seed(seed)
-	tree_cond_inference <- train(target ~ ., data = regression_train, method = 'ctree', tuneGrid = data.frame(mincriterion = tuning_ctree_mincriterion), trControl = train_control)
+	tree_cond_inference <- train(	target ~ .,
+									data = regression_train,
+									method = 'ctree',
+									tuneGrid = training_tune_grid,
+									trControl = train_control)
+
 	saveRDS(tree_cond_inference, file = './regression_data/tree_cond_inference.RDS')
 } else{
 	tree_cond_inference <- readRDS('./regression_data/tree_cond_inference.RDS')
@@ -922,10 +1137,16 @@ plot(tree_cond_inference$finalModel)
 ### Conditional Inference Tree - Tuning over maximum depth
 
 ```{r conditional_inference2, echo = FALSE, fig.height=6, fig.width=9}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	tree_cond_inference2 <- train(target ~ ., data = regression_train, method = 'ctree2', tuneLength = 25, trControl = train_control) # tuneLength tunes `maxdepth` (Max Tree Depth)
+	tree_cond_inference2 <- train(	target ~ .,
+									data = regression_train,
+									method = 'ctree2',
+									tuneLength = 25, # tuneLength tunes `maxdepth` (Max Tree Depth)
+									trControl = train_control)
+
 	saveRDS(tree_cond_inference2, file = './regression_data/tree_cond_inference2.RDS')
 } else{
 	tree_cond_inference2 <- readRDS('./regression_data/tree_cond_inference2.RDS')
@@ -940,10 +1161,16 @@ plot(tree_cond_inference2$finalModel)
 > This model is failing (not only for me, try in the future, seems like a problem in RWeka): https://github.com/topepo/caret/issues/618
 
 ```{r model_trees_m5, echo = FALSE, eval=FALSE, include=FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	tree_m5 <- train(target ~ ., data = regression_train, method = 'M5', tuneLength = 25, trControl = train_control, trace = FALSE) # tuneLength tunes `maxdepth` (Max Tree Depth)
+	tree_m5 <- train(	target ~ .,
+						data = regression_train,
+						method = 'M5',
+						tuneLength = 25, # tuneLength tunes `maxdepth` (Max Tree Depth)
+						trControl = train_control, trace = FALSE)
+
 	saveRDS(tree_m5, file = './regression_data/tree_m5.RDS')
 } else{
 	tree_m5 <- readRDS('./regression_data/tree_m5.RDS')
@@ -958,10 +1185,17 @@ plot(tree_m5$finalModel)
 > This model is failing (not only for me, try in the future, seems like a problem in RWeka): https://github.com/topepo/caret/issues/618
 
 ```{r model_trees_m5rules, echo = FALSE, eval=FALSE, include=FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	tree_m5rules <- train(target ~ ., data = regression_train, method = 'M5Rules', tuneLength = 25, trControl = train_control, trace = FALSE) # tuneLength tunes `maxdepth` (Max Tree Depth)
+	tree_m5rules <- train(	target ~ .,
+							data = regression_train,
+							method = 'M5Rules',
+							tuneLength = 25, # tuneLength tunes `maxdepth` (Max Tree Depth)
+							trControl = train_control,
+							trace = FALSE)
+
 	saveRDS(tree_m5rules, file = './regression_data/tree_m5rules.RDS')
 } else{
 	tree_m5rules <- readRDS('./regression_data/tree_m5rules.RDS')
@@ -974,10 +1208,16 @@ plot(tree_m5rules$finalModel)
 ### Bagged Trees
 
 ```{r bagged_trees, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	check_data(dataset = regression_train, validate_n_p = FALSE)
+
 	set.seed(seed)
-	ensemble_bagged_tree <- train(target ~ ., data = regression_train, method = 'treebag', nbagg = tuning_treebag_nbagg, trControl = train_control)
+	ensemble_bagged_tree <- train(	target ~ .,
+									data = regression_train,
+									method = 'treebag',
+									nbagg = tuning_treebag_nbagg,
+									trControl = train_control)
+
 	saveRDS(ensemble_bagged_tree, file = './regression_data/ensemble_bagged_tree.RDS')
 } else{
 	ensemble_bagged_tree <- readRDS('./regression_data/ensemble_bagged_tree.RDS')
@@ -989,10 +1229,22 @@ summary(ensemble_bagged_tree)
 ### Random Forest
 
 ```{r random_forest, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- data.frame(mtry = tuning_random_forest_mtry)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'rf')
+
 	set.seed(seed)
-	ensemble_random_forest <- train(target ~ ., data = regression_train, method = 'rf', tuneGrid = data.frame(mtry = tuning_random_forest_mtry), ntree = parameter_random_forest_ntree, trControl = train_control, preProc=c('knnImpute'))
+	ensemble_random_forest <- train(target ~ .,
+									data = regression_train,
+									method = 'rf',
+									tuneGrid = training_tune_grid,
+									ntree = parameter_random_forest_ntree,
+									trControl = train_control,
+									preProc=c('knnImpute'))
+
 	saveRDS(ensemble_random_forest, file = './regression_data/ensemble_random_forest.RDS')
 } else{
 	ensemble_random_forest <- readRDS('./regression_data/ensemble_random_forest.RDS')
@@ -1006,10 +1258,21 @@ plot(ensemble_random_forest)
 ### Random Forest - Conditional Inference
 
 ```{r random_forest_cond_inf, echo = FALSE, eval=FALSE, include=FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- data.frame(mtry = tuning_random_forest_mtry)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'cforest')
+
 	set.seed(seed)
-	ensemble_random_forest_cond_inf <- train(target ~ ., data = regression_train, method = 'cforest', tuneGrid = data.frame(mtry = tuning_random_forest_mtry), controls = cforest_unbiased(ntree = parameter_random_forest_ntree), trControl = train_control)
+	ensemble_random_forest_cond_inf <- train(	target ~ .,
+												data = regression_train,
+												method = 'cforest',
+												tuneGrid = training_tune_grid,
+												controls = cforest_unbiased(ntree = parameter_random_forest_ntree),
+												trControl = train_control)
+
 	saveRDS(ensemble_random_forest_cond_inf, file = './regression_data/ensemble_random_forest_cond_inf.RDS')
 } else{
 	ensemble_random_forest_cond_inf <- readRDS('./regression_data/ensemble_random_forest_cond_inf.RDS')
@@ -1024,10 +1287,24 @@ plot(ensemble_random_forest_cond_inf)
 ### Boosting
 
 ```{r boosting, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- expand.grid(	interaction.depth = tuning_boosting_interaction_depth,
+										n.trees = tuning_boosting_n_trees,
+										shrinkage = tuning_boosting_shrinkage,
+										n.minobsinnode = tuning_boosting_min_obs_in_node)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'gbm')
+
 	set.seed(seed)
-	ensemble_boosting <- train(target ~ ., data = regression_train, method = 'gbm', tuneGrid = expand.grid(interaction.depth = tuning_boosting_interaction_depth, n.trees = tuning_boosting_n_trees, shrinkage = tuning_boosting_shrinkage, n.minobsinnode = tuning_boosting_min_obs_in_node), trControl = train_control, verbose = FALSE)
+	ensemble_boosting <- train(	target ~ .,
+								data = regression_train,
+								method = 'gbm',
+								tuneGrid = training_tune_grid,
+								trControl = train_control,
+								verbose = FALSE)
+
 	saveRDS(ensemble_boosting, file = './regression_data/ensemble_boosting.RDS')
 } else{
 	ensemble_boosting <- readRDS('./regression_data/ensemble_boosting.RDS')
@@ -1042,10 +1319,21 @@ plot(ensemble_boosting)
 ### Cubist
 
 ```{r cubist, echo = FALSE}
-if(refresh_models)
-{
+if(refresh_models) {
+	training_tune_grid <- expand.grid(	committees = tuning_cubist_committees,
+										neighbors = tuning_cubist_neighbors)
+	check_data(	dataset = regression_train,
+				validate_n_p = FALSE,
+				training_tune_grid = training_tune_grid,
+				training_method = 'cubist')
+
 	set.seed(seed)
-	ensemble_cubist <- train(target ~ ., data = regression_train, 'cubist', tuneGrid = expand.grid(committees = tuning_cubist_committees, neighbors = tuning_cubist_neighbors), trControl = train_control)
+	ensemble_cubist <- train(target ~ .,
+							data = regression_train,
+							method = 'cubist',
+							tuneGrid = training_tune_grid,
+							trControl = train_control)
+
 	saveRDS(ensemble_cubist, file = './regression_data/ensemble_cubist.RDS')
 } else{
 	ensemble_cubist <- readRDS('./regression_data/ensemble_cubist.RDS')
@@ -1109,7 +1397,8 @@ resamples_long <- resamples$values %>%
 	dplyr::select(-Resample) %>%
 	gather(type, value) %>%
 	separate(col=type, into=c('model', 'metric'), sep = '~') %>%
-	mutate(model = factor(model, levels = rev(resamples$models)), metric = factor(metric, levels = c('RMSE', 'Rsquared')))
+	mutate(	model = factor(model, levels = rev(resamples$models)),
+			metric = factor(metric, levels = c('RMSE', 'Rsquared')))
 
 resamples_means <- resamples_long %>%
 	dplyr::group_by(model, metric) %>%
@@ -1150,7 +1439,9 @@ RMSE <- function(actual, predicted)
 model_plots <- function(model, testing_set){
 
 	predictions <- predict(model, newdata = testing_set %>% dplyr::select(-target))
-	predicted_vs_actual <- data.frame(obs = as.numeric(testing_set$target), pred = as.numeric(predictions), residuals = as.numeric(testing_set$target - predictions))
+	predicted_vs_actual <- data.frame(	obs = as.numeric(testing_set$target),
+										pred = as.numeric(predictions),
+										residuals = as.numeric(testing_set$target - predictions))
 	
 	model_rmse <- RMSE(actual = predicted_vs_actual$obs, predicted = predicted_vs_actual$pred)
 	model_mae <- MAE(actual = predicted_vs_actual$obs, predicted = predicted_vs_actual$pred)
@@ -1174,19 +1465,24 @@ model_plots <- function(model, testing_set){
 		geom_point(alpha=0.2) + # alpha avoids overfiting
 		geom_smooth(method = 'loess', se = TRUE, col='red', size=0.5) + # actual (A loess model fits a complicated curve through a set of points. In some ways, it can be thought of as a complicated moving average. It is the best possible curve (at least, for one sensible definition of best)) http://stats.stackexchange.com/questions/25092/what-is-the-difference-between-simple-linear-model-and-loess-model
 		geom_smooth(method = 'lm', se = TRUE, col='black', size=0.5) + # regression
-		labs(title = 'Predicted vs Observed', subtitle = 'Make sure there is a strong connection. Understand where the model isnt callibrated', caption = 'black == model; red == loess'))
+		labs(title = 'Predicted vs Observed',
+			subtitle = 'Make sure there is a strong connection. Understand where the model isnt callibrated',
+			caption = 'black == model; red == loess'))
 
 	print(ggplot(data = predicted_vs_actual, mapping = aes(x = pred, y = residuals)) +
 		geom_point(alpha=0.2) + # alpha avoids overfiting
 		geom_smooth(method = 'loess', se = TRUE, col='red', size=0.5) + # actual (A loess model fits a complicated curve through a set of points. In some ways, it can be thought of as a complicated moving average. It is the best possible curve (at least, for one sensible definition of best)) http://stats.stackexchange.com/questions/25092/what-is-the-difference-between-simple-linear-model-and-loess-model
 		#geom_smooth(method = 'lm', se = FALSE, col='black', size=0.5) + # regression
-		labs(title = 'Residuals vs. Fit (i.e. predicted)', subtitle = 'Make sure there are no systematic patterns. Think of red line as a `moving average`.'))
+		labs(title = 'Residuals vs. Fit (i.e. predicted)',
+			subtitle = 'Make sure there are no systematic patterns. Think of red line as a `moving average`.'))
 
 	print(ggplot(data = predicted_vs_actual, mapping = aes(x = 1:nrow(predicted_vs_actual), y = residuals)) +
 		geom_point(alpha=0.2) + # alpha avoids overfiting
 		geom_smooth(method = 'loess', se = TRUE, col='red', size=0.5) + # actual (A loess model fits a complicated curve through a set of points. In some ways, it can be thought of as a complicated moving average. It is the best possible curve (at least, for one sensible definition of best)) http://stats.stackexchange.com/questions/25092/what-is-the-difference-between-simple-linear-model-and-loess-model
 		#geom_smooth(method = 'lm', se = FALSE, col='black', size=0.5) + # regression
-		labs(title = 'Lag (ordered) Plot of Residuals By Index', subtitle = 'The residuals should be independent. If independent, there should be no pattern or structure in the lag plot.', x = paste0('Residual Indexes 1-:',nrow(predicted_vs_actual)))) # http://www.itl.nist.gov/div898/handbook/pmd/section4/pmd444.htm
+		labs(title = 'Lag (ordered) Plot of Residuals By Index',
+			subtitle = 'The residuals should be independent. If independent, there should be no pattern or structure in the lag plot.',
+			x = paste0('Residual Indexes 1-:',nrow(predicted_vs_actual)))) # http://www.itl.nist.gov/div898/handbook/pmd/section4/pmd444.htm
 
 	#plot(density(predicted_vs_actual$residuals))
 	fun_args <- list(mean = mean(predicted_vs_actual$residuals), sd = sd(predicted_vs_actual$residuals))
@@ -1195,7 +1491,9 @@ model_plots <- function(model, testing_set){
 		geom_density(col = "red") + # emperical PDF
 		stat_function(fun = dnorm, args = fun_args, col = "blue") + # theoretical normal PDF, based on data's mean & standard deviation
 		coord_cartesian(xlim = c(-3, 3)) + 
-		labs(title = 'Density Plot of Residuals', subtitle = 'assumption of *linear regression* is that residuals are `normal`', caption = 'red line is the emperiocal PDF; blue is theoretical normal PDF'))
+		labs(title = 'Density Plot of Residuals',
+			subtitle = 'assumption of *linear regression* is that residuals are `normal`',
+			caption = 'red line is the emperiocal PDF; blue is theoretical normal PDF'))
 
 	print(gg_qq_plot(data_vector = predicted_vs_actual$residuals, data_name = 'residuals'))
 
