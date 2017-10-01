@@ -524,6 +524,8 @@ Models
 
 ### glm\_no\_pre\_process
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.318722127079708`
 
 #### Model Summary
@@ -624,6 +626,8 @@ Models
        1.124
 
 ### glm\_basic\_processing
+
+Using formula in `train()`
 
 > Mean ROC cutoff: `0.318373501838689`
 
@@ -727,6 +731,8 @@ Models
 
 ### glm\_yeojohnson
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.314959958059083`
 
 #### Model Summary
@@ -821,6 +827,8 @@ Models
 
 ### logistic\_regression\_stepwise\_backward
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.310290064910415`
 
 #### Model Summary
@@ -906,6 +914,8 @@ Models
 
 ### linear\_discriminant\_analsysis
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.32609658742466`
 
 #### Model Summary
@@ -962,6 +972,8 @@ Models
 
 ### linear\_discriminant\_analsysis\_remove\_collinear\_skew
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.305594510244253`
 
 #### Model Summary
@@ -1014,6 +1026,8 @@ Models
 
 ### partial\_least\_squares\_discriminant\_analysis
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.427677953560535`Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of components considered: 4 TRAINING: % variance explained
 
 #### Model Predictors
@@ -1059,6 +1073,8 @@ Models
 
 ### partial\_least\_squares\_discriminant\_analysis\_skew
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.426019805652964`Data: X dimension: 900 29 Y dimension: 900 2 Fit method: oscorespls Number of components considered: 4 TRAINING: % variance explained
 
 #### Model Predictors
@@ -1103,6 +1119,8 @@ Models
      0.01100
 
 ### glmnet\_lasso\_ridge
+
+Using formula in `train()`
 
 > Mean ROC cutoff: `0.341277098088859`
 
@@ -1170,6 +1188,8 @@ Models
 
 ### sparse\_lda
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.329047602264799`
 
 #### Model Summary
@@ -1231,6 +1251,8 @@ Models
 > was causing an error, turned off
 
 ### regularized\_discriminant\_analysis
+
+Using formula in `train()`
 
 > Mean ROC cutoff: `0.314184820135548`
 
@@ -1294,6 +1316,10 @@ Models
 > No collinear columns removed... skipping.
 
 ### mixture\_discriminant\_analysis
+
+Using formula in `train()`
+
+    Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info = trainInfo, : There were missing values in resampled performance measures.
 
 > Mean ROC cutoff: `0.326159912569579`
 
@@ -1361,7 +1387,11 @@ Models
 
 ### neural\_network\_spatial\_rc
 
+> Setting `nnet` specific parameters: `MaxNWts` - `181`; `maxit` - `2000`
+
     Loading required package: nnet
+
+    Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info = trainInfo, : There were missing values in resampled performance measures.
 
 > Mean ROC cutoff: `0.331450032514323`
 
@@ -1419,6 +1449,10 @@ Models
 
 ### neural\_network\_spatial\_rc\_skew
 
+> Setting `nnet` specific parameters: `MaxNWts` - `181`; `maxit` - `2000`
+
+    Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info = trainInfo, : There were missing values in resampled performance measures.
+
 > Mean ROC cutoff: `0.319020384133483`
 
 #### Model Summary
@@ -1474,6 +1508,8 @@ Models
        1.875
 
 ### flexible\_discriminant\_analsysis
+
+Using formula in `train()`
 
     Loading required package: earth
 
@@ -1570,6 +1606,8 @@ Models
 
 ### svm\_linear
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.304256766203935`
 
 #### Model Summary
@@ -1633,6 +1671,8 @@ Models
 
 ### svm\_polynomial
 
+Using formula in `train()`
+
     Loading required package: kernlab
 
 
@@ -1689,6 +1729,8 @@ Models
 
 ### svm\_radial
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.302516023292395`
 
 #### Model Summary
@@ -1733,6 +1775,8 @@ Models
          0.5063
 
 ### k\_nearest\_neighbors
+
+Using formula in `train()`
 
 > Mean ROC cutoff: `0.286801915485666`
 
@@ -1785,6 +1829,10 @@ Models
          0.5063
 
 ### naive\_bayes
+
+Using formula in `train()`
+
+    Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info = trainInfo, : There were missing values in resampled performance measures.
 
     Warning in FUN(X[[i]], ...): Numerical 0 probability for all classes with observation 37
 
@@ -1856,6 +1904,8 @@ Models
 > See APM pg 373/405 for descriptions on independent categories (binary dummy variables) vs grouped categories
 >
 > When you use the formula interface, most modeling functions (including train, lm, glm, etc) internally run model.matrix to process the data set. This will create dummy variables from any factor variables. The non-formula interface does not \[1\]. <https://stackoverflow.com/questions/22200923/different-results-with-formula-and-non-formula-for-caret-training>
+
+Using formula in `train()`
 
     Loading required package: rpart
 
@@ -1953,6 +2003,8 @@ Models
 
 ### rpart\_grouped\_categories
 
+*Not* using formula in `train()`
+
 > Mean ROC cutoff: `0.281021604841888`
 
 #### Model Summary
@@ -2040,6 +2092,8 @@ Models
 
 ### treebag\_independent\_categories
 
+Using formula in `train()`
+
     Loading required package: ipred
 
 > Mean ROC cutoff: `0.436666666666667`
@@ -2102,6 +2156,8 @@ Models
 
 ### treebag\_grouped\_categories
 
+*Not* using formula in `train()`
+
 > Mean ROC cutoff: `0.448`
 
 #### Model Summary
@@ -2152,6 +2208,8 @@ Models
 
 ### c50\_model\_independent\_categories
 
+Using formula in `train()`
+
     Loading required package: C50
 
 > Mean ROC cutoff: `0.440844410001459`
@@ -2165,7 +2223,7 @@ Models
      "label", "seed")))
 
 
-    C5.0 [Release 2.07 GPL Edition]     Tue Jun 27 22:01:01 2017
+    C5.0 [Release 2.07 GPL Edition]     Sat Sep 30 19:04:32 2017
     -------------------------------
 
     Class specified by attribute `outcome'
@@ -18282,7 +18340,7 @@ Models
          25.67% jobunemployed
 
 
-    Time: 1.3 secs
+    Time: 1.4 secs
 
 #### Model Predictors
 
@@ -18328,6 +18386,8 @@ Models
 
 ### c50\_model\_grouped\_categories
 
+*Not* using formula in `train()`
+
 > Mean ROC cutoff: `0.452914864767327`
 
 #### Model Summary
@@ -18339,7 +18399,7 @@ Models
      "sample", "earlyStopping", "label", "seed")))
 
 
-    C5.0 [Release 2.07 GPL Edition]     Tue Jun 27 21:54:06 2017
+    C5.0 [Release 2.07 GPL Edition]     Sat Sep 30 19:05:18 2017
     -------------------------------
 
     Class specified by attribute `outcome'
@@ -40763,6 +40823,8 @@ Models
 
 ### c50\_rules\_model\_independent\_categories
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.255882627878457`
 
 #### Model Summary
@@ -40772,7 +40834,7 @@ Models
     C5.0.default(x = x, y = y, rules = TRUE, weights = wts)
 
 
-    C5.0 [Release 2.07 GPL Edition]     Tue Jun 27 22:09:33 2017
+    C5.0 [Release 2.07 GPL Edition]     Sat Sep 30 19:05:29 2017
     -------------------------------
 
     Class specified by attribute `outcome'
@@ -41031,6 +41093,8 @@ Models
 
 ### c50\_rules\_model\_grouped\_categories
 
+*Not* using formula in `train()`
+
 > Mean ROC cutoff: `0.383591411701433`
 
 #### Model Summary
@@ -41040,7 +41104,7 @@ Models
     C5.0.default(x = x, y = y, rules = TRUE, weights = wts)
 
 
-    C5.0 [Release 2.07 GPL Edition]     Tue Jun 27 22:10:06 2017
+    C5.0 [Release 2.07 GPL Edition]     Sat Sep 30 19:05:32 2017
     -------------------------------
 
     Class specified by attribute `outcome'
@@ -41345,6 +41409,8 @@ Models
 
 ### rf\_independent\_categories
 
+Using formula in `train()`
+
 > Mean ROC cutoff: `0.460366666666667`
 
 #### Model Summary
@@ -41418,6 +41484,8 @@ Models
 
 ### rf\_grouped\_categories
 
+*Not* using formula in `train()`
+
 > Mean ROC cutoff: `0.4652`
 
 #### Model Summary
@@ -41481,16 +41549,18 @@ Models
 
 ### adaboost\_independent\_categories
 
+Using formula in `train()`
+
     Loading required package: fastAdaboost
 
-> Mean ROC cutoff: `0.500072191041081`
+> Mean ROC cutoff: `0.499749086556228`
 
 #### Model Summary
 
                        Length Class      Mode     
     formula              3    formula    call     
-    trees              350    -none-     list     
-    weights            350    -none-     numeric  
+    trees              250    -none-     list     
+    weights            250    -none-     numeric  
     classnames           2    -none-     character
     dependent_variable   1    -none-     character
     call                 4    -none-     call     
@@ -41537,6 +41607,8 @@ Models
          0.5063
 
 ### adaboost\_grouped\_categories
+
+*Not* using formula in `train()`
 
 > Mean ROC cutoff: `0.500096258498435`
 
@@ -41597,11 +41669,15 @@ Models
 
 > if this takes a long time to run, consider tune\_length rather than tune\_grid
 
+Using formula in `train()`
+
     Loading required package: gbm
 
     Loading required package: splines
 
     Loaded gbm 2.1.3
+
+Iter TrainDeviance ValidDeviance StepSize Improve 1 1.2180 nan 0.0100 0.0019 2 1.2146 nan 0.0100 0.0015 3 1.2111 nan 0.0100 0.0014 4 1.2072 nan 0.0100 0.0015 5 1.2037 nan 0.0100 0.0014 6 1.2003 nan 0.0100 0.0014 7 1.1976 nan 0.0100 0.0010 8 1.1944 nan 0.0100 0.0013 9 1.1914 nan 0.0100 0.0010 10 1.1885 nan 0.0100 0.0011 20 1.1603 nan 0.0100 0.0010 40 1.1157 nan 0.0100 0.0007 60 1.0802 nan 0.0100 0.0004 80 1.0511 nan 0.0100 0.0003 100 1.0280 nan 0.0100 0.0001 120 1.0093 nan 0.0100 -0.0001 140 0.9908 nan 0.0100 0.0003 160 0.9748 nan 0.0100 -0.0001 180 0.9601 nan 0.0100 -0.0000 200 0.9470 nan 0.0100 -0.0000 220 0.9340 nan 0.0100 0.0000 240 0.9220 nan 0.0100 0.0001 260 0.9105 nan 0.0100 0.0000 280 0.8986 nan 0.0100 -0.0000 300 0.8878 nan 0.0100 -0.0000 320 0.8782 nan 0.0100 -0.0001 340 0.8687 nan 0.0100 -0.0001 360 0.8596 nan 0.0100 -0.0001 380 0.8510 nan 0.0100 -0.0002 400 0.8426 nan 0.0100 -0.0001 420 0.8352 nan 0.0100 -0.0001 440 0.8277 nan 0.0100 -0.0001 460 0.8201 nan 0.0100 -0.0002 480 0.8120 nan 0.0100 -0.0001 500 0.8044 nan 0.0100 -0.0000 520 0.7971 nan 0.0100 0.0000 540 0.7894 nan 0.0100 -0.0001 560 0.7831 nan 0.0100 -0.0001 580 0.7767 nan 0.0100 -0.0001 600 0.7707 nan 0.0100 -0.0000 620 0.7645 nan 0.0100 -0.0001 640 0.7588 nan 0.0100 -0.0002 660 0.7529 nan 0.0100 -0.0001 680 0.7479 nan 0.0100 -0.0000 700 0.7418 nan 0.0100 -0.0001 720 0.7360 nan 0.0100 0.0000 740 0.7303 nan 0.0100 -0.0001 760 0.7248 nan 0.0100 -0.0001 780 0.7197 nan 0.0100 -0.0002 800 0.7147 nan 0.0100 -0.0001 820 0.7090 nan 0.0100 -0.0001 840 0.7035 nan 0.0100 -0.0002 860 0.6983 nan 0.0100 -0.0000 880 0.6937 nan 0.0100 -0.0001 900 0.6893 nan 0.0100 -0.0001 920 0.6851 nan 0.0100 -0.0001 940 0.6801 nan 0.0100 -0.0002 960 0.6754 nan 0.0100 -0.0000 980 0.6713 nan 0.0100 -0.0001 1000 0.6665 nan 0.0100 -0.0000 1020 0.6617 nan 0.0100 -0.0002 1040 0.6571 nan 0.0100 -0.0001 1060 0.6526 nan 0.0100 -0.0001 1080 0.6488 nan 0.0100 -0.0002 1100 0.6447 nan 0.0100 -0.0001 1120 0.6405 nan 0.0100 -0.0001 1140 0.6364 nan 0.0100 -0.0002 1160 0.6322 nan 0.0100 -0.0000 1180 0.6286 nan 0.0100 -0.0001 1200 0.6249 nan 0.0100 -0.0001 1220 0.6209 nan 0.0100 -0.0001 1240 0.6169 nan 0.0100 -0.0001 1260 0.6126 nan 0.0100 -0.0001 1280 0.6086 nan 0.0100 -0.0001 1300 0.6047 nan 0.0100 -0.0000 1320 0.6009 nan 0.0100 -0.0001 1340 0.5967 nan 0.0100 -0.0001 1360 0.5934 nan 0.0100 -0.0002 1380 0.5894 nan 0.0100 -0.0001 1400 0.5859 nan 0.0100 -0.0001 1420 0.5826 nan 0.0100 -0.0001 1440 0.5793 nan 0.0100 -0.0001 1460 0.5759 nan 0.0100 -0.0001 1480 0.5728 nan 0.0100 -0.0001 1500 0.5695 nan 0.0100 -0.0002 1520 0.5666 nan 0.0100 -0.0002 1540 0.5630 nan 0.0100 -0.0002 1560 0.5601 nan 0.0100 -0.0001 1580 0.5567 nan 0.0100 -0.0001 1600 0.5530 nan 0.0100 -0.0000 1620 0.5498 nan 0.0100 -0.0001 1640 0.5465 nan 0.0100 -0.0002 1660 0.5441 nan 0.0100 -0.0001 1680 0.5410 nan 0.0100 -0.0001 1700 0.5377 nan 0.0100 -0.0002 1720 0.5352 nan 0.0100 -0.0003 1740 0.5322 nan 0.0100 -0.0001 1760 0.5287 nan 0.0100 -0.0001 1780 0.5257 nan 0.0100 -0.0002 1800 0.5227 nan 0.0100 -0.0002 1820 0.5195 nan 0.0100 -0.0001 1840 0.5158 nan 0.0100 -0.0001 1860 0.5132 nan 0.0100 -0.0002 1880 0.5103 nan 0.0100 -0.0002 1900 0.5073 nan 0.0100 -0.0001 1920 0.5041 nan 0.0100 -0.0001 1940 0.5014 nan 0.0100 -0.0002 1960 0.4992 nan 0.0100 -0.0001 1980 0.4966 nan 0.0100 -0.0001 2000 0.4938 nan 0.0100 -0.0001 2020 0.4906 nan 0.0100 -0.0002 2040 0.4877 nan 0.0100 -0.0001 2060 0.4854 nan 0.0100 -0.0001 2080 0.4826 nan 0.0100 -0.0001 2100 0.4798 nan 0.0100 -0.0001 2120 0.4773 nan 0.0100 -0.0001 2140 0.4747 nan 0.0100 -0.0001 2160 0.4721 nan 0.0100 -0.0001 2180 0.4696 nan 0.0100 -0.0001 2200 0.4668 nan 0.0100 -0.0001 2220 0.4642 nan 0.0100 -0.0001 2240 0.4619 nan 0.0100 -0.0001 2260 0.4593 nan 0.0100 -0.0001 2280 0.4568 nan 0.0100 -0.0001 2300 0.4543 nan 0.0100 -0.0001 2320 0.4520 nan 0.0100 -0.0001 2340 0.4494 nan 0.0100 0.0000 2360 0.4470 nan 0.0100 -0.0001 2380 0.4446 nan 0.0100 -0.0001 2400 0.4422 nan 0.0100 -0.0001 2420 0.4402 nan 0.0100 -0.0001 2440 0.4380 nan 0.0100 -0.0001 2460 0.4357 nan 0.0100 -0.0001 2480 0.4332 nan 0.0100 -0.0001 2500 0.4309 nan 0.0100 -0.0000 2520 0.4287 nan 0.0100 -0.0001 2525 0.4280 nan 0.0100 -0.0000
 
 > Mean ROC cutoff: `0.376947978633954`<img src="predictive_analysis_classification_files/figure-markdown_github/gbm_independent_categories-1.png" width="750px" />
 
@@ -41687,6 +41763,10 @@ Models
        94.15
 
 ### gbm\_grouped\_categories (stochastic gradient boosting)
+
+*Not* using formula in `train()`
+
+Iter TrainDeviance ValidDeviance StepSize Improve 1 1.1835 nan 0.1000 0.0190 2 1.1519 nan 0.1000 0.0130 3 1.1274 nan 0.1000 0.0091 4 1.1030 nan 0.1000 0.0067 5 1.0852 nan 0.1000 0.0068 6 1.0682 nan 0.1000 0.0057 7 1.0503 nan 0.1000 0.0058 8 1.0331 nan 0.1000 0.0052 9 1.0201 nan 0.1000 0.0023 10 1.0084 nan 0.1000 0.0021 20 0.9185 nan 0.1000 0.0009 40 0.8103 nan 0.1000 -0.0027 50 0.7766 nan 0.1000 -0.0020
 
 > Mean ROC cutoff: `0.330734623669432`<img src="predictive_analysis_classification_files/figure-markdown_github/gbm_grouped_categories-1.png" width="750px" />
 
@@ -41791,7 +41871,7 @@ Resamples
     ## c50_rules_model_grouped_categories                  0.5881834 0.6363904 0.6651969 0.6643935 0.6912845 0.7513228    0
     ## rf_independent_categories                           0.6751911 0.7414021 0.7723398 0.7647952 0.7860817 0.8665491    0
     ## rf_grouped_categories                               0.7101705 0.7544827 0.7830688 0.7819910 0.8084215 0.8962375    0
-    ## adaboost_independent_categories                     0.6637272 0.7181070 0.7480894 0.7477366 0.7799824 0.8477366    0
+    ## adaboost_independent_categories                     0.6596120 0.7142857 0.7439741 0.7462865 0.7792475 0.8471487    0
     ## adaboost_grouped_categories                         0.6931217 0.7244268 0.7583774 0.7572996 0.7890947 0.8835979    0
     ## gbm_independent_categories                          0.6807760 0.7408877 0.7771899 0.7688615 0.7840976 0.8594944    0
     ## gbm_grouped_categories                              0.7166373 0.7504409 0.7698413 0.7759945 0.8007055 0.8694885    0
@@ -41828,7 +41908,7 @@ Resamples
     ## c50_rules_model_grouped_categories                  0.18518519 0.3333333 0.3518519 0.385185185 0.4444444 0.62962963    0
     ## rf_independent_categories                           0.25925926 0.3703704 0.4259259 0.422222222 0.4814815 0.55555556    0
     ## rf_grouped_categories                               0.25925926 0.3796296 0.4444444 0.439506173 0.4814815 0.55555556    0
-    ## adaboost_independent_categories                     0.22222222 0.4074074 0.4444444 0.454320988 0.5185185 0.62962963    0
+    ## adaboost_independent_categories                     0.29629630 0.4074074 0.4444444 0.458024691 0.5185185 0.62962963    0
     ## adaboost_grouped_categories                         0.22222222 0.4074074 0.4444444 0.450617284 0.4814815 0.59259259    0
     ## gbm_independent_categories                          0.29629630 0.4166667 0.4814815 0.477777778 0.5462963 0.62962963    0
     ## gbm_grouped_categories                              0.18518519 0.3703704 0.4259259 0.418518519 0.4814815 0.55555556    0
@@ -41865,7 +41945,7 @@ Resamples
     ## c50_rules_model_grouped_categories                  0.7142857 0.8412698 0.8730159 0.8708995 0.9007937 0.9523810    0
     ## rf_independent_categories                           0.8253968 0.8571429 0.8888889 0.8883598 0.9206349 0.9523810    0
     ## rf_grouped_categories                               0.8253968 0.8730159 0.8968254 0.8968254 0.9325397 0.9523810    0
-    ## adaboost_independent_categories                     0.7619048 0.8412698 0.8492063 0.8592593 0.8888889 0.9523810    0
+    ## adaboost_independent_categories                     0.7777778 0.8253968 0.8412698 0.8576720 0.8888889 0.9523810    0
     ## adaboost_grouped_categories                         0.7777778 0.8412698 0.8571429 0.8682540 0.8888889 0.9682540    0
     ## gbm_independent_categories                          0.7936508 0.8253968 0.8571429 0.8661376 0.9047619 0.9682540    0
     ## gbm_grouped_categories                              0.8253968 0.8571429 0.8968254 0.8936508 0.9206349 0.9682540    0
@@ -41880,6 +41960,8 @@ Train Top Models on Entire Training Dataset & Predict on Test Set
 ### Random Forest (rf\_grouped\_categories)
 
 > Model Processing: \` \`
+
+> Non-Formula Columns: `checking_balance, months_loan_duration, credit_history, purpose, amount, savings_balance, employment_duration, percent_of_income, years_at_residence, age, other_credit, housing, existing_loans_count, job, dependents, phone`
 
                     Length Class      Mode     
     call               4   -none-     call     
@@ -41971,6 +42053,10 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
 
 > Model Processing: \` \`
 
+> Non-Formula Columns: `checking_balance, months_loan_duration, credit_history, purpose, amount, savings_balance, employment_duration, percent_of_income, years_at_residence, age, other_credit, housing, existing_loans_count, job, dependents, phone`
+
+Iter TrainDeviance ValidDeviance StepSize Improve 1 1.1855 nan 0.1000 0.0137 2 1.1590 nan 0.1000 0.0104 3 1.1335 nan 0.1000 0.0121 4 1.1058 nan 0.1000 0.0091 5 1.0848 nan 0.1000 0.0076 6 1.0713 nan 0.1000 0.0035 7 1.0549 nan 0.1000 0.0037 8 1.0396 nan 0.1000 0.0051 9 1.0244 nan 0.1000 0.0020 10 1.0124 nan 0.1000 0.0026 20 0.9175 nan 0.1000 -0.0001 40 0.8091 nan 0.1000 -0.0001 50 0.7696 nan 0.1000 0.0005
+
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-12.png" width="750px" />`var    rel.inf      checking_balance 20.2991981                amount 14.7668276  months_loan_duration 12.9758115        credit_history  9.1126882   employment_duration  7.7445948       savings_balance  7.1323685                   age  6.9311927               purpose  5.4043114          other_credit  3.6950532     percent_of_income  3.0209027               housing  2.8956110    years_at_residence  1.9670349            dependents  1.4892067                 phone  0.9052488  existing_loans_count  0.8825967                   job  0.7773533`
 
 #### Probability Distributions, by outcome
@@ -42038,6 +42124,10 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
 
 > Model Processing: \` \`
 
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
+
+Iter TrainDeviance ValidDeviance StepSize Improve 1 1.2186 nan 0.0100 0.0011 2 1.2155 nan 0.0100 0.0013 3 1.2124 nan 0.0100 0.0015 4 1.2086 nan 0.0100 0.0014 5 1.2051 nan 0.0100 0.0014 6 1.2022 nan 0.0100 0.0014 7 1.1985 nan 0.0100 0.0011 8 1.1953 nan 0.0100 0.0013 9 1.1925 nan 0.0100 0.0011 10 1.1895 nan 0.0100 0.0011 20 1.1615 nan 0.0100 0.0010 40 1.1166 nan 0.0100 0.0007 60 1.0822 nan 0.0100 0.0006 80 1.0540 nan 0.0100 0.0004 100 1.0306 nan 0.0100 0.0002 120 1.0101 nan 0.0100 -0.0002 140 0.9919 nan 0.0100 0.0001 160 0.9752 nan 0.0100 0.0001 180 0.9608 nan 0.0100 0.0001 200 0.9466 nan 0.0100 -0.0002 220 0.9336 nan 0.0100 -0.0003 240 0.9218 nan 0.0100 0.0000 260 0.9107 nan 0.0100 -0.0000 280 0.9003 nan 0.0100 0.0000 300 0.8901 nan 0.0100 0.0000 320 0.8809 nan 0.0100 -0.0000 340 0.8708 nan 0.0100 0.0000 360 0.8617 nan 0.0100 -0.0001 380 0.8527 nan 0.0100 -0.0000 400 0.8445 nan 0.0100 -0.0000 420 0.8369 nan 0.0100 -0.0001 440 0.8290 nan 0.0100 0.0001 460 0.8206 nan 0.0100 -0.0002 480 0.8139 nan 0.0100 -0.0001 500 0.8061 nan 0.0100 -0.0001 520 0.7995 nan 0.0100 -0.0002 540 0.7923 nan 0.0100 0.0000 560 0.7858 nan 0.0100 -0.0001 580 0.7793 nan 0.0100 -0.0002 600 0.7731 nan 0.0100 -0.0002 620 0.7667 nan 0.0100 -0.0001 640 0.7604 nan 0.0100 -0.0001 660 0.7542 nan 0.0100 -0.0001 680 0.7481 nan 0.0100 -0.0000 700 0.7431 nan 0.0100 -0.0001 720 0.7378 nan 0.0100 -0.0002 740 0.7330 nan 0.0100 -0.0001 760 0.7277 nan 0.0100 -0.0001 780 0.7218 nan 0.0100 -0.0000 800 0.7165 nan 0.0100 -0.0002 820 0.7109 nan 0.0100 -0.0002 840 0.7055 nan 0.0100 -0.0001 860 0.7002 nan 0.0100 -0.0002 880 0.6954 nan 0.0100 -0.0002 900 0.6900 nan 0.0100 -0.0001 920 0.6854 nan 0.0100 -0.0001 940 0.6808 nan 0.0100 -0.0001 960 0.6766 nan 0.0100 -0.0001 980 0.6720 nan 0.0100 -0.0003 1000 0.6679 nan 0.0100 -0.0000 1020 0.6632 nan 0.0100 -0.0001 1040 0.6588 nan 0.0100 -0.0001 1060 0.6541 nan 0.0100 -0.0001 1080 0.6502 nan 0.0100 -0.0001 1100 0.6463 nan 0.0100 -0.0002 1120 0.6426 nan 0.0100 -0.0001 1140 0.6381 nan 0.0100 -0.0002 1160 0.6339 nan 0.0100 -0.0001 1180 0.6297 nan 0.0100 -0.0001 1200 0.6252 nan 0.0100 -0.0001 1220 0.6212 nan 0.0100 -0.0001 1240 0.6175 nan 0.0100 -0.0002 1260 0.6139 nan 0.0100 -0.0001 1280 0.6102 nan 0.0100 -0.0001 1300 0.6067 nan 0.0100 -0.0002 1320 0.6031 nan 0.0100 -0.0001 1340 0.5996 nan 0.0100 -0.0001 1360 0.5956 nan 0.0100 -0.0002 1380 0.5917 nan 0.0100 -0.0002 1400 0.5882 nan 0.0100 -0.0001 1420 0.5852 nan 0.0100 -0.0001 1440 0.5814 nan 0.0100 0.0000 1460 0.5778 nan 0.0100 -0.0001 1480 0.5741 nan 0.0100 -0.0001 1500 0.5705 nan 0.0100 -0.0001 1520 0.5672 nan 0.0100 0.0000 1540 0.5636 nan 0.0100 -0.0001 1560 0.5602 nan 0.0100 -0.0001 1580 0.5568 nan 0.0100 -0.0002 1600 0.5536 nan 0.0100 -0.0001 1620 0.5505 nan 0.0100 -0.0000 1640 0.5474 nan 0.0100 -0.0001 1660 0.5442 nan 0.0100 -0.0000 1680 0.5411 nan 0.0100 -0.0001 1700 0.5381 nan 0.0100 -0.0001 1720 0.5350 nan 0.0100 -0.0001 1740 0.5320 nan 0.0100 -0.0001 1760 0.5286 nan 0.0100 -0.0001 1780 0.5259 nan 0.0100 -0.0000 1800 0.5225 nan 0.0100 -0.0001 1820 0.5193 nan 0.0100 -0.0001 1840 0.5162 nan 0.0100 -0.0001 1860 0.5133 nan 0.0100 -0.0000 1880 0.5106 nan 0.0100 -0.0001 1900 0.5078 nan 0.0100 -0.0001 1920 0.5053 nan 0.0100 -0.0000 1940 0.5024 nan 0.0100 -0.0001 1960 0.5000 nan 0.0100 -0.0002 1980 0.4973 nan 0.0100 -0.0001 2000 0.4944 nan 0.0100 -0.0001 2020 0.4920 nan 0.0100 -0.0001 2040 0.4895 nan 0.0100 -0.0001 2060 0.4866 nan 0.0100 -0.0001 2080 0.4837 nan 0.0100 -0.0001 2100 0.4813 nan 0.0100 -0.0001 2120 0.4784 nan 0.0100 -0.0001 2140 0.4756 nan 0.0100 -0.0002 2160 0.4728 nan 0.0100 -0.0000 2180 0.4701 nan 0.0100 -0.0001 2200 0.4677 nan 0.0100 -0.0001 2220 0.4651 nan 0.0100 -0.0001 2240 0.4630 nan 0.0100 -0.0002 2260 0.4606 nan 0.0100 -0.0002 2280 0.4577 nan 0.0100 -0.0001 2300 0.4555 nan 0.0100 -0.0001 2320 0.4528 nan 0.0100 -0.0001 2340 0.4506 nan 0.0100 -0.0001 2360 0.4481 nan 0.0100 -0.0001 2380 0.4456 nan 0.0100 -0.0000 2400 0.4434 nan 0.0100 -0.0001 2420 0.4414 nan 0.0100 -0.0001 2440 0.4388 nan 0.0100 -0.0001 2460 0.4364 nan 0.0100 -0.0002 2480 0.4342 nan 0.0100 -0.0001 2500 0.4318 nan 0.0100 -0.0000 2520 0.4294 nan 0.0100 -0.0001 2525 0.4289 nan 0.0100 -0.0001
+
 <img src="predictive_analysis_classification_files/figure-markdown_github/top_models-24.png" width="750px" />`var     rel.inf                          amount 24.50924462                             age 13.99074860            months_loan_duration 11.48396109         checking_balanceunknown  8.46060673               percent_of_income  4.21441883              years_at_residence  3.51606589          savings_balanceunknown  2.35678482         credit_historyvery good  2.05957224                other_creditnone  1.87888148           credit_historyperfect  1.75432501                       phoneTRUE  1.67061557                      housingown  1.62837285  employment_duration4 - 7 years  1.59821125            existing_loans_count  1.57737056        checking_balance> 200 DM  1.57583990     purposefurniture/appliances  1.50093489      checking_balance1 - 200 DM  1.39118928              credit_historypoor  1.36232219   employment_durationunemployed  1.35822574              credit_historygood  1.28202896  employment_duration1 - 4 years  1.24699943                      purposecar  1.06998968                purposeeducation  0.98712940                      dependents  0.97553656                     housingrent  0.91442823    employment_duration> 7 years  0.89525717               other_creditstore  0.82081094                    jobunskilled  0.76224815              purposerenovations  0.71093790                      jobskilled  0.70136546     savings_balance100 - 500 DM  0.63422718        savings_balance> 1000 DM  0.56647347    savings_balance500 - 1000 DM  0.34235700                     purposecar0  0.13406462                   jobunemployed  0.06845431`
 
 #### Probability Distributions, by outcome
@@ -42104,6 +42194,8 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
 ### Regularized Discriminant Analysis (regularized\_discriminant\_analysis)
 
 > Model Processing: `nzv; center; scale`
+
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
 
                    Length Class      Mode     
     call              5   -none-     call     
@@ -42187,6 +42279,8 @@ NOTE: when tuning final model, alternative cutoff points should be determined us
 ### Random Forest (rf\_independent\_categories)
 
 > Model Processing: \` \`
+
+> Model Formula: `target ~ checking_balance + months_loan_duration + credit_history + purpose + amount + savings_balance + employment_duration + percent_of_income + years_at_residence + age + other_credit + housing + existing_loans_count + job + dependents + phone`
 
                     Length Class      Mode     
     call               4   -none-     call     
