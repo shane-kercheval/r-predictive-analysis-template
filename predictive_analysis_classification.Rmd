@@ -53,7 +53,7 @@ calculate_nnet_MaxNWts <- function(max_nnet_size, number_of_dataset_columns) { #
 }
 
 custom_seed <- 123
-refresh_models <- TRUE
+refresh_models <- FALSE
 ```
 
 ```{r dataset_definition, echo = FALSE}
@@ -150,6 +150,13 @@ Rule of thumbs for dimensions (Probabilistic and Statistical Modeling in Compute
 > r < sqrt(n); where r is the number of predictors and sqrt(n) is the square root of the sample size (``r round(sqrt(num_sample_size))``): ``r num_predictors < round(sqrt(num_sample_size))``
 
 > r < sqrt(n_t); where r is the number of predictors and sqrt(n_t) is the square root of the training set size (``r round(sqrt(round(num_sample_size * training_percentage)))``): ``r num_predictors < round(sqrt(round(num_sample_size * training_percentage)))``
+
+```{r class_imbalance, echo = FALSE, comment = '', results = 'asis'}
+class_imbalance <- min((classification_dataset %>% count(target))$n / nrow(classification_dataset))
+if(class_imbalance <= 0.3) {
+	cat(paste0('\n\n> Class imbalance, min class proportion is `', percent(class_imbalance),'`. Consider up-sampling/down-sampling techniques.\n\n'))
+}
+``` 
 
 ```{r summary, echo = FALSE}
 summary(classification_dataset)
