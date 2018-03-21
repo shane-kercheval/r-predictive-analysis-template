@@ -621,8 +621,8 @@ train_classification <- function(	model_name,
 	# rather than using the test set (or the training set, raw) to derive the roc threshold, we will use cross validation on the training set
 	# https://github.com/shane-kercheval/r-predictive-analysis-template/issues/17
 	############
-	#so, for each fold/repitition in the *original* cross validation, use the 'test' set to calculate the ideal threshold
-	#therefore, we are still using the same 'unseen' data to calculate the ideal threshold point, so that when we hand off the threshold to the actual test set, it will be less biased than if we determined based on raw training set.
+	#so, for each fold/repitition in the *original* cross validation, use the 'holdout' set to calculate the ideal threshold
+	#therefore, we are still using the same 'unseen' data to calculate the ideal threshold point, so that when we hand off the threshold to the actual holdout set, it will be less biased than if we determined based on raw training set.
 	roc_thresholds <- map_dbl(training_control$index, ~ {
 		#indexes <- training_control$index[[1]]
 		indexes <- .
@@ -2257,7 +2257,6 @@ model_plots <- function(model, testing_set, mean_roc_threshold){
 	print(visualize_quality_of_model(	confusion_ls_mean_roc,
 										chart_title = paste0('Quality of Model (using calculated probability threshold,',
 										round(mean_roc_threshold, 3),')')))
-	cat('\n\nNOTE: when tuning final model, alternative cutoff points should be determined using an evaluation dataset (APL pg 425).\n\n')
 
 	###########################################################
 	# expected value
@@ -2505,5 +2504,3 @@ ggplot(data = final_models_metrics_long, mapping = aes(x = model, y = value, col
 	facet_grid(. ~ metric, scales = "free", space = "free_y") +
 	coord_flip()
 ```
-
-`test_set` sensitivity/specificity uses the default probability cutoff of `0.5`
