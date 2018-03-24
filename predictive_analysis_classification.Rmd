@@ -92,6 +92,7 @@ num_predictors <- length(classification_dataset) - 1
 # Tuning Parameters
 
 ```{r tuning_parameters}
+metric <- 'ROC'
 # train/test set
 training_percentage <- 0.90
 
@@ -514,7 +515,6 @@ train_control <- trainControl(
     savePredictions = TRUE,
     index = spot_check_folds)
 
-metric <- 'ROC'
 classification_models <- list()
 model_information <- data.frame(model = NULL, training_preProcess = NULL, mean_roc_threshold = NULL)
 ```
@@ -622,7 +622,15 @@ train_classification <- function(   model_name,
     # https://github.com/shane-kercheval/r-predictive-analysis-template/issues/17
     ############
     #so, for each fold/repitition in the *original* cross validation, use the 'holdout' set to calculate the ideal threshold
-    #therefore, we are still using the same 'unseen' data to calculate the ideal threshold point, so that when we hand off the threshold to the actual holdout set, it will be less biased than if we determined based on raw training set.
+    #therefore, we are still using the same 'unseen' data to calculate the ideal threshold point, so that when we hand off the threshold to the actual test set, it will be less biased than if we determined based on raw training set.
+    # note: we are actually (only) using the same final model on each holdout-fold.. as opposed to what I do in oo-learning,
+        # which is use the specific model that was trained for each specific fold/repeat, get the threshold
+        # based on that specific model, and then get the mean of the thresholds. 
+        # My assumption is that oo-learning is more valid.. but not sure.. 
+        # In either case, the final model that is refit on the entire training set is different than the model
+        # used to calculate the threshold.
+        # My assumption is also that this form is more valid than using the test-set directly, and in the
+        # final sections, I do calculate the ideal thresholds (top-left, youden) for the test set and display.
     roc_thresholds <- map_dbl(training_control$index, ~ {
         #indexes <- training_control$index[[1]]
         indexes <- .
@@ -2173,7 +2181,7 @@ densityplot(resamples, metric = 'Spec')
 
 ```{r model_definitions, echo=FALSE}
 model_plots <- function(model, testing_set, mean_roc_threshold){
-
+    # predict the probabilities from the test/holdout set that we haven't yet used.
     predictions_probabilities_raw <- predict(model, testing_set %>% dplyr::select(-target), type = 'prob')
     actual_observations <- testing_set$target
     predicted_probabilities_negative <- predictions_probabilities_raw[, target_negative_class]
@@ -2182,16 +2190,18 @@ model_plots <- function(model, testing_set, mean_roc_threshold){
     names(predicted_probabilities_negative) <- NULL
     names(predicted_probabilities_positive) <- NULL
 
-    df_results <- data.frame(   actual_observations = actual_observations,
-                                predicted_probabilities = predicted_probabilities_positive,
-                                predicted_probabilities_negative = predicted_probabilities_negative)
-    df_results$predicted_class <- predict(model, testing_set %>% dplyr::select(-target))
+    # data-frame containing all the actual/prediction information
+    df_results <- data.frame(actual_observations = actual_observations,
+                             predicted_probabilities = predicted_probabilities_positive,
+                             predicted_probabilities_negative = predicted_probabilities_negative)
+    ## use the cross-validated probability threshold from the training set.
+    df_results$predicted_class <- factor(ifelse(df_results$predicted_probabilities > mean_roc_threshold,
+                                                target_positive_class,
+                                                target_negative_class),
+                                         levels = c(target_positive_class, target_negative_class))
     df_results$label <- ifelse(actual_observations == target_negative_class,
                                     paste('True Outcome:', target_negative_class),
                                     paste('True Outcome:', target_positive_class))
-
-    # prop.table(table(classification_test$target))[target_positive_class]
-    # ggplot(df_results, aes(predicted_probabilities)) + geom_histogram(binwidth = 0.1)
 
     ### Plot the probability of negative/positive
     cat('\n\n#### Probability Distributions, by outcome\n\n')
@@ -2203,7 +2213,7 @@ model_plots <- function(model, testing_set, mean_roc_threshold){
     ###########################################################
     # Create the confusion matrix from the test set.
     ###########################################################
-    cat('\n\n#### Quality, default cutoff\n\n')
+    cat('\n\n#### Quality\n\n')
     conf_matrix <- confusionMatrix(data = df_results$predicted_class, reference = df_results$actual_observations)
     cat('\n\n')
     cat(codebc(conf_matrix, postfix = '\n\n'))
@@ -2214,7 +2224,9 @@ model_plots <- function(model, testing_set, mean_roc_threshold){
                                     false_pos = confusion_matrix[target_negative_class, target_positive_class],
                                     false_neg = confusion_matrix[target_positive_class, target_negative_class])
     #observation_rates <- confusion_matrix / sum(confusion_matrix)
-    print(visualize_quality_of_model(confusion_ls))
+    print(visualize_quality_of_model(confusion_ls,
+                                     chart_title = paste0('Quality of Model (using cross-validated threshold,',
+                                                          round(mean_roc_threshold, 3),')')))
 
     ###########################################################
     # ROC/AUC
@@ -2241,22 +2253,6 @@ model_plots <- function(model, testing_set, mean_roc_threshold){
     cat(paste0('\n\n> Top Left (Training Set CV) cutoff: `', mean_roc_threshold,'`'))
     cat(paste0('\n\n> Top Left (Test Set) cutoff: `', cutoff_closest_topleft['threshold'],'`'))
     cat(paste0('\n\n> Youden (Test Set) cutoff: `', cutoff_youden['threshold'],'`\n\n'))
-
-    predicted_class_mean_roc <- factor(ifelse(df_results$predicted_probabilities > mean_roc_threshold,
-                                             target_positive_class, target_negative_class),
-                                      levels = c(target_positive_class, target_negative_class))
-
-    confusion_matrix_mean_roc <- table(actual = actual_observations, predictions = predicted_class_mean_roc)
-    confusion_ls_mean_roc <- confusion_list(true_pos = confusion_matrix_mean_roc[target_positive_class, target_positive_class],
-                                    true_neg = confusion_matrix_mean_roc[target_negative_class, target_negative_class],
-                                    false_pos = confusion_matrix_mean_roc[target_negative_class, target_positive_class],
-                                    false_neg = confusion_matrix_mean_roc[target_positive_class, target_negative_class])
-    quality_mean_roc <- quality_of_model(confusion_ls_mean_roc)
-    
-    cat('\n\n#### Quality, cross-validated (training set) cutoff\n\n')
-    print(visualize_quality_of_model(   confusion_ls_mean_roc,
-                                        chart_title = paste0('Quality of Model (using calculated probability threshold,',
-                                        round(mean_roc_threshold, 3),')')))
 
     ###########################################################
     # expected value
@@ -2313,10 +2309,7 @@ model_plots <- function(model, testing_set, mean_roc_threshold){
                 topleft_specificity = as.numeric(cutoff_closest_topleft['specificity']),
                 youden_threshold = as.numeric(cutoff_youden['threshold']),
                 youden_sensitivity = as.numeric(cutoff_youden['sensitivity']),
-                youden_specificity = as.numeric(cutoff_youden['specificity']),
-                training_cv_threshold = mean_roc_threshold,
-                training_cv_sensitivity = quality_mean_roc$sensitivity,
-                training_cv_specificity = quality_mean_roc$specificity))
+                youden_specificity = as.numeric(cutoff_youden['specificity'])))
 }
 ```
 
@@ -2480,10 +2473,7 @@ final_models_metrics <- data.frame( model = factor( as.character(top_models$mode
                                     top_left__specificity = map_dbl(model_stats, ~ .['topleft_specificity']),
                                     youden__threshold = map_dbl(model_stats, ~ .['youden_threshold']),
                                     youden__sensitivity = map_dbl(model_stats, ~ .['youden_sensitivity']),
-                                    youden__specificity = map_dbl(model_stats, ~ .['youden_specificity']),
-                                    training_cv__threshold = map_dbl(model_stats, ~ .['training_cv_threshold']),
-                                    training_cv__sensitivity = map_dbl(model_stats, ~ .['training_cv_sensitivity']),
-                                    training_cv__specificity = map_dbl(model_stats, ~ .['training_cv_specificity']))
+                                    youden__specificity = map_dbl(model_stats, ~ .['youden_specificity']))
 
 max_test_auc <- max(final_models_metrics$test_set__auc)
 max_sensitivity <- max(final_models_metrics$test_set__sensitivity)
@@ -2493,7 +2483,7 @@ final_models_metrics_long <- final_models_metrics %>%
     dplyr::select(-contains('threshold')) %>%
     gather(metric, value, -model) %>%
     separate(col = metric, c('type', 'metric'), sep = '__') %>%
-    dplyr::mutate(type = factor(type, levels = c('cross_validation', 'test_set', 'top_left', 'youden', 'training_cv'))) %>%
+    dplyr::mutate(type = factor(type, levels = c('cross_validation', 'test_set', 'top_left', 'youden'))) %>%
     dplyr::mutate(metric = factor(metric, levels = c('auc', 'sensitivity', 'specificity')))
 
 best_values <- data.frame(  metric = c('auc', 'sensitivity', 'specificity'),
@@ -2502,5 +2492,6 @@ ggplot(data = final_models_metrics_long, mapping = aes(x = model, y = value, col
     geom_point(size = 3, alpha = 0.7) +
     geom_hline(data = best_values, aes(yintercept = Z), color='red') +
     facet_grid(. ~ metric, scales = "free", space = "free_y") +
-    coord_flip()
+    coord_flip() +
+    labs(caption='\n`test_set` is the cross-validated top-left threshold calculated on the training set.\n`top_left` and `youden` are both calulated on the test set.\nHowever, using the threshold calcualted from the test-set is likley to over-fit. The test-set is no longer unbiased.')
 ```
