@@ -40,7 +40,9 @@ library(klaR)
 library(mda)
 library(class)
 library(MASS)
-library(partykit)
+library(C50)
+library(ada)
+library(gbm)
 
 opts_chunk$set(out.width='750px', dpi=200)
 
@@ -1482,7 +1484,7 @@ classification_models[['svm_linear']] <- svm_linear
 
 ### svm_polynomial
 
-```{r svm_polynomial, echo = FALSE, comment = '', results = 'asis'}
+```{r svm_polynomial, eval=FALSE, comment='', include=FALSE}
 #modelLookup('svmPoly')
 #getModelInfo('svmPoly')
 
@@ -1514,7 +1516,7 @@ classification_models[['svm_polynomial']] <- svm_polynomial
 
 ### svm_radial
 
-```{r svm_radial, echo = FALSE, comment = '', results = 'asis'}
+```{r svm_radial, eval=FALSE, comment='', include=FALSE}
 #modelLookup('svmRadial')
 #getModelInfo('svmRadial')
 
@@ -1928,11 +1930,11 @@ classification_models[['rf_grouped_categories']] <- rf_grouped_categories
 
 ### adaboost_independent_categories
 
-```{r adaboost_independent_categories, echo = FALSE, comment = '', results = 'asis'}
+```{r adaboost_independent_categories, eval=FALSE, comment='', include=FALSE}
 # modelLookup('adaboost')
 model_pre_processing <- NULL
 adaboost_independent_categories <- train_classification(
-    refresh_models = refresh_models,
+    refresh_models = TRUE,
     training_metric = metric,
     custom_seed = custom_seed,
     model_name = 'adaboost_independent_categories',
@@ -1959,11 +1961,11 @@ classification_models[['adaboost_independent_categories']] <- adaboost_independe
 
 ### adaboost_grouped_categories
 
-```{r adaboost_grouped_categories, echo = FALSE, comment='', results='asis'}
+```{r adaboost_grouped_categories, eval=FALSE, comment='', include=FALSE, results='asis'}
 # modelLookup('adaboost')
 model_pre_processing <- NULL
 adaboost_grouped_categories <- train_classification(
-    refresh_models = refresh_models,
+    refresh_models = TRUE,
     training_metric = metric,
     custom_seed = custom_seed,
     model_name = 'adaboost_grouped_categories',
@@ -1996,7 +1998,7 @@ classification_models[['adaboost_grouped_categories']] <- adaboost_grouped_categ
 # modelLookup('AdaBag')
 model_pre_processing <- NULL
 adabag_independent_categories <- train_classification(
-    refresh_models = refresh_models,
+    refresh_models = TRUE,
     training_metric = metric,
     custom_seed = custom_seed,
     model_name = 'adabag_independent_categories',
@@ -2027,7 +2029,7 @@ classification_models[['adabag_independent_categories']] <- adabag_independent_c
 # modelLookup('AdaBag')
 model_pre_processing <- NULL
 adabag_grouped_categories <- train_classification(
-    refresh_models = refresh_models,
+    refresh_models = TRUE,
     training_metric = metric,
     custom_seed = custom_seed,
     model_name = 'adabag_grouped_categories',
