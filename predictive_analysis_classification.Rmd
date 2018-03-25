@@ -1934,7 +1934,7 @@ classification_models[['rf_grouped_categories']] <- rf_grouped_categories
 # modelLookup('adaboost')
 model_pre_processing <- NULL
 adaboost_independent_categories <- train_classification(
-    refresh_models = TRUE,
+    refresh_models = refresh_models,
     training_metric = metric,
     custom_seed = custom_seed,
     model_name = 'adaboost_independent_categories',
@@ -1965,7 +1965,7 @@ classification_models[['adaboost_independent_categories']] <- adaboost_independe
 # modelLookup('adaboost')
 model_pre_processing <- NULL
 adaboost_grouped_categories <- train_classification(
-    refresh_models = TRUE,
+    refresh_models = refresh_models,
     training_metric = metric,
     custom_seed = custom_seed,
     model_name = 'adaboost_grouped_categories',
@@ -1998,7 +1998,7 @@ classification_models[['adaboost_grouped_categories']] <- adaboost_grouped_categ
 # modelLookup('AdaBag')
 model_pre_processing <- NULL
 adabag_independent_categories <- train_classification(
-    refresh_models = TRUE,
+    refresh_models = refresh_models,
     training_metric = metric,
     custom_seed = custom_seed,
     model_name = 'adabag_independent_categories',
@@ -2029,7 +2029,7 @@ classification_models[['adabag_independent_categories']] <- adabag_independent_c
 # modelLookup('AdaBag')
 model_pre_processing <- NULL
 adabag_grouped_categories <- train_classification(
-    refresh_models = TRUE,
+    refresh_models = refresh_models,
     training_metric = metric,
     custom_seed = custom_seed,
     model_name = 'adabag_grouped_categories',
